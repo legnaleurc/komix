@@ -156,7 +156,6 @@ namespace KomiX {
 	}
 	
 	void MainWindow::openFileDialog() {
-		// FIXME
 		QString fileName = QFileDialog::getOpenFileName( this, tr( "Open image file" ), dir_.absolutePath(), fileFilter_ );
 		if( !fileName.isEmpty() ) {
 			open( fileName );
@@ -170,7 +169,7 @@ namespace KomiX {
 		}
 	}
 	
-	void MainWindow::toogleFullScreen() {
+	void MainWindow::toggleFullScreen() {
 		if( isFullScreen() ) {
 			menuBar()->show();
 			showNormal();

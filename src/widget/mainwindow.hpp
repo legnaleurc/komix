@@ -31,7 +31,7 @@ namespace KomiX {
 			void open( const QString & name );
 			void openFileDialog();
 			void openDirDialog();
-			void toogleFullScreen();
+			void toggleFullScreen();
 			void about();
 		
 		private:

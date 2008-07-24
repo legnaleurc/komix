@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = KomiX
+TARGET = komix
 DEPENDPATH += . src src/widget
 INCLUDEPATH += . src/widget src
 MOC_DIR = moc

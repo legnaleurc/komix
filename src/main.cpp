@@ -7,6 +7,7 @@ int main( int argc, char * argv[] ) {
 	
 	KomiX::MainWindow mainWindow;
 	mainWindow.setWindowTitle( QObject::tr( "KomiX" ) );
+	mainWindow.resize( 800, 600 );
 	
 	if( argc > 1 ) {
 		foreach( QString arg, app.arguments().mid( 1 ) ) {

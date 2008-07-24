@@ -2,7 +2,7 @@
 
 namespace KomiX {
 
-	ImageArea::ImageArea( QWidget * parent ) : QScrollArea( parent ), image_( new QLabel( this ) ), topTimer_( new QTimer ), bottomTimer_( new QTimer ), leftTimer_( new QTimer ), rightTimer_( new QTimer ), step_( 1 ), interval_( 1 ) {
+	ImageArea::ImageArea( QWidget * parent ) : QScrollArea( parent ), image_( new QLabel( this ) ), topTimer_( new QTimer ), bottomTimer_( new QTimer ), leftTimer_( new QTimer ), rightTimer_( new QTimer ), scalar_( 1.0 ), step_( 1 ), interval_( 1 ) {
 		setWidget( image_ );
 		image_->setBackgroundRole( QPalette::Base );
 		image_->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
