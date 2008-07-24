@@ -22,10 +22,10 @@ namespace KomiX {
 		
 		public:
 			enum ViewPortState {
-				Top = 1,
-				Bottom = 2,
-				Left = 4,
-				Right = 8,
+				TopRight,
+				BottomRight,
+				TopLeft,
+				BottomLeft,
 			};
 			
 			ImageArea( QWidget * parent = 0 );

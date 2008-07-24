@@ -79,7 +79,7 @@ namespace KomiX {
 		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
 		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
 		
-		state_ = Top | Right;
+		state_ = TopRight;
 	}
 	
 	void ImageArea::scale( int scalar ) {
@@ -120,16 +120,41 @@ namespace KomiX {
 	}
 	
 	void ImageArea::autoMove() {
-		// FIXME
 		stopAllStep_();
-		if( ( state_ & Top ) && ( state_ & Right ) ) {
-			if( canMoveBottom_() || canMoveRight_() ) {
-				bottomTimer_->start( interval_ );
-				rightTimer_->start( interval_ );
-				state_ = Bottom | Right;
-			} else {
+		switch( state_ ) {
+			case TopRight:
+				if( canMoveBottom_() ) {
+					bottomTimer_->start( interval_ );
+					state_ = BottomRight;
+				} else if( canMoveLeft_() ) {
+					leftTimer_->start( interval_ );
+					state_ = TopLeft;
+				} else {
+					emit nextPage();
+				}
+				break;
+			case BottomRight:
+				if( canMoveLeft_() ) {
+					leftTimer_->start( interval_ );
+					if( canMoveTop_() ) {
+						topTimer_->start( interval_ );
+					}
+					state_ = TopLeft;
+				} else {
+					emit nextPage();
+				}
+				break;
+			case TopLeft:
+				if( canMoveBottom_() ) {
+					bottomTimer_->start( interval_ );
+					state_ = BottomLeft;
+				} else {
+					emit nextPage();
+				}
+				break;
+			case BottomLeft:
 				emit nextPage();
-			}
+				break;
 		}
 	}
 	
