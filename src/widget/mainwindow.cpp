@@ -152,7 +152,11 @@ namespace KomiX {
 	
 	void MainWindow::open( const QString & name ) {
 		updateEnvironment( name );
-		imageArea_->openFile( dir_.filePath( files_[index_] ) );
+		if( files_.empty() ) {
+			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
+		} else {
+			imageArea_->openFile( dir_.filePath( files_[index_] ) );
+		}
 	}
 	
 	void MainWindow::openFileDialog() {
