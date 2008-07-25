@@ -30,11 +30,13 @@ namespace KomiX {
 	}
 	
 	void ImageArea::mouseReleaseEvent( QMouseEvent * event ) {
-		if( downPosition_ == event->pos() ) {
-			emit nextPage();
-		}
-		if( image_->cursor().shape() == Qt::ClosedHandCursor ) {
-			image_->setCursor( Qt::OpenHandCursor );
+		if( event->button() == Qt::LeftButton ) {
+			if( downPosition_ == event->pos() ) {
+				emit autoMove();
+			}
+			if( image_->cursor().shape() == Qt::ClosedHandCursor ) {
+				image_->setCursor( Qt::OpenHandCursor );
+			}
 		}
 	}
 	
