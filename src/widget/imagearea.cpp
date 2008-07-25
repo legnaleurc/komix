@@ -86,7 +86,9 @@ namespace KomiX {
 	
 	void ImageArea::scale( int scalar ) {
 		scalar_ = 1 + scalar / 100.0;
-		image_->resize( image_->pixmap()->size() *scalar_ );
+		if( image_->pixmap() != 0 ) {
+			image_->resize( image_->pixmap()->size() *scalar_ );
+		}
 	}
 	
 	void ImageArea::stepTop() {

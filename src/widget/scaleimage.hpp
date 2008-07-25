@@ -13,7 +13,7 @@ namespace KomiX {
 		Q_OBJECT
 		
 		public:
-			ScaleImage( QWidget * parent = 0 );
+			ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 		signals:
 			void scaled( int );
 	};
