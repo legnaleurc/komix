@@ -2,7 +2,7 @@
 
 namespace KomiX {
 	
-	ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ) : QDialog( parent ) {
+	ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ) : QDialog( parent, f ) {
 		setLayout( new QVBoxLayout( this ) );
 		
 		QPointer< QSlider > slider = new QSlider( Qt::Horizontal, this );

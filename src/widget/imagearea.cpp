@@ -86,7 +86,7 @@ namespace KomiX {
 	
 	void ImageArea::scale( int scalar ) {
 		scalar_ = 1 + scalar / 100.0;
-		if( image_->pixmap() != 0 ) {
+		if( image_->pixmap() ) {
 			image_->resize( image_->pixmap()->size() *scalar_ );
 		}
 	}
@@ -124,41 +124,43 @@ namespace KomiX {
 	}
 	
 	void ImageArea::autoMove() {
-		stopAllStep_();
-		switch( state_ ) {
-			case TopRight:
-				if( canMoveBottom_() ) {
-					bottomTimer_->start( interval_ );
-					state_ = BottomRight;
-				} else if( canMoveLeft_() ) {
-					leftTimer_->start( interval_ );
-					state_ = TopLeft;
-				} else {
-					emit nextPage();
-				}
-				break;
-			case BottomRight:
-				if( canMoveLeft_() ) {
-					leftTimer_->start( interval_ );
-					if( canMoveTop_() ) {
-						topTimer_->start( interval_ );
+		if( image_->pixmap() ) {
+			stopAllStep_();
+			switch( state_ ) {
+				case TopRight:
+					if( canMoveBottom_() ) {
+						bottomTimer_->start( interval_ );
+						state_ = BottomRight;
+					} else if( canMoveLeft_() ) {
+						leftTimer_->start( interval_ );
+						state_ = TopLeft;
+					} else {
+						emit nextPage();
 					}
-					state_ = TopLeft;
-				} else {
+					break;
+				case BottomRight:
+					if( canMoveLeft_() ) {
+						leftTimer_->start( interval_ );
+						if( canMoveTop_() ) {
+							topTimer_->start( interval_ );
+						}
+						state_ = TopLeft;
+					} else {
+						emit nextPage();
+					}
+					break;
+				case TopLeft:
+					if( canMoveBottom_() ) {
+						bottomTimer_->start( interval_ );
+						state_ = BottomLeft;
+					} else {
+						emit nextPage();
+					}
+					break;
+				case BottomLeft:
 					emit nextPage();
-				}
-				break;
-			case TopLeft:
-				if( canMoveBottom_() ) {
-					bottomTimer_->start( interval_ );
-					state_ = BottomLeft;
-				} else {
-					emit nextPage();
-				}
-				break;
-			case BottomLeft:
-				emit nextPage();
-				break;
+					break;
+			}
 		}
 	}
 	

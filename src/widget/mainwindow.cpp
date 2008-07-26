@@ -110,19 +110,23 @@ namespace KomiX {
 	}
 	
 	void MainWindow::nextFile() {
-		++index_;
-		if( index_ >= files_.size() ) {
-			index_ = 0;
+		if( files_.size() ) {
+			++index_;
+			if( index_ >= files_.size() ) {
+				index_ = 0;
+			}
+			imageArea_->openFile( dir_.filePath( files_[index_] ) );
 		}
-		imageArea_->openFile( dir_.filePath( files_[index_] ) );
 	}
 	
 	void MainWindow::prevFile() {
-		--index_;
-		if( index_ < 0 ) {
-			index_ = files_.size() - 1;
+		if( files_.size() ) {
+			--index_;
+			if( index_ < 0 ) {
+				index_ = files_.size() - 1;
+			}
+			imageArea_->openFile( dir_.filePath( files_[index_] ) );
 		}
-		imageArea_->openFile( dir_.filePath( files_[index_] ) );
 	}
 	
 	void MainWindow::whellAction( int delta ) {
