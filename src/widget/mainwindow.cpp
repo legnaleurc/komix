@@ -22,6 +22,7 @@ namespace KomiX {
 		initMenuBar_();
 		initCentralWidget_();
 		
+		scaleImage_->setWindowTitle( "Scale Image" );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 	}
 	

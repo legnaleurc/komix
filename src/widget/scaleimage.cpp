@@ -3,13 +3,22 @@
 namespace KomiX {
 	
 	ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ) : QDialog( parent, f ) {
-		setLayout( new QVBoxLayout( this ) );
+		QPointer< QVBoxLayout > mainLayout = new QVBoxLayout( this );
+		setLayout( mainLayout );
+		QPointer< QHBoxLayout > scaleBox = new QHBoxLayout;
+		mainLayout->addLayout( scaleBox );
 		
-		QPointer< QSlider > slider = new QSlider( Qt::Horizontal, this );
-		slider->setRange( -100, 100 );
-		layout()->addWidget( slider );
-		connect( slider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
-		connect( slider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
+		QPointer< QSlider > scaleSlider = new QSlider( Qt::Horizontal, this );
+		scaleSlider->setRange( -100, 100 );
+		scaleBox->addWidget( scaleSlider );
+		connect( scaleSlider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
+		connect( scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
+
+		QPointer< QSpinBox > scaleSpin = new QSpinBox( this );
+		scaleSpin->setRange( -100, 100 );
+		scaleBox->addWidget( scaleSpin );
+		connect( scaleSpin, SIGNAL( valueChanged( int ) ), scaleSlider, SLOT( setValue( int ) ) );
+		connect( scaleSlider, SIGNAL( valueChanged( int ) ), scaleSpin, SLOT( setValue( int ) ) );
 	}
 	
 }
