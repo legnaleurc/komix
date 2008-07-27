@@ -4,11 +4,14 @@ namespace KomiX {
 
 	ImageArea::ImageArea( QWidget * parent ) : QScrollArea( parent ), image_( new QLabel( this ) ), topTimer_( new QTimer ), bottomTimer_( new QTimer ), leftTimer_( new QTimer ), rightTimer_( new QTimer ), scalar_( 1.0 ), step_( 1 ), interval_( 1 ) {
 		setWidget( image_ );
-		image_->setBackgroundRole( QPalette::Base );
+// 		image_->setBackgroundRole( QPalette::Shadow );
 		image_->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 		image_->setScaledContents( true );
 		image_->resize( 0, 0 );
 		image_->setCursor( Qt::OpenHandCursor );
+		QPalette p = palette();
+		p.setColor( QPalette::Dark, QColor::fromRgb( 0, 0, 0 ) );
+		setPalette( p );
 		
 		connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 		connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
