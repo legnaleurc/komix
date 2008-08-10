@@ -179,13 +179,8 @@ namespace KomiX {
 	}
 	
 	void MainWindow::toggleFullScreen() {
-		if( isFullScreen() ) {
-			menuBar()->show();
-			showNormal();
-		} else {
-			menuBar()->hide();
-			showFullScreen();
-		}
+		menuBar()->setVisible( !menuBar()->isVisible() );
+		setWindowState( windowState() ^ Qt::WindowFullScreen );
 	}
 	
 	void MainWindow::about() {
