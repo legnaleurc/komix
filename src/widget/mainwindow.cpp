@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include <QIcon>
+#include <QApplication>
 
 namespace {
 	
@@ -40,9 +41,10 @@ namespace KomiX {
 		initMenuBar_();
 		initCentralWidget_();
 		
-		scaleImage_->setWindowTitle( "Scale Image" );
+		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
+		trayIcon_->setToolTip( tr( "KomiX" ) );
 		connect( trayIcon_, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), this, SLOT( systemTrayHelper_( QSystemTrayIcon::ActivationReason ) ) );
 		trayIcon_->show();
 	}
@@ -76,13 +78,6 @@ namespace KomiX {
 		
 		view->addAction( fullScreen );
 		addAction( fullScreen );
-		
-		QAction * scale = new QAction( tr( "&Scale image" ), this );
-		scale->setShortcut( tr( "Ctrl+S" ) );
-		connect( scale, SIGNAL( triggered() ), scaleImage_, SLOT( show() ) );
-		
-		view->addAction( scale );
-		addAction( scale );
 
 		QAction * hide = new QAction( tr( "&Hide window" ), this );
 		hide->setShortcut( tr( "Esc" ) );
@@ -90,17 +85,19 @@ namespace KomiX {
 
 		view->addAction( hide );
 		addAction( hide );
+
+		view->addSeparator();
+		
+		QAction * scale = new QAction( tr( "&Scale image" ), this );
+		scale->setShortcut( tr( "Ctrl+S" ) );
+		connect( scale, SIGNAL( triggered() ), scaleImage_, SLOT( show() ) );
+		
+		view->addAction( scale );
+		addAction( scale );
 		
 		menuBar->addMenu( view );
 		
 		QMenu * go = new QMenu( tr( "&Go" ), menuBar );
-		
-		QAction * next = new QAction( tr( "&Next image" ), this );
-		next->setShortcut( Qt::Key_PageDown );
-		connect( next, SIGNAL( triggered() ), this, SLOT( nextFile() ) );
-		
-		go->addAction( next );
-		addAction( next );
 		
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
@@ -109,15 +106,26 @@ namespace KomiX {
 		go->addAction( prev );
 		addAction( prev );
 		
+		QAction * next = new QAction( tr( "&Next image" ), this );
+		next->setShortcut( Qt::Key_PageDown );
+		connect( next, SIGNAL( triggered() ), this, SLOT( nextFile() ) );
+		
+		go->addAction( next );
+		addAction( next );
+		
 		menuBar->addMenu( go );
 		
 		QMenu * help = new QMenu( tr( "&Help" ), menuBar );
 		
-		QAction * about__ = new QAction( tr( "&About..." ), this );
+		QAction * about__ = new QAction( tr( "&About" ), this );
 		connect( about__, SIGNAL( triggered() ), this, SLOT( about() ) );
 		
 		help->addAction( about__ );
-		addAction( about__ );
+
+		QAction * aboutQt_ = new QAction( tr( "About &Qt" ), this );
+		connect( aboutQt_, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
+
+		help->addAction( aboutQt_ );
 		
 		menuBar->addMenu( help );
 		
