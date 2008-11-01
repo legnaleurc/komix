@@ -14,14 +14,17 @@ namespace KomiX {
 		mainLayout->addLayout( scaleBox );
 		
 		QSlider * scaleSlider = new QSlider( Qt::Horizontal, this );
-		scaleSlider->setRange( -100, 100 );
+		scaleSlider->setRange( 0, 1600 );
+		scaleSlider->setValue( 100 );
 		scaleBox->addWidget( scaleSlider );
-		connect( scaleSlider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
-		connect( scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
 
 		QSpinBox * scaleSpin = new QSpinBox( this );
-		scaleSpin->setRange( -100, 100 );
+		scaleSpin->setRange( 0, 1600 );
+		scaleSpin->setValue( 100 );
 		scaleBox->addWidget( scaleSpin );
+
+		connect( scaleSlider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
+		connect( scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
 		connect( scaleSpin, SIGNAL( valueChanged( int ) ), scaleSlider, SLOT( setValue( int ) ) );
 		connect( scaleSlider, SIGNAL( valueChanged( int ) ), scaleSpin, SLOT( setValue( int ) ) );
 	}

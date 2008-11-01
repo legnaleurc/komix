@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include <QPoint>
 #include <QLabel>
+#include <QSize>
 
 namespace KomiX {
 
@@ -24,7 +25,7 @@ namespace KomiX {
 			void openFile( const QString & fileName );
 		
 		public slots:
-			void scale( int scalar );
+			void scale( int ratio );
 			void stepTop();
 			void stepBottom();
 			void stepLeft();
@@ -53,13 +54,14 @@ namespace KomiX {
 			bool canMoveRight_() const;
 			
 			QLabel * image_;
+			QSize imageSize_;
 			QTimer * topTimer_;
 			QTimer * bottomTimer_;
 			QTimer * leftTimer_;
 			QTimer * rightTimer_;
 			QPoint downPosition_;
 			QPoint movePosition_;
-			double scalar_;
+			double ratio_;
 			int state_;
 			int step_;
 			int interval_;

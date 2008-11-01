@@ -7,10 +7,20 @@
 #include <QList>
 #include <QUrl>
 #include <QScrollBar>
+#include <QtDebug>
 
 namespace KomiX {
 
-	ImageArea::ImageArea( QWidget * parent ) : QScrollArea( parent ), image_( new QLabel( this ) ), topTimer_( new QTimer ), bottomTimer_( new QTimer ), leftTimer_( new QTimer ), rightTimer_( new QTimer ), scalar_( 1.0 ), step_( 2 ), interval_( 1 ) {
+	ImageArea::ImageArea( QWidget * parent ) :
+	QScrollArea( parent ),
+	image_( new QLabel( this ) ),
+	imageSize_(),
+	topTimer_( new QTimer ),
+	bottomTimer_( new QTimer ),
+	leftTimer_( new QTimer ),
+	rightTimer_( new QTimer ),
+	ratio_( 1.0 ), step_( 2 ),
+	interval_( 1 ) {
 		setWidget( image_ );
 		image_->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 		image_->setScaledContents( true );
@@ -86,7 +96,8 @@ namespace KomiX {
 	void ImageArea::openFile( const QString & fileName ) {
 		stopAllStep_();
 		image_->setPixmap( QPixmap( fileName ) );
-		image_->resize( image_->pixmap()->size() * scalar_ );
+		imageSize_ = image_->pixmap()->size();
+		image_->resize( imageSize_ * ratio_ );
 		
 		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
 		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
@@ -94,10 +105,14 @@ namespace KomiX {
 		state_ = TopRight;
 	}
 	
-	void ImageArea::scale( int scalar ) {
-		scalar_ = 1 + scalar / 100.0;
+	void ImageArea::scale( int ratio ) {
+		qDebug() << "ImageArea::scale( int ):";
+		qDebug() << "ratio: " << ratio;
+		qDebug() << "ratio_: " << ratio_;
+		qDebug() << "imageSize_: " << imageSize_;
+		ratio_ = ratio / 100.0;
 		if( image_->pixmap() ) {
-			image_->resize( image_->pixmap()->size() *scalar_ );
+			image_->resize( imageSize_ * ratio_ );
 		}
 	}
 	
