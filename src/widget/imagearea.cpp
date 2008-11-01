@@ -1,4 +1,12 @@
 #include "imagearea.hpp"
+#include "utility.hpp"
+
+#include <QTimer>
+#include <QAction>
+#include <QMouseEvent>
+#include <QList>
+#include <QUrl>
+#include <QScrollBar>
 
 namespace KomiX {
 
@@ -17,7 +25,7 @@ namespace KomiX {
 		connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 		connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
 		
-		QPointer< QAction > space = new QAction( this );
+		QAction * space = new QAction( this );
 		space->setShortcut( Qt::Key_Space );
 		addAction( space );
 		connect( space, SIGNAL( triggered() ), this, SLOT( autoMove() ) );

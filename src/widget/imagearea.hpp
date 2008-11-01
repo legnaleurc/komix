@@ -1,18 +1,9 @@
 #ifndef IMAGEAREA_HPP
 #define IMAGEAREA_HPP
 
-#include "../utility.hpp"
-
 #include <QScrollArea>
-#include <QPointer>
-#include <QTimer>
 #include <QPoint>
 #include <QLabel>
-#include <QAction>
-#include <QMouseEvent>
-#include <QList>
-#include <QUrl>
-#include <QScrollBar>
 
 namespace KomiX {
 
@@ -61,11 +52,11 @@ namespace KomiX {
 			bool canMoveLeft_() const;
 			bool canMoveRight_() const;
 			
-			QPointer< QLabel > image_;
-			QPointer< QTimer > topTimer_;
-			QPointer< QTimer > bottomTimer_;
-			QPointer< QTimer > leftTimer_;
-			QPointer< QTimer > rightTimer_;
+			QLabel * image_;
+			QTimer * topTimer_;
+			QTimer * bottomTimer_;
+			QTimer * leftTimer_;
+			QTimer * rightTimer_;
 			QPoint downPosition_;
 			QPoint movePosition_;
 			double scalar_;

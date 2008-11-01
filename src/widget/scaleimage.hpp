@@ -2,11 +2,6 @@
 #define SCALEIMAGE_HPP
 
 #include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPointer>
-#include <QSlider>
-#include <QSpinBox>
 
 namespace KomiX {
 	

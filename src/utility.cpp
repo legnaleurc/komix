@@ -1,5 +1,8 @@
 #include "utility.hpp"
 
+#include <QImageReader>
+#include <QFileInfo>
+
 namespace KomiX {
 
 	bool isSupport( const QString & fileName ) {

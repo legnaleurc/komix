@@ -1,4 +1,13 @@
 #include "mainwindow.hpp"
+#include "scaleimage.hpp"
+#include "imagearea.hpp"
+
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QImageReader>
 
 namespace {
 	
@@ -27,18 +36,18 @@ namespace KomiX {
 	}
 	
 	void MainWindow::initMenuBar_() {
-		QPointer< QMenuBar > menuBar = new QMenuBar( this );
+		QMenuBar * menuBar = new QMenuBar( this );
 		
-		QPointer< QMenu > fileMenu = new QMenu( tr( "&File" ), menuBar );
+		QMenu * fileMenu = new QMenu( tr( "&File" ), menuBar );
 		
-		QPointer< QAction > openImage = new QAction( tr( "&Open Image File" ), this );
+		QAction * openImage = new QAction( tr( "&Open Image File" ), this );
 		openImage->setShortcut( tr( "Ctrl+O" ) );
 		connect( openImage, SIGNAL( triggered() ), this, SLOT( openFileDialog() ) );
 		
 		fileMenu->addAction( openImage );
 		addAction( openImage );
 		
-		QPointer< QAction > openDir = new QAction( tr( "Open &Directory" ), this );
+		QAction * openDir = new QAction( tr( "Open &Directory" ), this );
 		openDir->setShortcut( tr( "Ctrl+D" ) );
 		connect( openDir, SIGNAL( triggered() ), this, SLOT( openDirDialog() ) );
 		
@@ -47,16 +56,16 @@ namespace KomiX {
 		
 		menuBar->addMenu( fileMenu );
 		
-		QPointer< QMenu > view = new QMenu( tr( "&View" ), menuBar );
+		QMenu * view = new QMenu( tr( "&View" ), menuBar );
 		
-		QPointer< QAction > fullScreen = new QAction( tr( "&Full Screen" ), this );
+		QAction * fullScreen = new QAction( tr( "&Full Screen" ), this );
 		fullScreen->setShortcut( Qt::Key_F11 );
 		connect( fullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
 		
 		view->addAction( fullScreen );
 		addAction( fullScreen );
 		
-		QPointer< QAction > scale = new QAction( tr( "&Scale image" ), this );
+		QAction * scale = new QAction( tr( "&Scale image" ), this );
 		scale->setShortcut( tr( "Ctrl+S" ) );
 		connect( scale, SIGNAL( triggered() ), scaleImage_, SLOT( show() ) );
 		
@@ -65,16 +74,16 @@ namespace KomiX {
 		
 		menuBar->addMenu( view );
 		
-		QPointer< QMenu > go = new QMenu( tr( "&Go" ), menuBar );
+		QMenu * go = new QMenu( tr( "&Go" ), menuBar );
 		
-		QPointer< QAction > next = new QAction( tr( "&Next image" ), this );
+		QAction * next = new QAction( tr( "&Next image" ), this );
 		next->setShortcut( Qt::Key_PageDown );
 		connect( next, SIGNAL( triggered() ), this, SLOT( nextFile() ) );
 		
 		go->addAction( next );
 		addAction( next );
 		
-		QPointer< QAction > prev = new QAction( tr( "&Preverse image" ), this );
+		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
 		connect( prev, SIGNAL( triggered() ), this, SLOT( prevFile() ) );
 		
@@ -83,9 +92,9 @@ namespace KomiX {
 		
 		menuBar->addMenu( go );
 		
-		QPointer< QMenu > help = new QMenu( tr( "&Help" ), menuBar );
+		QMenu * help = new QMenu( tr( "&Help" ), menuBar );
 		
-		QPointer< QAction > about__ = new QAction( tr( "&About..." ), this );
+		QAction * about__ = new QAction( tr( "&About..." ), this );
 		connect( about__, SIGNAL( triggered() ), this, SLOT( about() ) );
 		
 		help->addAction( about__ );
