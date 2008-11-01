@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QImageReader>
+#include <QIcon>
 
 namespace {
 	
@@ -27,12 +28,23 @@ namespace KomiX {
 	
 	const QString MainWindow::fileFilter_ = MainWindow::supportedFormats_.join( " " );
 	
-	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags flags ) : QMainWindow( parent, flags ), imageArea_( new ImageArea( this ) ), scaleImage_( new ScaleImage( this ) ), index_( 0 ), dir_( QDir::home() ), files_() {
+	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags flags ) :
+	QMainWindow( parent, flags ),
+	imageArea_( new ImageArea( this ) ),
+	scaleImage_( new ScaleImage( this ) ),
+	trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
+	index_( 0 ),
+	dir_( QDir::home() ),
+	files_(),
+	dumpState_( Qt::WindowNoState ) {
 		initMenuBar_();
 		initCentralWidget_();
 		
 		scaleImage_->setWindowTitle( "Scale Image" );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
+
+		connect( trayIcon_, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), this, SLOT( systemTrayHelper_( QSystemTrayIcon::ActivationReason ) ) );
+		trayIcon_->show();
 	}
 	
 	void MainWindow::initMenuBar_() {
@@ -71,6 +83,13 @@ namespace KomiX {
 		
 		view->addAction( scale );
 		addAction( scale );
+
+		QAction * hide = new QAction( tr( "&Hide window" ), this );
+		hide->setShortcut( tr( "Esc" ) );
+		connect( hide, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
+
+		view->addAction( hide );
+		addAction( hide );
 		
 		menuBar->addMenu( view );
 		
@@ -117,6 +136,12 @@ namespace KomiX {
 		connect( imageArea_, SIGNAL( wheelMoved( int ) ), this, SLOT( whellAction( int ) ) );
 		connect( imageArea_, SIGNAL( nextPage() ), this, SLOT( nextFile() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
+	}
+	
+	void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
+		if( reason == QSystemTrayIcon::Trigger ) {
+			toggleSystemTray();
+		}
 	}
 	
 	void MainWindow::nextFile() {
@@ -190,6 +215,16 @@ namespace KomiX {
 	void MainWindow::toggleFullScreen() {
 		menuBar()->setVisible( !menuBar()->isVisible() );
 		setWindowState( windowState() ^ Qt::WindowFullScreen );
+	}
+	
+	void MainWindow::toggleSystemTray() {
+		if( isVisible() ) {
+			dumpState_ = windowState();
+			hide();
+		} else {
+			show();
+			setWindowState( dumpState_ );
+		}
 	}
 	
 	void MainWindow::about() {

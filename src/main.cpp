@@ -4,6 +4,7 @@
 
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
+	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
 	
 	KomiX::MainWindow mainWindow;
 	mainWindow.setWindowTitle( QObject::tr( "KomiX" ) );

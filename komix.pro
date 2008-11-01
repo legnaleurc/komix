@@ -1,4 +1,3 @@
-TARGET = komix
 DEPENDPATH += . src src/widget
 INCLUDEPATH += . src/widget src
 MOC_DIR = moc
@@ -15,12 +14,16 @@ SOURCES += src/main.cpp \
            src/widget/imagearea.cpp \
            src/widget/mainwindow.cpp \
            src/widget/scaleimage.cpp
+RESOURCES = komix.qrc
+QT       += xml svg
 
 CONFIG( debug, debug|release  ) {
 	OBJECTS_DIR = obj/debug
+	TARGET = komix_d
 } else {
 	OBJECTS_DIR = obj/release
 	DEFINES += QT_NO_DEBUG_OUTPUT
+	TARGET = komix
 }
 
 unix {

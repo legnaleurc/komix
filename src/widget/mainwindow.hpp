@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QStringList>
+#include <QSystemTrayIcon>
 
 namespace KomiX {
 
@@ -18,15 +19,18 @@ namespace KomiX {
 			MainWindow( QWidget * parent = 0, Qt::WindowFlags flags = 0 );
 		
 		public slots:
+			void whellAction( int delta );
 			void nextFile();
 			void prevFile();
-			void whellAction( int delta );
 			void updateEnvironment( const QString & name );
 			void open( const QString & name );
 			void openFileDialog();
 			void openDirDialog();
 			void toggleFullScreen();
+			void toggleSystemTray();
 			void about();
+		private slots:
+			void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
 		
 		private:
 			void initMenuBar_();
@@ -37,9 +41,11 @@ namespace KomiX {
 			
 			ImageArea * imageArea_;
 			ScaleImage * scaleImage_;
+			QSystemTrayIcon * trayIcon_;
 			int index_;
 			QDir dir_;
 			QStringList files_;
+			Qt::WindowStates dumpState_;
 	};
 	
 }
