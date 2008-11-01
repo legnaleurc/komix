@@ -204,24 +204,24 @@ namespace KomiX {
 		}
 	}
 	
-	void ImageArea::moveScrollBars_( int x, int y ) {
+	inline void ImageArea::moveScrollBars_( int x, int y ) {
 		horizontalScrollBar()->setValue( horizontalScrollBar()->value() + x );
 		verticalScrollBar()->setValue( verticalScrollBar()->value() + y );
 	}
 	
-	bool ImageArea::canMoveTop_() const {
+	inline bool ImageArea::canMoveTop_() const {
 		return verticalScrollBar()->value() > verticalScrollBar()->minimum();
 	}
 	
-	bool ImageArea::canMoveBottom_() const {
+	inline bool ImageArea::canMoveBottom_() const {
 		return verticalScrollBar()->value() < verticalScrollBar()->maximum();
 	}
 	
-	bool ImageArea::canMoveLeft_() const {
+	inline bool ImageArea::canMoveLeft_() const {
 		return horizontalScrollBar()->value() > horizontalScrollBar()->minimum();
 	}
 	
-	bool ImageArea::canMoveRight_() const {
+	inline bool ImageArea::canMoveRight_() const {
 		return horizontalScrollBar()->value() > horizontalScrollBar()->maximum();
 	}
 
