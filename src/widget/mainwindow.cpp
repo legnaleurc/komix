@@ -40,13 +40,10 @@ namespace KomiX {
 	dumpState_( Qt::WindowNoState ) {
 		initMenuBar_();
 		initCentralWidget_();
+		initTrayIcon_();
 		
 		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
-
-		trayIcon_->setToolTip( tr( "KomiX" ) );
-		connect( trayIcon_, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), this, SLOT( systemTrayHelper_( QSystemTrayIcon::ActivationReason ) ) );
-		trayIcon_->show();
 	}
 	
 	void MainWindow::initMenuBar_() {
@@ -145,10 +142,27 @@ namespace KomiX {
 		connect( imageArea_, SIGNAL( nextPage() ), this, SLOT( nextFile() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
 	}
+
+	void MainWindow::initTrayIcon_() {
+		QMenu * menu = new QMenu( this );
+		QAction * quit = menu->addAction( tr( "&Quit" ) );
+		trayIcon_->setContextMenu( menu );
+
+		trayIcon_->setToolTip( tr( "KomiX" ) );
+
+		connect( quit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
+		connect( trayIcon_, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), this, SLOT( systemTrayHelper_( QSystemTrayIcon::ActivationReason ) ) );
+
+		trayIcon_->show();
+	}
 	
 	void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
-		if( reason == QSystemTrayIcon::Trigger ) {
-			toggleSystemTray();
+		switch( reason ) {
+			case QSystemTrayIcon::Trigger:
+				toggleSystemTray();
+				break;
+			default:
+				;
 		}
 	}
 	

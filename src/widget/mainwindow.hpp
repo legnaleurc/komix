@@ -35,6 +35,7 @@ namespace KomiX {
 		private:
 			void initMenuBar_();
 			void initCentralWidget_();
+			void initTrayIcon_();
 			
 			static const QStringList supportedFormats_;
 			static const QString fileFilter_;
