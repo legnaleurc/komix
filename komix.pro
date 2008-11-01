@@ -28,6 +28,7 @@ CONFIG( debug, debug|release  ) {
 
 unix {
 	TEMPLATE = app
+	QMAKE_POST_LINK=strip $(TARGET)
 }
 
 win32 {
