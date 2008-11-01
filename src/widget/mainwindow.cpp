@@ -13,7 +13,7 @@
 
 namespace {
 	
-	QStringList addStar() {
+	inline QStringList addStar() {
 		QStringList temp;
 		foreach( QString str, QImageReader::supportedImageFormats() ) {
 			temp << str.prepend( "*." );
