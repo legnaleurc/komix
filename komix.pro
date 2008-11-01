@@ -36,13 +36,4 @@ unix {
 
 win32 {
 	TEMPLATE = vcapp
-	
-	CONFIG(debug, release|debug) {
-		addPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/qsvgd4.dll
-	}
-	CONFIG(release, release|debug) {
-		addPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/qsvg4.dll
-	}
-	addPlugins.path = imageformats
-	DEPLOYMENT += addPlugins
 }
