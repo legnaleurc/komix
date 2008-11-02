@@ -42,21 +42,33 @@ namespace KomiX {
 	}
 	
 	void ImageArea::mousePressEvent( QMouseEvent * event ) {
+		downPosition_ = event->pos();
+		movePosition_ = event->pos();
+
 		if( event->button() == Qt::LeftButton ) {
-			downPosition_ = event->pos();
-			movePosition_ = event->pos();
 			image_->setCursor( Qt::ClosedHandCursor );
 		}
 	}
 	
 	void ImageArea::mouseReleaseEvent( QMouseEvent * event ) {
+		switch( event->button() ) {
+			case Qt::LeftButton:
+				if( downPosition_ == event->pos() ) {
+					emit autoMove();
+				}
+				if( image_->cursor().shape() == Qt::ClosedHandCursor ) {
+					image_->setCursor( Qt::OpenHandCursor );
+				}
+				break;
+			case Qt::MidButton:
+				if( downPosition_ == event->pos() ) {
+					emit middleClicked();
+				}
+				break;
+			default:
+				;
+		}
 		if( event->button() == Qt::LeftButton ) {
-			if( downPosition_ == event->pos() ) {
-				emit autoMove();
-			}
-			if( image_->cursor().shape() == Qt::ClosedHandCursor ) {
-				image_->setCursor( Qt::OpenHandCursor );
-			}
 		}
 	}
 	

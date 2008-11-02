@@ -142,6 +142,7 @@ namespace KomiX {
 		connect( imageArea_, SIGNAL( wheelMoved( int ) ), this, SLOT( whellAction( int ) ) );
 		connect( imageArea_, SIGNAL( nextPage() ), this, SLOT( nextFile() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
+		connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
 	}
 
 	void MainWindow::initTrayIcon_() {

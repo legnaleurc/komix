@@ -36,6 +36,7 @@ namespace KomiX {
 			void nextPage();
 			void wheelMoved( int );
 			void fileDroped( const QString & );
+			void middleClicked();
 		
 		protected:
 			virtual void mousePressEvent( QMouseEvent * event );
