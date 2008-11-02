@@ -68,8 +68,6 @@ namespace KomiX {
 			default:
 				;
 		}
-		if( event->button() == Qt::LeftButton ) {
-		}
 	}
 	
 	void ImageArea::mouseMoveEvent( QMouseEvent * event ) {
