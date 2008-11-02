@@ -21,7 +21,7 @@ RESOURCES  = komix.qrc
 QT        += svg
 
 #config
-CONFIG( debug, debug|release  ) {
+CONFIG( debug, debug|release ) {
 	OBJECTS_DIR  = obj/debug
 } else {
 	OBJECTS_DIR  = obj/release
@@ -32,7 +32,9 @@ CONFIG( debug, debug|release  ) {
 
 unix {
 	TEMPLATE = app
-	QMAKE_POST_LINK=strip $(TARGET)
+	CONFIG( release, debug|release ) {
+		QMAKE_POST_LINK=strip $(TARGET)
+	}
 }
 
 win32 {
