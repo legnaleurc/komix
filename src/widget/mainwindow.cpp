@@ -10,6 +10,7 @@
 #include <QImageReader>
 #include <QIcon>
 #include <QApplication>
+#include <QtDebug>
 
 namespace {
 	
@@ -195,20 +196,30 @@ namespace KomiX {
 	}
 	
 	void MainWindow::updateEnvironment( const QString & name ) {
+		qDebug( "void MainWindow::updateEnvironment( const QString & name )" );
+		qDebug() << "name:" << name;
+		
 		QFileInfo temp( name );
 		
 		if( temp.isDir() ) {
 			// Directory mode
-			// FIXME: QFileInfo::absoluteDir don't work well if dir path don't have tailing '/'
-			dir_ = temp.absoluteDir();
+			qDebug( "Directory mode" );
+			qDebug() << "temp.absoluteDir:" << temp.absoluteDir();
+			qDebug() << "temp.absoluteFilePath:" << temp.absoluteFilePath();
+			
+			dir_ = temp.absoluteFilePath();
 			files_ = dir_.entryList( supportedFormats_, QDir::Files );
 			index_ = 0;
 		} else {
 			// File mode
+			qDebug( "File mode" );
+			
 			dir_ = temp.dir();
 			files_ = dir_.entryList( supportedFormats_, QDir::Files );
 			index_ = files_.indexOf( temp.fileName() );
 		}
+		
+		qDebug() << "dir_:" << dir_;
 	}
 	
 	void MainWindow::open( const QString & name ) {

@@ -1,5 +1,5 @@
 #include "utility.hpp"
-#include "widget/mainwindow.hpp"
+#include "mainwindow.hpp"
 #include <QApplication>
 
 int main( int argc, char * argv[] ) {
@@ -11,12 +11,7 @@ int main( int argc, char * argv[] ) {
 	mainWindow.resize( 800, 600 );
 	
 	if( argc > 1 ) {
-		foreach( QString arg, app.arguments().mid( 1 ) ) {
-			if( KomiX::isSupport( arg ) ) {
-				mainWindow.open( arg );
-				break;
-			}
-		}
+		mainWindow.open( QApplication::arguments().at( 1 ) );
 	}
 	
 	mainWindow.show();
