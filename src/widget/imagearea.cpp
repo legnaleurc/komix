@@ -1,5 +1,4 @@
 #include "imagearea.hpp"
-#include "utility.hpp"
 
 #include <QTimer>
 #include <QAction>
