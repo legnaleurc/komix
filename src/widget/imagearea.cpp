@@ -94,9 +94,7 @@ namespace KomiX {
 			
 			if( !urlList.empty() ) {
 				foreach( QUrl url, urlList ) {
-					if( isSupport( url.toLocalFile() ) ) {
-						emit fileDroped( url.toLocalFile() );
-					}
+					emit fileDroped( url.toLocalFile() );
 				}
 			}
 		}

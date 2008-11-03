@@ -1,4 +1,3 @@
-#include "utility.hpp"
 #include "mainwindow.hpp"
 #include <QApplication>
 
