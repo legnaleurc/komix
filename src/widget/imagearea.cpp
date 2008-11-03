@@ -14,10 +14,10 @@ namespace KomiX {
 	QScrollArea( parent ),
 	image_( new QLabel( this ) ),
 	imageSize_(),
-	topTimer_( new QTimer ),
-	bottomTimer_( new QTimer ),
-	leftTimer_( new QTimer ),
-	rightTimer_( new QTimer ),
+	topTimer_( new QTimer( this ) ),
+	bottomTimer_( new QTimer( this ) ),
+	leftTimer_( new QTimer( this ) ),
+	rightTimer_( new QTimer( this ) ),
 	ratio_( 1.0 ), step_( 2 ),
 	interval_( 1 ) {
 		setWidget( image_ );
