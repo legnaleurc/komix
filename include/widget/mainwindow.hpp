@@ -10,6 +10,7 @@ namespace KomiX {
 
 	class ImageArea;
 	class ScaleImage;
+	class Preview;
 	
 	class MainWindow : public QMainWindow {
 		
@@ -31,17 +32,18 @@ namespace KomiX {
 			void about();
 		private slots:
 			void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
+			void previewHelper_();
 		
 		private:
 			void initMenuBar_();
 			void initCentralWidget_();
 			void initTrayIcon_();
 			
-			static const QStringList supportedFormats_;
 			static const QString fileFilter_;
 			
 			ImageArea * imageArea_;
 			ScaleImage * scaleImage_;
+			Preview * preview_;
 			QSystemTrayIcon * trayIcon_;
 			int index_;
 			QDir dir_;

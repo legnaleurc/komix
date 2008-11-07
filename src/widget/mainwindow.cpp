@@ -1,6 +1,8 @@
 #include "mainwindow.hpp"
 #include "scaleimage.hpp"
 #include "imagearea.hpp"
+#include "preview.hpp"
+#include "global.hpp"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -12,28 +14,15 @@
 #include <QApplication>
 #include <QtDebug>
 
-namespace {
-	
-	inline QStringList addStar() {
-		QStringList temp;
-		foreach( QString str, QImageReader::supportedImageFormats() ) {
-			temp << str.prepend( "*." );
-		}
-		return temp;
-	}
-	
-}
-
 namespace KomiX {
 	
-	const QStringList MainWindow::supportedFormats_ = addStar();
-	
-	const QString MainWindow::fileFilter_ = MainWindow::supportedFormats_.join( " " );
+	const QString MainWindow::fileFilter_ = SupportedFormatsFilter().join( " " );
 	
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags flags ) :
 	QMainWindow( parent, flags ),
 	imageArea_( new ImageArea( this ) ),
 	scaleImage_( new ScaleImage( this ) ),
+	preview_( new Preview( this ) ),
 	trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 	index_( 0 ),
 	dir_( QDir::home() ),
@@ -96,6 +85,11 @@ namespace KomiX {
 		menuBar->addMenu( view );
 		
 		QMenu * go = new QMenu( tr( "&Go" ), menuBar );
+
+		QAction * jump = new QAction( tr( "&Jump to image" ), this );
+		connect( jump, SIGNAL( triggered() ), this, SLOT( previewHelper_() ) );
+
+		go->addAction( jump );
 		
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
@@ -168,6 +162,10 @@ namespace KomiX {
 		}
 	}
 	
+	void MainWindow::previewHelper_() {
+		preview_->listDirectory( dir_.path() );
+	}
+	
 	void MainWindow::nextFile() {
 		if( files_.size() ) {
 			++index_;
@@ -209,14 +207,14 @@ namespace KomiX {
 			qDebug() << "temp.absoluteFilePath:" << temp.absoluteFilePath();
 			
 			dir_ = temp.absoluteFilePath();
-			files_ = dir_.entryList( supportedFormats_, QDir::Files );
+			files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
 			index_ = 0;
 		} else {
 			// File mode
 			qDebug( "File mode" );
 			
 			dir_ = temp.dir();
-			files_ = dir_.entryList( supportedFormats_, QDir::Files );
+			files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
 			index_ = files_.indexOf( temp.fileName() );
 		}
 		

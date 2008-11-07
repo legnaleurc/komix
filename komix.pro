@@ -1,19 +1,23 @@
 # common
 TARGET       = komix
-DEPENDPATH  += . include include/widget src src/widget
-INCLUDEPATH += . include/widget include
+DEPENDPATH  += . include include/utility include/widget src src/utility src/widget
+INCLUDEPATH += . include include/utility include/widget
 MOC_DIR      = moc
 RCC_DIR      = rcc
 DESTDIR      = bin
 CONFIG      += debug_and_release
 
 # Input
-HEADERS   += include/widget/imagearea.hpp \
+HEADERS   += include/utility/global.hpp \
+             include/widget/imagearea.hpp \
              include/widget/mainwindow.hpp \
+             include/widget/preview.hpp \
              include/widget/scaleimage.hpp
-SOURCES   += src/main.cpp \
+SOURCES   += src/utility/global.cpp \
+             src/main.cpp \
              src/widget/imagearea.cpp \
              src/widget/mainwindow.cpp \
+             src/widget/preview.cpp \
              src/widget/scaleimage.cpp
 RESOURCES  = komix.qrc
 QT        += svg
