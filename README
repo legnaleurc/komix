@@ -1,2 +1,12 @@
-Require:
-	Qt toolkit >= 4.2
+Build Dependancy:
+	Qt toolkit >= 4.2:
+		http://trolltech.com/products
+How to Build:
+	Unix-like:
+		$ qmake
+		$ make -j2
+	Windows:
+		Open the command prompt
+		qmake
+		Open komix.vcproj with Visual C++
+		build
