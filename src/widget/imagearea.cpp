@@ -37,7 +37,7 @@ namespace KomiX {
 		QAction * space = new QAction( this );
 		space->setShortcut( Qt::Key_Space );
 		addAction( space );
-		connect( space, SIGNAL( triggered() ), this, SLOT( autoMove() ) );
+		connect( space, SIGNAL( triggered() ), this, SLOT( smoothMove() ) );
 	}
 	
 	void ImageArea::mousePressEvent( QMouseEvent * event ) {
