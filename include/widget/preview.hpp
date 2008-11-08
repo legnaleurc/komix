@@ -8,11 +8,9 @@
 namespace KomiX {
 
 	class Preview : public QDialog {
-		Q_OBJECT
 	public:
 		Preview( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	public slots:
-		void listDirectory( const QString & path );
+		void listDirectory( const QString & dirPath, const QString & filePath );
 	private:
 		QDirModel model_;
 		QListView view_;

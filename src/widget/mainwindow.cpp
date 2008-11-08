@@ -163,7 +163,7 @@ namespace KomiX {
 	}
 	
 	void MainWindow::previewHelper_() {
-		preview_->listDirectory( dir_.path() );
+		preview_->listDirectory( dir_.path(), dir_.filePath( files_[index_] ) );
 	}
 	
 	void MainWindow::nextFile() {
