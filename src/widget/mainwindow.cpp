@@ -34,6 +34,8 @@ namespace KomiX {
 		
 		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
+
+		connect( preview_, SIGNAL( open( const QString & ) ), this, SLOT( open( const QString & ) ) );
 	}
 	
 	void MainWindow::initMenuBar_() {

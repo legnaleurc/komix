@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QtDebug>
 
 namespace KomiX {
 
@@ -18,6 +19,7 @@ namespace KomiX {
 
 		QDialogButtonBox * buttonBox = new QDialogButtonBox( QDialogButtonBox::Open | QDialogButtonBox::Cancel, Qt::Horizontal, this );
 		connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+		connect( buttonBox, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
 
 		QHBoxLayout * topFrame = new QHBoxLayout;
 		topFrame->addWidget( &view_ );
@@ -31,6 +33,12 @@ namespace KomiX {
 		view_.setRootIndex( model_.index( dirPath ) );
 		view_.setCurrentIndex( model_.index( filePath ) );
 		exec();
+	}
+
+	void Preview::openHelper_() {
+		qDebug() << "Send: " << model_.filePath( view_.currentIndex() );
+		emit open( model_.filePath( view_.currentIndex() ) );
+		accept();
 	}
 
 }
