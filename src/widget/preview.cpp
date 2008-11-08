@@ -11,11 +11,15 @@ namespace KomiX {
 	Preview::Preview( QWidget * parent, Qt::WindowFlags f ) :
 	QDialog( parent, f ),
 	model_( SupportedFormatsFilter(), QDir::Files, QDir::Name, this ),
-	view_( this ) {
+	view_( this ),
+	image_( this ) {
 		setModal( true );
 
 		model_.setNameFilters( SupportedFormatsFilter() );
+
 		view_.setModel( &model_ );
+
+		image_.setFixedSize( 360, 360 );
 
 		QDialogButtonBox * buttonBox = new QDialogButtonBox( QDialogButtonBox::Open | QDialogButtonBox::Cancel, Qt::Horizontal, this );
 		connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -23,6 +27,7 @@ namespace KomiX {
 
 		QHBoxLayout * topFrame = new QHBoxLayout;
 		topFrame->addWidget( &view_ );
+		topFrame->addWidget( &image_ );
 
 		QVBoxLayout * mainFrame = new QVBoxLayout( this );
 		mainFrame->addLayout( topFrame );

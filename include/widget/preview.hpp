@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QListView>
 #include <QDirModel>
+#include <QLabel>
 
 namespace KomiX {
 
@@ -17,6 +18,7 @@ namespace KomiX {
 	private:
 		QDirModel model_;
 		QListView view_;
+		QLabel image_;
 	private slots:
 		void openHelper_();
 	};

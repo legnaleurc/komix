@@ -165,7 +165,11 @@ namespace KomiX {
 	}
 	
 	void MainWindow::previewHelper_() {
-		preview_->listDirectory( dir_.path(), dir_.filePath( files_[index_] ) );
+		if( files_.empty() ) {
+			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
+		} else {
+			preview_->listDirectory( dir_.path(), dir_.filePath( files_[index_] ) );
+		}
 	}
 	
 	void MainWindow::nextFile() {
