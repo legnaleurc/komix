@@ -30,7 +30,7 @@ namespace KomiX {
 			void stepBottom();
 			void stepLeft();
 			void stepRight();
-			void autoMove();
+			void smoothMove();
 		
 		signals:
 			void nextPage();

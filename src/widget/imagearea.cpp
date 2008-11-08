@@ -53,7 +53,7 @@ namespace KomiX {
 		switch( event->button() ) {
 			case Qt::LeftButton:
 				if( downPosition_ == event->pos() ) {
-					emit autoMove();
+					emit smoothMove();
 				}
 				if( image_->cursor().shape() == Qt::ClosedHandCursor ) {
 					image_->setCursor( Qt::OpenHandCursor );
@@ -155,7 +155,7 @@ namespace KomiX {
 		}
 	}
 	
-	void ImageArea::autoMove() {
+	void ImageArea::smoothMove() {
 		if( image_->pixmap() ) {
 			stopAllStep_();
 			switch( state_ ) {
