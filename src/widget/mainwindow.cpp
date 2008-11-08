@@ -89,9 +89,11 @@ namespace KomiX {
 		QMenu * go = new QMenu( tr( "&Go" ), menuBar );
 
 		QAction * jump = new QAction( tr( "&Jump to image" ), this );
+		jump->setShortcut( tr( "Ctrl+J" ) );
 		connect( jump, SIGNAL( triggered() ), this, SLOT( previewHelper_() ) );
 
 		go->addAction( jump );
+		addAction( jump );
 		
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
