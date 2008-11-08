@@ -21,6 +21,7 @@ namespace KomiX {
 		QLabel image_;
 	private slots:
 		void openHelper_();
+		void viewImage_( const QModelIndex & current, const QModelIndex & previous );
 	};
 
 }

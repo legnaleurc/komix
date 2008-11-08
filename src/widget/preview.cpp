@@ -18,8 +18,10 @@ namespace KomiX {
 		model_.setNameFilters( SupportedFormatsFilter() );
 
 		view_.setModel( &model_ );
+		connect( view_.selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 
 		image_.setFixedSize( 360, 360 );
+		image_.setAlignment( Qt::AlignCenter );
 
 		QDialogButtonBox * buttonBox = new QDialogButtonBox( QDialogButtonBox::Open | QDialogButtonBox::Cancel, Qt::Horizontal, this );
 		connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -44,6 +46,10 @@ namespace KomiX {
 		qDebug() << "Send: " << model_.filePath( view_.currentIndex() );
 		emit open( model_.filePath( view_.currentIndex() ) );
 		accept();
+	}
+
+	void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
+		image_.setPixmap( QPixmap( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
 	}
 
 }
