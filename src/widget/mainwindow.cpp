@@ -94,6 +94,8 @@ namespace KomiX {
 
 		go->addAction( jump );
 		addAction( jump );
+
+		go->addSeparator();
 		
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
