@@ -8,12 +8,14 @@ DESTDIR      = bin
 CONFIG      += debug_and_release
 
 # Input
-HEADERS   += include/utility/global.hpp \
+HEADERS   += include/utility/filecontroller.hpp \
+             include/utility/global.hpp \
              include/widget/imagearea.hpp \
              include/widget/mainwindow.hpp \
              include/widget/preview.hpp \
              include/widget/scaleimage.hpp
-SOURCES   += src/utility/global.cpp \
+SOURCES   += src/utility/filecontroller.cpp \
+             src/utility/global.cpp \
              src/main.cpp \
              src/widget/imagearea.cpp \
              src/widget/mainwindow.cpp \
