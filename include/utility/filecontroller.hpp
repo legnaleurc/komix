@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QQueue>
 #include <QMap>
+#include <QMutex>
 
 namespace KomiX {
 
@@ -39,6 +40,7 @@ namespace KomiX {
 		int index_;
 		QQueue< QString > history_;
 		QMap< QString, QPixmap > cache_;
+		QMutex lock;
 	};
 
 }

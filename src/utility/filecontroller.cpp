@@ -1,6 +1,8 @@
 #include "filecontroller.hpp"
 #include "global.hpp"
 
+#include <QMutexLocker>
+
 namespace KomiX {
 
 	FileController::FileController( unsigned int pfMax, unsigned int limit, QObject * parent ) :
@@ -11,10 +13,12 @@ namespace KomiX {
 	files_(),
 	index_( 0 ),
 	history_(),
-	cache_() {
+	cache_(),
+	lock() {
 	}
 
 	bool FileController::open( const QString & filePath ) {
+		QMutexLocker locker( &lock );
 		if( !update_( filePath ) || files_.empty() ) {
 			return false;
 		} else {
@@ -24,6 +28,7 @@ namespace KomiX {
 	}
 
 	void FileController::next() {
+		QMutexLocker locker( &lock );
 		if( !files_.empty() ) {
 			++index_;
 			if( index_ >= files_.size() ) {
@@ -35,6 +40,7 @@ namespace KomiX {
 	}
 
 	void FileController::prev() {
+		QMutexLocker locker( &lock );
 		if( !files_.empty() ) {
 			--index_;
 			if( index_ < 0 ) {
@@ -66,7 +72,7 @@ namespace KomiX {
 		if( !cache_.contains( key ) ) {
 			cache_.insert( key, QPixmap( key ) );
 			history_.enqueue( key );
-			if( cache_.size() > limit_ ) {
+			if( static_cast< unsigned int >( cache_.size() ) > limit_ ) {
 				cache_.remove( history_.dequeue() );
 			}
 		}
@@ -79,7 +85,7 @@ namespace KomiX {
 			if( !cache_.contains( key ) ) {
 				cache_.insert( key, QPixmap( key ) );
 				history_.enqueue( key );
-				if( cache_.size() > limit_ ) {
+				if( static_cast< unsigned int >( cache_.size() ) > limit_ ) {
 					cache_.remove( history_.dequeue() );
 				}
 			}
