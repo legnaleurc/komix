@@ -1,25 +1,24 @@
 #include "filecontroller.hpp"
 #include "global.hpp"
 
-#include <QPixmapCache>
-
 namespace KomiX {
 
-	FileController::FileController( unsigned int pfMax, QObject * parent ) :
+	FileController::FileController( unsigned int pfMax, unsigned int limit, QObject * parent ) :
 	QObject( parent ),
 	prefetchMax_( pfMax ),
+	limit_( limit ),
 	dir_(),
 	files_(),
 	index_( 0 ),
-	cImage_() {
+	history_(),
+	cache_() {
 	}
 
 	bool FileController::open( const QString & filePath ) {
 		if( !update_( filePath ) || files_.empty() ) {
 			return false;
 		} else {
-			fetch_( files_[index_] );
-			emit openImage( cImage_ );
+			emit openImage( fetch_( files_[index_] ) );
 			return true;
 		}
 	}
@@ -30,8 +29,7 @@ namespace KomiX {
 			if( index_ >= files_.size() ) {
 				index_ = 0;
 			}
-			fetch_( files_[index_] );
-			emit openImage( cImage_ );
+			emit openImage( fetch_( files_[index_] ) );
 			prefetch_( index_ );
 		}
 	}
@@ -42,33 +40,48 @@ namespace KomiX {
 			if( index_ < 0 ) {
 				index_ = files_.size() - 1;
 			}
-			fetch_( files_[index_] );
-			emit openImage( cImage_ );
+			emit openImage( fetch_( files_[index_] ) );
 			prefetch_( index_ );
 		}
 	}
 
-	void FileController::setPrefetchMax( unsigned int pfMax ) {
-		prefetchMax_ = pfMax;
+	inline void FileController::setPrefetchMax( unsigned int pfMax ) {
+		prefetchMax_ = ( pfMax > limit_ ) ? limit_ : pfMax;
 	}
 
 	inline unsigned int FileController::getPrefetchMax() const {
 		return prefetchMax_;
 	}
 
-	void FileController::fetch_( const QString & fileName ) {
-		if( !QPixmapCache::find( fileName, cImage_ ) ) {
-			cImage_.load( dir_.filePath( fileName ) );
-			QPixmapCache::insert( fileName, cImage_ );
+	inline void FileController::setLimit( unsigned int limit ) {
+		limit_ = limit;
+	}
+
+	inline unsigned int FileController::getLimit() const {
+		return limit_;
+	}
+
+	QPixmap & FileController::fetch_( const QString & fileName ) {
+		QString key = dir_.filePath( fileName );
+		if( !cache_.contains( key ) ) {
+			cache_.insert( key, QPixmap( key ) );
+			history_.enqueue( key );
+			if( cache_.size() > limit_ ) {
+				cache_.remove( history_.dequeue() );
+			}
 		}
+		return cache_[key];
 	}
 
 	void FileController::prefetch_( unsigned int index ) {
-		QPixmap pfImage;
 		for( unsigned int i = 0; i < prefetchMax_; ++i ) {
-			if( !QPixmapCache::find( files_[index+i], pfImage ) ) {
-				pfImage.load( dir_.filePath( files_[index+i] ) );
-				QPixmapCache::insert( files_[index+i], pfImage );
+			QString key = dir_.filePath( files_[index+i] );
+			if( !cache_.contains( key ) ) {
+				cache_.insert( key, QPixmap( key ) );
+				history_.enqueue( key );
+				if( cache_.size() > limit_ ) {
+					cache_.remove( history_.dequeue() );
+				}
 			}
 		}
 	}
