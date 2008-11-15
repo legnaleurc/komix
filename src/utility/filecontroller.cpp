@@ -2,6 +2,7 @@
 #include "global.hpp"
 
 #include <QMutexLocker>
+#include <QtDebug>
 
 namespace KomiX {
 
@@ -86,19 +87,24 @@ namespace KomiX {
 
 	const QPixmap & FileControllerBase::fetch_( const QString & key ) {
 		if( !cache_.contains( key ) ) {
+			qDebug() << "Cache miss:" << key;
 			cache_.insert( key, QPixmap( key ) );
 			history_.enqueue( key );
 			if( static_cast< unsigned int >( cache_.size() ) > limit_ ) {
 				cache_.remove( history_.dequeue() );
 			}
+		} else {
+			qDebug() << "Cache hit:" << key;
 		}
 		return cache_[key];
 	}
 
 	void FileControllerBase::prefetch_( unsigned int index ) {
-		for( unsigned int i = 0; i < prefetchMax_; ++i ) {
+		qDebug( "<FileControllerBase::prefetch_>" );
+		for( unsigned int i = 1; i <= prefetchMax_; ++i ) {
 			fetch_( dir_.filePath( files_[index+i] ) );
 		}
+		qDebug( "</FileControllerBase::prefetch_>" );
 	}
 
 	bool FileControllerBase::update_( const QString & filePath ) {
