@@ -1,5 +1,6 @@
 /**
  * @file preview.hpp
+ * @author Wei-Cheng Pan
  */
 #ifndef KOMIX_PREVIEW_HPP
 #define KOMIX_PREVIEW_HPP
@@ -30,17 +31,18 @@ namespace KomiX {
 
 		/**
 		 * @brief list all supported files in opened directory
-		 * @param dirPath current directory path
-		 * @param filePath current opened file path
+		 *
+		 * The list is locked in current opened directory.
+		 * It will focus current opened file first.
 		 */
 		void listDirectory();
 	
 	signals:
 		/**
 		 * @brief open file
-		 * @param path file path
+		 * @param filePath file path
 		 */
-		void open( const QString & path );
+		void open( const QString & filePath );
 	
 	private:
 		QDirModel model_;
@@ -49,7 +51,7 @@ namespace KomiX {
 	
 	private slots:
 		void openHelper_();
-		void viewImage_( const QModelIndex & current, const QModelIndex & previous );
+		void viewImage_( const QModelIndex &, const QModelIndex & );
 	};
 
 }

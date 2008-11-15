@@ -1,5 +1,6 @@
 /**
  * @file imagearea.hpp
+ * @author Wei-Cheng Pan
  */
 #ifndef KOMIX_IMAGEAREA_HPP
 #define KOMIX_IMAGEAREA_HPP
@@ -40,7 +41,12 @@ namespace KomiX {
 		ImageArea( QWidget * parent = 0 );
 
 	public slots:
+		/**
+		 * @brief set display image
+		 * @param image opened image
+		 */
 		void setImage( const QPixmap & image );
+		
 		/**
 		 * @brief scale image
 		 * @param ratio the scale rate
@@ -48,6 +54,7 @@ namespace KomiX {
 		 * The ratio means percents, so 100 actually means 100%.
 		 */
 		void scale( int ratio );
+		
 		/// move to top by time pass
 		void stepTop();
 		/// move to bottom by time pass
@@ -56,6 +63,7 @@ namespace KomiX {
 		void stepLeft();
 		/// move to right by time pass
 		void stepRight();
+		
 		/**
 		 * @brief smooth move navigation
 		 *
@@ -71,7 +79,7 @@ namespace KomiX {
 		void nextPage();
 		/**
 		 * @brief whell scroll event
-		 * @param distance delta of scroll
+		 * @param distance delta of scrolling
 		 */
 		void wheelMoved( int distance );
 		/**

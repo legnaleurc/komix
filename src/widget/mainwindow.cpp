@@ -19,8 +19,8 @@ namespace KomiX {
 	
 	const QString MainWindow::fileFilter_ = SupportedFormatsFilter().join( " " );
 	
-	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags flags ) :
-	QMainWindow( parent, flags ),
+	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
+	QMainWindow( parent, f ),
 	imageArea_( new ImageArea( this ) ),
 	scaleImage_( new ScaleImage( this ) ),
 	preview_( new Preview( this ) ),

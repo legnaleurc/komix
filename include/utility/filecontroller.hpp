@@ -1,3 +1,7 @@
+/**
+ * @file filecontroller.hpp
+ * @author Wei-Cheng Pan
+ */
 #ifndef KOMIX_FILECONTROLLER_HPP
 #define KOMIX_FILECONTROLLER_HPP
 
@@ -12,30 +16,110 @@
 
 namespace KomiX {
 
+	/**
+	 * @brief The base file controller
+	 * @attention <strong style="color: red;">DO NOT USE THIS CLASS TO CREATE OBJECT!</strong>
+	 *
+	 * This class is used to provide a generic open image action, and
+	 * another important function: <strong>image caching</strong>.
+	 */
 	class FileControllerBase : public QObject {
 		Q_OBJECT
 	
 	public:
+		/**
+		 * @brief default constructor
+		 * @param pfMax max prefetch count
+		 * @param limit max cache count
+		 * @param parent parent widget
+		 *
+		 * The cache count limit is including prefetch count pfMax.
+		 */
 		FileControllerBase( unsigned int pfMax = 1, unsigned int limit = 8, QObject * parent = 0 );
-		
+
+		/**
+		 * @brief open a file or directory by path
+		 * @param filePath file path
+		 * @retval true if emited getImage( const QPixmap & )
+		 * @retval false nothing happend
+		 *
+		 * It will emit getImage( const QPixmap & ) if necessary.
+		 */
 		bool open( const QString & filePath );
 
+		/// check if there has openable files.
 		bool isEmpty() const;
+		/**
+		 * @brief set max prefetch count
+		 * @param pfMax max count
+		 * @sa getPrefetchMax()
+		 */
 		void setPrefetchMax( unsigned int pfMax );
+		/**
+		 * @brief get max prefetch count
+		 * @return max count
+		 * @sa setPrefetchMax()
+		 */
 		unsigned int getPrefetchMax() const;
+		/**
+		 * @brief set max cache count
+		 * @param limit max count
+		 * @sa getLimit()
+		 */
 		void setLimit( unsigned int limit );
+		/**
+		 * @brief set max cache count
+		 * @return max count
+		 * @sa setLimit()
+		 */
 		unsigned int getLimit() const;
+		/**
+		 * @brief get current directory path
+		 * @return directory path
+		 */
 		QString getDirPath() const;
+		/**
+		 * @brief get current file path
+		 * @return file path
+		 */
 		QString getFilePath() const;
 
+		/**
+		 * @brief get image by file path
+		 * @param filePath file path
+		 * @return opened image
+		 * @sa getImage( const QPixmap & )
+		 *
+		 * This function well update cache list, that's why it's not
+		 * const member function.
+		 */
 		const QPixmap & getImage( const QString & filePath );
 
 	public slots:
+		/**
+		 * @brief go to next image
+		 * @sa prev()
+		 *
+		 * This function well emit getImage( const QPixmap & ), and
+		 * prefetch images.
+		 */
 		void next();
+		/**
+		 * @brief go to previous image
+		 * @sa next()
+		 *
+		 * This function well emit getImage( const QPixmap & ), and
+		 * prefetch images.
+		 */
 		void prev();
 	
 	signals:
-		void getImage( const QPixmap & );
+		/**
+		 * @brief get cached image
+		 * @param image cached image
+		 * @sa getImage( const QString & )
+		 */
+		void getImage( const QPixmap & image );
 	
 	private:
 		void prefetch_( unsigned int index );
@@ -52,6 +136,7 @@ namespace KomiX {
 		QMutex lock;
 	};
 
+	/// File controller singleton
 	typedef Loki::SingletonHolder< FileControllerBase > FileController;
 
 }

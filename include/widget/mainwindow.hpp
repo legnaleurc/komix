@@ -1,5 +1,6 @@
 /**
  * @file mainwindow.hpp
+ * @author Wei-Cheng Pan
  */
 #ifndef KOMIX_MAINWINDOW_HPP
 #define KOMIX_MAINWINDOW_HPP
@@ -27,9 +28,9 @@ namespace KomiX {
 		/**
 		 * @brief default constructor
 		 * @param parent parent widget
-		 * @param flags window flags
+		 * @param f window flags
 		 */
-		MainWindow( QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+		MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 	public slots:
 		/**
