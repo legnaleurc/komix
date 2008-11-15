@@ -1,6 +1,8 @@
 Build Dependancy:
 	Qt toolkit >= 4.2:
 		http://trolltech.com/products
+	Loki -- Generic Programming and Design Pattern library for C++:
+		http://loki-lib.sourceforge.net
 How to Build:
 	Unix-like:
 		$ qmake
