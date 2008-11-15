@@ -39,13 +39,8 @@ namespace KomiX {
 		 */
 		ImageArea( QWidget * parent = 0 );
 
-		/**
-		 * @brief open a file
-		 * @param fileName the file path
-		 */
-		void openFile( const QString & fileName );
-
 	public slots:
+		void setImage( const QPixmap & image );
 		/**
 		 * @brief scale image
 		 * @param ratio the scale rate

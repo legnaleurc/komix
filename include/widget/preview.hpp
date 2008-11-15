@@ -33,7 +33,7 @@ namespace KomiX {
 		 * @param dirPath current directory path
 		 * @param filePath current opened file path
 		 */
-		void listDirectory( const QString & dirPath, const QString & filePath );
+		void listDirectory();
 	
 	signals:
 		/**

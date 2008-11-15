@@ -1,5 +1,6 @@
 #include "preview.hpp"
 #include "global.hpp"
+#include "filecontroller.hpp"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -36,9 +37,9 @@ namespace KomiX {
 		mainFrame->addWidget( buttonBox );
 	}
 
-	void Preview::listDirectory( const QString & dirPath, const QString & filePath ) {
-		view_.setRootIndex( model_.index( dirPath ) );
-		view_.setCurrentIndex( model_.index( filePath ) );
+	void Preview::listDirectory() {
+		view_.setRootIndex( model_.index( FileController::Instance().getDirPath() ) );
+		view_.setCurrentIndex( model_.index( FileController::Instance().getFilePath() ) );
 		exec();
 	}
 
@@ -49,7 +50,9 @@ namespace KomiX {
 	}
 
 	void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
-		image_.setPixmap( QPixmap( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
+		qDebug( "Preview::viewImage_()" );
+		qDebug() << model_.filePath( current );
+		image_.setPixmap( FileController::Instance().getImage( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
 	}
 
 }

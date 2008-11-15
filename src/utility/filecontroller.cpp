@@ -5,7 +5,7 @@
 
 namespace KomiX {
 
-	FileController::FileController( unsigned int pfMax, unsigned int limit, QObject * parent ) :
+	FileControllerBase::FileControllerBase( unsigned int pfMax, unsigned int limit, QObject * parent ) :
 	QObject( parent ),
 	prefetchMax_( pfMax ),
 	limit_( limit ),
@@ -17,58 +17,74 @@ namespace KomiX {
 	lock() {
 	}
 
-	bool FileController::open( const QString & filePath ) {
+	bool FileControllerBase::open( const QString & filePath ) {
 		QMutexLocker locker( &lock );
 		if( !update_( filePath ) || files_.empty() ) {
 			return false;
 		} else {
-			emit openImage( fetch_( files_[index_] ) );
+			emit getImage( fetch_( dir_.filePath( files_[index_] ) ) );
 			return true;
 		}
 	}
 
-	void FileController::next() {
+	void FileControllerBase::next() {
 		QMutexLocker locker( &lock );
 		if( !files_.empty() ) {
 			++index_;
 			if( index_ >= files_.size() ) {
 				index_ = 0;
 			}
-			emit openImage( fetch_( files_[index_] ) );
+			emit getImage( fetch_( dir_.filePath( files_[index_] ) ) );
 			prefetch_( index_ );
 		}
 	}
 
-	void FileController::prev() {
+	void FileControllerBase::prev() {
 		QMutexLocker locker( &lock );
 		if( !files_.empty() ) {
 			--index_;
 			if( index_ < 0 ) {
 				index_ = files_.size() - 1;
 			}
-			emit openImage( fetch_( files_[index_] ) );
+			emit getImage( fetch_( dir_.filePath( files_[index_] ) ) );
 			prefetch_( index_ );
 		}
 	}
 
-	inline void FileController::setPrefetchMax( unsigned int pfMax ) {
+	bool FileControllerBase::isEmpty() const {
+		return files_.empty();
+	}
+	
+	void FileControllerBase::setPrefetchMax( unsigned int pfMax ) {
 		prefetchMax_ = ( pfMax > limit_ ) ? limit_ : pfMax;
 	}
 
-	inline unsigned int FileController::getPrefetchMax() const {
+	unsigned int FileControllerBase::getPrefetchMax() const {
 		return prefetchMax_;
 	}
 
-	inline void FileController::setLimit( unsigned int limit ) {
+	void FileControllerBase::setLimit( unsigned int limit ) {
 		limit_ = limit;
 	}
 
-	inline unsigned int FileController::getLimit() const {
+	unsigned int FileControllerBase::getLimit() const {
 		return limit_;
 	}
+	
+	QString FileControllerBase::getDirPath() const {
+		return dir_.path();
+	}
+	
+	QString FileControllerBase::getFilePath() const {
+		return dir_.filePath( files_[index_] );
+	}
 
-	QPixmap & FileController::fetch_( const QString & fileName ) {
-		QString key = dir_.filePath( fileName );
+	const QPixmap & FileControllerBase::getImage( const QString & filePath ) {
+		QMutexLocker locker( &lock );
+		return fetch_( filePath );
+	}
+
+	const QPixmap & FileControllerBase::fetch_( const QString & key ) {
 		if( !cache_.contains( key ) ) {
 			cache_.insert( key, QPixmap( key ) );
 			history_.enqueue( key );
@@ -79,20 +95,13 @@ namespace KomiX {
 		return cache_[key];
 	}
 
-	void FileController::prefetch_( unsigned int index ) {
+	void FileControllerBase::prefetch_( unsigned int index ) {
 		for( unsigned int i = 0; i < prefetchMax_; ++i ) {
-			QString key = dir_.filePath( files_[index+i] );
-			if( !cache_.contains( key ) ) {
-				cache_.insert( key, QPixmap( key ) );
-				history_.enqueue( key );
-				if( static_cast< unsigned int >( cache_.size() ) > limit_ ) {
-					cache_.remove( history_.dequeue() );
-				}
-			}
+			fetch_( dir_.filePath( files_[index+i] ) );
 		}
 	}
 
-	bool FileController::update_( const QString & filePath ) {
+	bool FileControllerBase::update_( const QString & filePath ) {
 		QFileInfo tmp( filePath );
 		if( tmp.isDir() ) {
 			if( dir_ == tmp.absoluteFilePath() ) {

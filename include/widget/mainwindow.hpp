@@ -37,20 +37,11 @@ namespace KomiX {
 		 * @param delta distance of scrolling
 		 */
 		void whellAction( int delta );
-		/// go to next file
-		void nextFile();
-		/// go to previous file
-		void prevFile();
-		/**
-		 * @brief update directory environment
-		 * @param name current file name
-		 */
-		void updateEnvironment( const QString & name );
 		/**
 		 * @brief open file
-		 * @param name file path
+		 * @param filePath file path
 		 */
-		void open( const QString & name );
+		void open( const QString & filePath );
 		/// open file dialog
 		void openFileDialog();
 		/// open directory dialog
@@ -61,6 +52,7 @@ namespace KomiX {
 		void toggleSystemTray();
 		/// show about
 		void about();
+
 	private slots:
 		void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
 		void previewHelper_();
@@ -76,9 +68,6 @@ namespace KomiX {
 		ScaleImage * scaleImage_;
 		Preview * preview_;
 		QSystemTrayIcon * trayIcon_;
-		int index_;
-		QDir dir_;
-		QStringList files_;
 		Qt::WindowStates dumpState_;
 	};
 	

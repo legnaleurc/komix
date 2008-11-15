@@ -100,9 +100,9 @@ namespace KomiX {
 		event->acceptProposedAction();
 	}
 	
-	void ImageArea::openFile( const QString & fileName ) {
+	void ImageArea::setImage( const QPixmap & image ) {
 		stopAllStep_();
-		image_->setPixmap( QPixmap( fileName ) );
+		image_->setPixmap( image );
 		imageSize_ = image_->pixmap()->size();
 		image_->resize( imageSize_ * ratio_ );
 		

@@ -3,6 +3,7 @@
 #include "imagearea.hpp"
 #include "preview.hpp"
 #include "global.hpp"
+#include "filecontroller.hpp"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -24,9 +25,6 @@ namespace KomiX {
 	scaleImage_( new ScaleImage( this ) ),
 	preview_( new Preview( this ) ),
 	trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
-	index_( 0 ),
-	dir_( QDir::home() ),
-	files_(),
 	dumpState_( Qt::WindowNoState ) {
 		initMenuBar_();
 		initCentralWidget_();
@@ -99,14 +97,14 @@ namespace KomiX {
 		
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
-		connect( prev, SIGNAL( triggered() ), this, SLOT( prevFile() ) );
+		connect( prev, SIGNAL( triggered() ), &FileController::Instance(), SLOT( prev() ) );
 		
 		go->addAction( prev );
 		addAction( prev );
 		
 		QAction * next = new QAction( tr( "&Next image" ), this );
 		next->setShortcut( Qt::Key_PageDown );
-		connect( next, SIGNAL( triggered() ), this, SLOT( nextFile() ) );
+		connect( next, SIGNAL( triggered() ), &FileController::Instance(), SLOT( next() ) );
 		
 		go->addAction( next );
 		addAction( next );
@@ -140,9 +138,10 @@ namespace KomiX {
 		imageArea_->setAcceptDrops( true );
 		
 		connect( imageArea_, SIGNAL( wheelMoved( int ) ), this, SLOT( whellAction( int ) ) );
-		connect( imageArea_, SIGNAL( nextPage() ), this, SLOT( nextFile() ) );
+		connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
 		connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
+		connect( &FileController::Instance(), SIGNAL( getImage( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 	}
 
 	void MainWindow::initTrayIcon_() {
@@ -169,88 +168,39 @@ namespace KomiX {
 	}
 	
 	void MainWindow::previewHelper_() {
-		if( files_.empty() ) {
+		if( FileController::Instance().isEmpty() ) {
 			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		} else {
-			preview_->listDirectory( dir_.path(), dir_.filePath( files_[index_] ) );
-		}
-	}
-	
-	void MainWindow::nextFile() {
-		if( files_.size() ) {
-			++index_;
-			if( index_ >= files_.size() ) {
-				index_ = 0;
-			}
-			imageArea_->openFile( dir_.filePath( files_[index_] ) );
-		}
-	}
-	
-	void MainWindow::prevFile() {
-		if( files_.size() ) {
-			--index_;
-			if( index_ < 0 ) {
-				index_ = files_.size() - 1;
-			}
-			imageArea_->openFile( dir_.filePath( files_[index_] ) );
+			preview_->listDirectory();
 		}
 	}
 	
 	void MainWindow::whellAction( int delta ) {
 		if( delta < 0 ) {
-			nextFile();
+			FileController::Instance().next();
 		} else if( delta > 0 ) {
-			prevFile();
+			FileController::Instance().prev();
 		}
 	}
 	
-	void MainWindow::updateEnvironment( const QString & name ) {
-		qDebug( "void MainWindow::updateEnvironment( const QString & name )" );
-		qDebug() << "name:" << name;
-		
-		QFileInfo temp( name );
-		
-		if( temp.isDir() ) {
-			// Directory mode
-			qDebug( "Directory mode" );
-			qDebug() << "temp.absoluteDir:" << temp.absoluteDir();
-			qDebug() << "temp.absoluteFilePath:" << temp.absoluteFilePath();
-			
-			dir_ = temp.absoluteFilePath();
-			files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
-			index_ = 0;
-		} else {
-			// File mode
-			qDebug( "File mode" );
-			
-			dir_ = temp.dir();
-			files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
-			index_ = files_.indexOf( temp.fileName() );
-		}
-		
-		qDebug() << "dir_:" << dir_;
-	}
-	
-	void MainWindow::open( const QString & name ) {
-		updateEnvironment( name );
-		if( files_.empty() ) {
+	void MainWindow::open( const QString & filePath ) {
+		FileController::Instance().open( filePath );
+		if( FileController::Instance().isEmpty() ) {
 			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
-		} else {
-			imageArea_->openFile( dir_.filePath( files_[index_] ) );
 		}
 	}
 	
 	void MainWindow::openFileDialog() {
-		QString fileName = QFileDialog::getOpenFileName( this, tr( "Open image file" ), dir_.absolutePath(), fileFilter_ );
-		if( !fileName.isEmpty() ) {
-			open( fileName );
+		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_ );
+		if( !filePath.isEmpty() ) {
+			open( filePath );
 		}
 	}
 	
 	void MainWindow::openDirDialog() {
-		QString dirName = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), dir_.absolutePath() );
-		if( !dirName.isEmpty() ) {
-			open( dirName );
+		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
+		if( !dirPath.isEmpty() ) {
+			open( dirPath );
 		}
 	}
 	
