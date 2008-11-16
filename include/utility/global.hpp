@@ -20,7 +20,7 @@ namespace KomiX {
 	 * @brief Get the supported formats filter
 	 * @return A QStringList that can pass to name filter
 	 *
-	 * The string format is like this: *.&lt;ext&gt;.<br>
+	 * The string format is like this: <strong>"*.<ext>"</strong>.\n
 	 * This list is storing as static local variable,
 	 * and initialized at start-up routine,
 	 * so do not worry about race condition.

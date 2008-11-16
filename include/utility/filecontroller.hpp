@@ -18,7 +18,7 @@ namespace KomiX {
 
 	/**
 	 * @brief The base file controller
-	 * @attention <strong style="color: red;">DO NOT USE THIS CLASS TO CREATE OBJECT!</strong>
+	 * @warning <strong style="color: red;">DO NOT USE THIS CLASS TO CREATE OBJECT!</strong>
 	 *
 	 * This class is used to provide a generic open image action, and
 	 * another important function: <strong>image caching</strong>.
@@ -33,9 +33,11 @@ namespace KomiX {
 		 * @param limit max cache count
 		 * @param parent parent widget
 		 *
-		 * The cache count limit is including prefetch count pfMax.
+		 * The cache count @p limit is including prefetch count @p pfMax. \n
+		 * If @p pfMax and @p limit are less than 0, it will sets to 0.\n
+		 * If @p pfMax is greater than @p limit, it will sets to @p limit.
 		 */
-		FileControllerBase( unsigned int pfMax = 1, unsigned int limit = 8, QObject * parent = 0 );
+		FileControllerBase( int pfMax = 1, int limit = 8, QObject * parent = 0 );
 
 		/**
 		 * @brief open a file or directory by path
@@ -53,26 +55,30 @@ namespace KomiX {
 		 * @brief set max prefetch count
 		 * @param pfMax max count
 		 * @sa getPrefetchMax()
+		 *
+		 * If @p pfMax greater than limit, sets to limit.
 		 */
-		void setPrefetchMax( unsigned int pfMax );
+		void setPrefetchMax( int pfMax );
 		/**
 		 * @brief get max prefetch count
 		 * @return max count
 		 * @sa setPrefetchMax()
 		 */
-		unsigned int getPrefetchMax() const;
+		int getPrefetchMax() const;
 		/**
 		 * @brief set max cache count
 		 * @param limit max count
 		 * @sa getLimit()
+		 *
+		 * If @p limit less than 0, sets to 0.
 		 */
-		void setLimit( unsigned int limit );
+		void setLimit( int limit );
 		/**
 		 * @brief set max cache count
 		 * @return max count
 		 * @sa setLimit()
 		 */
-		unsigned int getLimit() const;
+		int getLimit() const;
 		/**
 		 * @brief get current directory path
 		 * @return directory path
@@ -108,8 +114,7 @@ namespace KomiX {
 		 * @brief go to previous image
 		 * @sa next()
 		 *
-		 * This function well emit getImage( const QPixmap & ), and
-		 * prefetch images.
+		 * This function well emit getImage( const QPixmap & ).
 		 */
 		void prev();
 	
@@ -122,12 +127,12 @@ namespace KomiX {
 		void getImage( const QPixmap & image );
 	
 	private:
-		void prefetch_( unsigned int index );
+		void prefetch_( int index );
 		const QPixmap & fetch_( const QString & );
 		bool update_( const QString & );
 
-		unsigned int prefetchMax_;
-		unsigned int limit_;
+		int prefetchMax_;
+		int limit_;
 		QDir dir_;
 		QStringList files_;
 		int index_;

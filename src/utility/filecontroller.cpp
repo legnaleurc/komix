@@ -6,7 +6,7 @@
 
 namespace KomiX {
 
-	FileControllerBase::FileControllerBase( unsigned int pfMax, unsigned int limit, QObject * parent ) :
+	FileControllerBase::FileControllerBase( int pfMax, int limit, QObject * parent ) :
 	QObject( parent ),
 	prefetchMax_( pfMax ),
 	limit_( limit ),
@@ -16,6 +16,14 @@ namespace KomiX {
 	history_(),
 	cache_(),
 	lock() {
+		if( limit_ < 0 ) {
+			limit_ = 0;
+		}
+		if( prefetchMax_ < 0 ) {
+			prefetchMax_ = 0;
+		} else if( prefetchMax_ > limit_ ) {
+			prefetchMax_ = limit_;
+		}
 	}
 
 	bool FileControllerBase::open( const QString & filePath ) {
@@ -55,19 +63,19 @@ namespace KomiX {
 		return files_.empty();
 	}
 	
-	void FileControllerBase::setPrefetchMax( unsigned int pfMax ) {
-		prefetchMax_ = ( pfMax > limit_ ) ? limit_ : pfMax;
+	void FileControllerBase::setPrefetchMax( int pfMax ) {
+		prefetchMax_ = ( pfMax > limit_ ? limit_ : pfMax );
 	}
 
-	unsigned int FileControllerBase::getPrefetchMax() const {
+	int FileControllerBase::getPrefetchMax() const {
 		return prefetchMax_;
 	}
 
-	void FileControllerBase::setLimit( unsigned int limit ) {
-		limit_ = limit;
+	void FileControllerBase::setLimit( int limit ) {
+		limit_ = ( limit < 0 ? 0 : limit );
 	}
 
-	unsigned int FileControllerBase::getLimit() const {
+	int FileControllerBase::getLimit() const {
 		return limit_;
 	}
 	
@@ -89,7 +97,7 @@ namespace KomiX {
 			qDebug() << "Cache miss:" << key;
 			cache_.insert( key, QPixmap( key ) );
 			history_.enqueue( key );
-			if( static_cast< unsigned int >( cache_.size() ) > limit_ ) {
+			if( cache_.size() > limit_ ) {
 				cache_.remove( history_.dequeue() );
 			}
 		} else {
@@ -98,9 +106,9 @@ namespace KomiX {
 		return cache_[key];
 	}
 
-	void FileControllerBase::prefetch_( unsigned int index ) {
+	void FileControllerBase::prefetch_( int index ) {
 		qDebug( "<FileControllerBase::prefetch_>" );
-		for( unsigned int i = 1; i <= prefetchMax_; ++i ) {
+		for( int i = 1; i <= prefetchMax_; ++i ) {
 			if( index + i >= files_.size() ) {
 				index -= files_.size();
 			}
