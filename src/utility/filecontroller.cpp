@@ -36,7 +36,7 @@ namespace KomiX {
 				index_ = 0;
 			}
 			emit getImage( fetch_( dir_.filePath( files_[index_] ) ) );
-			prefetch_( index_ );
+			fetch_( dir_.filePath( files_[ (index_+prefetchMax_ >= files_.size()) ? index_+prefetchMax_-files_.size() : index_+prefetchMax_ ] ) );
 		}
 	}
 
@@ -48,7 +48,6 @@ namespace KomiX {
 				index_ = files_.size() - 1;
 			}
 			emit getImage( fetch_( dir_.filePath( files_[index_] ) ) );
-			prefetch_( index_ );
 		}
 	}
 
@@ -102,6 +101,9 @@ namespace KomiX {
 	void FileControllerBase::prefetch_( unsigned int index ) {
 		qDebug( "<FileControllerBase::prefetch_>" );
 		for( unsigned int i = 1; i <= prefetchMax_; ++i ) {
+			if( index + i >= files_.size() ) {
+				index -= files_.size();
+			}
 			fetch_( dir_.filePath( files_[index+i] ) );
 		}
 		qDebug( "</FileControllerBase::prefetch_>" );
