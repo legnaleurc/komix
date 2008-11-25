@@ -5,6 +5,7 @@
 #define KOMIX_SCALEIMAGE_HPP
 
 #include <QDialog>
+#include <QButtonGroup>
 
 namespace KomiX {
 
@@ -19,12 +20,20 @@ namespace KomiX {
 		Q_OBJECT
 	
 	public:
+		enum ScaleMode {
+			Origin,
+			Width,
+			Height,
+			Window
+		};
 		/**
 		 * @brief default constructor
 		 * @param parent parent widget
 		 * @param f window flags
 		 */
 		ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+
+		ScaleMode getScaleMode() const;
 	signals:
 		/**
 		 * @brief scale event
@@ -33,6 +42,9 @@ namespace KomiX {
 		 * The ratio means percents, so 100 actually means 100%.
 		 */
 		void scaled( int ratio );
+
+	private:
+		QButtonGroup * fitness_;
 	};
 	
 }

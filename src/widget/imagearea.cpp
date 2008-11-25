@@ -156,6 +156,7 @@ namespace KomiX {
 	}
 	
 	void ImageArea::smoothMove() {
+		qDebug() << viewport()->size();
 		if( image_->pixmap() ) {
 			stopAllStep_();
 			switch( state_ ) {
