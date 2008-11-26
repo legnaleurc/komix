@@ -15,9 +15,52 @@
 #include <QApplication>
 #include <QtDebug>
 
+namespace {
+
+	inline QString formatList() {
+		QMultiMap< QString, QString > cat;
+
+		foreach( QString str, KomiX::SupportedFormats() ) {
+			if( str == "bmp" ) {
+				cat.insert( QObject::tr( "Windows Bitmap" ), str.toLower().prepend( "*." ) );
+			} else if( str == "gif" ) {
+				cat.insert( QObject::tr( "Graphic Interchange Format" ), str.toLower().prepend( "*." ) );
+			} else if( str == "jpg" || str == "jpeg" || str == "jp2" ) {
+				cat.insert( QObject::tr( "Joint Photographic Experts Group" ), str.toLower().prepend( "*." ) );
+			} else if( str == "mng" || str == "png" ) {
+				cat.insert( QObject::tr( "Network Graphics" ), str.toLower().prepend( "*." ) );
+			} else if( str == "pbm" || str == "pgm" || str == "ppm" ) {
+				cat.insert( QObject::tr( "Portable anymap" ), str.toLower().prepend( "*." ) );
+			} else if( str == "tif" || str == "tiff" ) {
+				cat.insert( QObject::tr( "Tagged Image File Format" ), str.toLower().prepend( "*." ) );
+			} else if( str == "xbm" || str == "xpm" ) {
+				cat.insert( QObject::tr( "X11" ), str.toLower().prepend( "*." ) );
+			} else if( str == "sgi" ) {
+				cat.insert( QObject::tr( "Silicon Graphics Image" ), str.toLower().prepend( "*." ) );
+			} else if( str == "tga" ) {
+				cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.toLower().prepend( "*." ) );
+			} else if( str == "eps" || str == "epsf" || str == "epsi" ) {
+				cat.insert( QObject::tr( "Encapsulated PostScript" ), str.toLower().prepend( "*." ) );
+			} else {
+				cat.insert( QObject::tr( "Others" ), str.toLower().prepend( "*." ) );
+			}
+		}
+
+		QStringList tmp;
+		foreach( QString key, cat.uniqueKeys() ) {
+			tmp.push_back( key + " ( " + QStringList( cat.values( key ) ).join( " " ) + " )" );
+		}
+		tmp.push_front( QObject::tr( "All Supported File" ) + " ( " + KomiX::SupportedFormatsFilter().join( " " ) + " )" );
+
+		qDebug() << tmp;
+		return tmp.join( ";;" );
+	}
+
+}
+
 namespace KomiX {
 	
-	const QString MainWindow::fileFilter_ = SupportedFormatsFilter().join( " " );
+	const QString MainWindow::fileFilter_ = formatList();
 	
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 	QMainWindow( parent, f ),

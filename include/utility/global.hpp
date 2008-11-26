@@ -16,6 +16,8 @@ QT_END_NAMESPACE
  */
 namespace KomiX {
 
+	const QStringList & SupportedFormats();
+
 	/**
 	 * @brief Get the supported formats filter
 	 * @return A QStringList that can pass to name filter
