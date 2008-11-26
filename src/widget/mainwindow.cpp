@@ -34,12 +34,26 @@ namespace {
 				cat.insert( QObject::tr( "Tagged Image File Format" ), str.prepend( "*." ) );
 			} else if( str == "xbm" || str == "xpm" ) {
 				cat.insert( QObject::tr( "X11" ), str.prepend( "*." ) );
-			} else if( str == "sgi" ) {
+			} else if( str == "sgi" || str == "rgba" || str == "rgb" || str == "bw" ) {
 				cat.insert( QObject::tr( "Silicon Graphics Image" ), str.prepend( "*." ) );
 			} else if( str == "tga" ) {
 				cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.prepend( "*." ) );
 			} else if( str == "eps" || str == "epsf" || str == "epsi" ) {
 				cat.insert( QObject::tr( "Encapsulated PostScript" ), str.prepend( "*." ) );
+			} else if( str == "svg" ) {
+				cat.insert( QObject::tr( "Scalable Vector Graphics" ), str.prepend( "*." ) );
+			} else if( str == "xcf" ) {
+				cat.insert( QObject::tr( "eXperimental Computing Facility" ), str.prepend( "*." ) );
+			} else if( str == "psd" ) {
+				cat.insert( QObject::tr( "Photoshop Document" ), str.prepend( "*." ) );
+			} else if( str == "pcx" ) {
+				cat.insert( QObject::tr( "PC Paintbrush Exchange" ), str.prepend( "*." ) );
+			} else if( str == "ico" ) {
+				cat.insert( QObject::tr( "Windows icon" ), str.prepend( "*." ) );
+			} else if( str == "dds" ) {
+				cat.insert( QObject::tr( "DirectDraw Surface" ), str.prepend( "*." ) );
+			} else if( str == "exr" ) {
+				cat.insert( QObject::tr( "OpenEXR" ), str.prepend( "*." ) );
 			} else {
 				cat.insert( QObject::tr( "Others" ), str.prepend( "*." ) );
 			}
