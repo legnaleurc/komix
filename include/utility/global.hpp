@@ -16,16 +16,23 @@ QT_END_NAMESPACE
  */
 namespace KomiX {
 
+	/**
+	 * @brief Get supported formats
+	 * @return A QStringList contains all supported formats
+	 * @note Not thread-safe on initialization.
+	 *
+	 * The formats is read from QImageReader::supportedImageFormats().\n
+	 * This list transforms to lower string, sort it, and remove deprecated
+	 * items.
+	 */
 	const QStringList & SupportedFormats();
 
 	/**
 	 * @brief Get the supported formats filter
 	 * @return A QStringList that can pass to name filter
+	 * @note Not thread-safe on initialization.
 	 *
-	 * The string format is like this: <strong>"*.<ext>"</strong>.\n
-	 * This list is storing as static local variable,
-	 * and initialized at start-up routine,
-	 * so do not worry about race condition.
+	 * The string format is like this: <strong>"*.<ext>"</strong>.
 	 */
 	const QStringList & SupportedFormatsFilter();
 
