@@ -10,7 +10,6 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QImageReader>
 #include <QIcon>
 #include <QApplication>
 #include <QtDebug>
@@ -22,27 +21,27 @@ namespace {
 
 		foreach( QString str, KomiX::SupportedFormats() ) {
 			if( str == "bmp" ) {
-				cat.insert( QObject::tr( "Windows Bitmap" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Windows Bitmap" ), str.prepend( "*." ) );
 			} else if( str == "gif" ) {
-				cat.insert( QObject::tr( "Graphic Interchange Format" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Graphic Interchange Format" ), str.prepend( "*." ) );
 			} else if( str == "jpg" || str == "jpeg" || str == "jp2" ) {
-				cat.insert( QObject::tr( "Joint Photographic Experts Group" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Joint Photographic Experts Group" ), str.prepend( "*." ) );
 			} else if( str == "mng" || str == "png" ) {
-				cat.insert( QObject::tr( "Network Graphics" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Network Graphics" ), str.prepend( "*." ) );
 			} else if( str == "pbm" || str == "pgm" || str == "ppm" ) {
-				cat.insert( QObject::tr( "Portable anymap" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Portable anymap" ), str.prepend( "*." ) );
 			} else if( str == "tif" || str == "tiff" ) {
-				cat.insert( QObject::tr( "Tagged Image File Format" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Tagged Image File Format" ), str.prepend( "*." ) );
 			} else if( str == "xbm" || str == "xpm" ) {
-				cat.insert( QObject::tr( "X11" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "X11" ), str.prepend( "*." ) );
 			} else if( str == "sgi" ) {
-				cat.insert( QObject::tr( "Silicon Graphics Image" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Silicon Graphics Image" ), str.prepend( "*." ) );
 			} else if( str == "tga" ) {
-				cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.prepend( "*." ) );
 			} else if( str == "eps" || str == "epsf" || str == "epsi" ) {
-				cat.insert( QObject::tr( "Encapsulated PostScript" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Encapsulated PostScript" ), str.prepend( "*." ) );
 			} else {
-				cat.insert( QObject::tr( "Others" ), str.toLower().prepend( "*." ) );
+				cat.insert( QObject::tr( "Others" ), str.prepend( "*." ) );
 			}
 		}
 
