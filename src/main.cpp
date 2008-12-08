@@ -1,9 +1,17 @@
 #include "mainwindow.hpp"
+
 #include <QApplication>
+#include <QtDebug>
 
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
 	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
+
+	qDebug( "<libraryPaths>" );
+	foreach( QString path, app.libraryPaths() ) {
+		qDebug() << path;
+	}
+	qDebug( "</libraryPaths>" );
 	
 	KomiX::MainWindow mainWindow;
 	mainWindow.setWindowTitle( QObject::tr( "KomiX" ) );
