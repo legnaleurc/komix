@@ -2,8 +2,8 @@
 TARGET       = komix
 DEPENDPATH  += . include include/utility include/widget src src/utility src/widget
 INCLUDEPATH += . include include/utility include/widget
-MOC_DIR      = moc
-RCC_DIR      = rcc
+MOC_DIR      = tmp/moc
+RCC_DIR      = tmp/rcc
 DESTDIR      = bin
 CONFIG      += debug_and_release
 
@@ -26,9 +26,9 @@ QT        += svg
 
 #config
 CONFIG( debug, debug|release ) {
-	OBJECTS_DIR  = obj/debug
+	OBJECTS_DIR  = tmp/obj/debug
 } else {
-	OBJECTS_DIR  = obj/release
+	OBJECTS_DIR  = tmp/obj/release
 	DEFINES     += QT_NO_DEBUG_OUTPUT
 }
 
