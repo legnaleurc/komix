@@ -222,27 +222,37 @@ namespace KomiX {
 		QVBoxLayout * outer = new QVBoxLayout( about_ );
 		about_->setLayout( outer );
 
+		QHBoxLayout * head = new QHBoxLayout();
+		outer->addLayout( head );
+
 		QLabel * logo = new QLabel( about_ );
 		logo->setPixmap( QPixmap( ":/image/logo.svg" ).scaled( 60, 60 ) );
-		outer->addWidget( logo );
+		head->addWidget( logo );
+
+		QLabel * version = new QLabel( about_ );
+		version->setText( "KomiX 0.0.1" );
+		head->addWidget( version );
 
 		QTabWidget * tabPages = new QTabWidget( about_ );
 		outer->addWidget( tabPages );
 
+		QLabel * about__ = new QLabel( about_ );
+		about__->setText( tr(
+			"KomiX - A comics viewer\n"
+			"\n"
+			"(c) 2008 FoolproofProject\n"
+			"License: GPLv3\n"
+		) );
+		tabPages->addTab( about__, tr( "&About" ) );
+
 		QLabel * authors = new QLabel( about_ );
 		authors->setText( tr(
-			"<h6>Wei-Cheng Pan</h6>"
-			"<ul>"
-			"<li><a href=\"http://legnaleurc.blogspot.com/\">legnaleurc.blogspot.com</a></li>"
-			"<li><a href=\"mailto:legnaleurc@gmail.com\">legnaleurc@gmail.com</a></li>"
-			"</ul>"
+			"<h6>Wei-Cheng Pan (FoolproofProject)</h6><br/>"
+			"Site: <a href=\"http://legnaleurc.blogspot.com/\">legnaleurc.blogspot.com</a><br/>"
+			"E-Mail: <a href=\"mailto:legnaleurc@gmail.com\">legnaleurc@gmail.com</a><br/>"
 		) );
 		authors->setTextFormat( Qt::RichText );
 		tabPages->addTab( authors, tr( "A&uthors" ) );
-
-		QLabel * license = new QLabel( about_ );
-		license->setText( tr( "GPLv3" ) );
-		tabPages->addTab( license, tr( "&License" ) );
 
 		QLabel * aboutContent = new QLabel( about_ );
 		aboutContent->setPixmap( QPixmap( ":/image/womm.png" ) );
