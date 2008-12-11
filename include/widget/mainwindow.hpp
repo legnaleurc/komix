@@ -62,6 +62,7 @@ namespace KomiX {
 		void initMenuBar_();
 		void initCentralWidget_();
 		void initTrayIcon_();
+		void initAbout_();
 
 		static const QString fileFilter_;
 
@@ -69,6 +70,7 @@ namespace KomiX {
 		ScaleImage * scaleImage_;
 		Preview * preview_;
 		QSystemTrayIcon * trayIcon_;
+		QWidget * about_;
 		Qt::WindowStates dumpState_;
 	};
 	

@@ -9,10 +9,11 @@
 #include <QMenu>
 #include <QAction>
 #include <QFileDialog>
+#include <QTabWidget>
 #include <QMessageBox>
-#include <QIcon>
 #include <QApplication>
 #include <QtDebug>
+#include <QVBoxLayout>
 
 namespace {
 
@@ -81,10 +82,12 @@ namespace KomiX {
 	scaleImage_( new ScaleImage( this ) ),
 	preview_( new Preview( this ) ),
 	trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
+	about_( new QWidget( this, Qt::Dialog ) ),
 	dumpState_( Qt::WindowNoState ) {
 		initMenuBar_();
 		initCentralWidget_();
 		initTrayIcon_();
+		initAbout_();
 		
 		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
@@ -212,6 +215,39 @@ namespace KomiX {
 
 		trayIcon_->show();
 	}
+
+	void MainWindow::initAbout_() {
+		about_->setWindowTitle( tr( "About KomiX" ) );
+
+		QVBoxLayout * outer = new QVBoxLayout( about_ );
+		about_->setLayout( outer );
+
+		QLabel * logo = new QLabel( about_ );
+		logo->setPixmap( QPixmap( ":/image/logo.svg" ).scaled( 60, 60 ) );
+		outer->addWidget( logo );
+
+		QTabWidget * tabPages = new QTabWidget( about_ );
+		outer->addWidget( tabPages );
+
+		QLabel * authors = new QLabel( about_ );
+		authors->setText( tr(
+			"<h6>Wei-Cheng Pan</h6>"
+			"<ul>"
+			"<li><a href=\"http://legnaleurc.blogspot.com/\">legnaleurc.blogspot.com</a></li>"
+			"<li><a href=\"mailto:legnaleurc@gmail.com\">legnaleurc@gmail.com</a></li>"
+			"</ul>"
+		) );
+		authors->setTextFormat( Qt::RichText );
+		tabPages->addTab( authors, tr( "A&uthors" ) );
+
+		QLabel * license = new QLabel( about_ );
+		license->setText( tr( "GPLv3" ) );
+		tabPages->addTab( license, tr( "&License" ) );
+
+		QLabel * aboutContent = new QLabel( about_ );
+		aboutContent->setPixmap( QPixmap( ":/image/womm.png" ) );
+		tabPages->addTab( aboutContent, tr( "&Certification" ) );
+	}
 	
 	void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
 		switch( reason ) {
@@ -276,7 +312,7 @@ namespace KomiX {
 	}
 	
 	void MainWindow::about() {
-		QMessageBox::about( this, tr( "About KomiX" ), tr( "Hello, world!" ) );
+		about_->show();
 	}
 
 }
