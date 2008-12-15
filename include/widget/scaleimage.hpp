@@ -6,6 +6,7 @@
 
 #include <QDialog>
 #include <QButtonGroup>
+#include <QSlider>
 
 namespace KomiX {
 
@@ -43,8 +44,12 @@ namespace KomiX {
 		 */
 		void scaled( int ratio );
 
+	private slots:
+		void valueHelper_( int = -4 );
+
 	private:
 		QButtonGroup * fitness_;
+		QSlider * scaleSlider_;
 	};
 	
 }

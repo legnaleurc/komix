@@ -28,18 +28,18 @@ namespace KomiX {
 		QPalette p = palette();
 		p.setColor( QPalette::Dark, QColor::fromRgb( 0, 0, 0 ) );
 		setPalette( p );
-		
+
 		connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 		connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 		connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 		connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
-		
+
 		QAction * space = new QAction( this );
 		space->setShortcut( Qt::Key_Space );
 		addAction( space );
 		connect( space, SIGNAL( triggered() ), this, SLOT( smoothMove() ) );
 	}
-	
+
 	void ImageArea::mousePressEvent( QMouseEvent * event ) {
 		downPosition_ = event->pos();
 		movePosition_ = event->pos();
@@ -48,7 +48,7 @@ namespace KomiX {
 			image_->setCursor( Qt::ClosedHandCursor );
 		}
 	}
-	
+
 	void ImageArea::mouseReleaseEvent( QMouseEvent * event ) {
 		switch( event->button() ) {
 			case Qt::LeftButton:
@@ -68,7 +68,7 @@ namespace KomiX {
 				;
 		}
 	}
-	
+
 	void ImageArea::mouseMoveEvent( QMouseEvent * event ) {
 		if( event->buttons() & Qt::LeftButton ) {
 			QPoint d = movePosition_ - event->pos();
@@ -76,17 +76,17 @@ namespace KomiX {
 			movePosition_ = event->pos();
 		}
 	}
-	
+
 	void ImageArea::wheelEvent( QWheelEvent * event ) {
 		emit wheelMoved( event->delta() );
 	}
-	
+
 	void ImageArea::dragEnterEvent( QDragEnterEvent * event ) {
 		if( event->mimeData()->hasFormat( "text/uri-list" ) ) {
 			event->acceptProposedAction();
 		}
 	}
-	
+
 	void ImageArea::dropEvent( QDropEvent * event ) {
 		if( event->mimeData()->hasUrls() ) {
 			QList< QUrl > urlList = event->mimeData()->urls();
@@ -99,30 +99,53 @@ namespace KomiX {
 		}
 		event->acceptProposedAction();
 	}
-	
+
+	void ImageArea::resizeEvent( QResizeEvent * ) {
+		scale();
+	}
+
 	void ImageArea::setImage( const QPixmap & image ) {
 		stopAllStep_();
 		image_->setPixmap( image );
 		imageSize_ = image_->pixmap()->size();
-		image_->resize( imageSize_ * ratio_ );
+		scale();
 		
 		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
 		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
 		
 		state_ = TopRight;
 	}
-	
+
+	void ImageArea::scale() {
+		qDebug() << "ImageArea::scale()";
+
+		if( image_->pixmap() ) {
+			if( ratio_ >= 0.0 ) {
+				image_->resize( imageSize_ * ratio_ );
+			} else if( ratio_ == -1.0 ) {
+				image_->resize( viewport()->width(), image_->height() );
+			} else if( ratio_ == -2.0 ) {
+				image_->resize( image_->width(), viewport()->height() );
+			} else if( ratio_ == -3.0 ) {
+				image_->resize( viewport()->size() );
+			}
+		}
+	}
+
 	void ImageArea::scale( int ratio ) {
 		qDebug() << "ImageArea::scale( int ):";
 		qDebug() << "ratio: " << ratio;
 		qDebug() << "ratio_: " << ratio_;
 		qDebug() << "imageSize_: " << imageSize_;
-		ratio_ = ratio / 100.0;
-		if( image_->pixmap() ) {
-			image_->resize( imageSize_ * ratio_ );
+
+		if( ratio >= 0 ) {
+			ratio_ = ratio / 100.0;
+		} else{
+			ratio_ = ratio;
 		}
+		scale();
 	}
-	
+
 	void ImageArea::stepTop() {
 		if( canMoveTop_() ) {
 			moveScrollBars_( 0, step_ * -1 );
@@ -130,7 +153,7 @@ namespace KomiX {
 			topTimer_->stop();
 		}
 	}
-	
+
 	void ImageArea::stepBottom() {
 		if( canMoveBottom_() ) {
 			moveScrollBars_( 0, step_ );
@@ -138,7 +161,7 @@ namespace KomiX {
 			bottomTimer_->stop();
 		}
 	}
-	
+
 	void ImageArea::stepLeft() {
 		if( canMoveLeft_() ) {
 			moveScrollBars_( step_ * -1, 0 );
@@ -146,7 +169,7 @@ namespace KomiX {
 			leftTimer_->stop();
 		}
 	}
-	
+
 	void ImageArea::stepRight() {
 		if( canMoveRight_() ) {
 			moveScrollBars_( step_, 0 );
@@ -154,7 +177,7 @@ namespace KomiX {
 			rightTimer_->stop();
 		}
 	}
-	
+
 	void ImageArea::smoothMove() {
 		qDebug() << viewport()->size();
 		if( image_->pixmap() ) {
@@ -196,7 +219,7 @@ namespace KomiX {
 			}
 		}
 	}
-	
+
 	void ImageArea::stopAllStep_() {
 		if( topTimer_->isActive() ) {
 			topTimer_->stop();
@@ -211,24 +234,24 @@ namespace KomiX {
 			rightTimer_->stop();
 		}
 	}
-	
+
 	inline void ImageArea::moveScrollBars_( int x, int y ) {
 		horizontalScrollBar()->setValue( horizontalScrollBar()->value() + x );
 		verticalScrollBar()->setValue( verticalScrollBar()->value() + y );
 	}
-	
+
 	inline bool ImageArea::canMoveTop_() const {
 		return verticalScrollBar()->value() > verticalScrollBar()->minimum();
 	}
-	
+
 	inline bool ImageArea::canMoveBottom_() const {
 		return verticalScrollBar()->value() < verticalScrollBar()->maximum();
 	}
-	
+
 	inline bool ImageArea::canMoveLeft_() const {
 		return horizontalScrollBar()->value() > horizontalScrollBar()->minimum();
 	}
-	
+
 	inline bool ImageArea::canMoveRight_() const {
 		return horizontalScrollBar()->value() > horizontalScrollBar()->maximum();
 	}
