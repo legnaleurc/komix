@@ -8,7 +8,7 @@
 #include <QRadioButton>
 
 namespace KomiX {
-	
+
 	ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ) : QDialog( parent, f ), fitness_( new QButtonGroup( this ) ) {
 		QVBoxLayout * mainLayout = new QVBoxLayout( this );
 		setLayout( mainLayout );
@@ -40,7 +40,7 @@ namespace KomiX {
 
 		QHBoxLayout * scaleBox = new QHBoxLayout;
 		mainLayout->addLayout( scaleBox );
-		
+
 		QSlider * scaleSlider = new QSlider( Qt::Horizontal, this );
 		scaleSlider->setRange( 0, 1600 );
 		scaleSlider->setValue( 100 );
@@ -55,6 +55,9 @@ namespace KomiX {
 		connect( scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
 		connect( scaleSpin, SIGNAL( valueChanged( int ) ), scaleSlider, SLOT( setValue( int ) ) );
 		connect( scaleSlider, SIGNAL( valueChanged( int ) ), scaleSpin, SLOT( setValue( int ) ) );
+
+		connect( fitOrigin, SIGNAL( toggled( bool ) ), scaleSlider, SLOT( setEnabled( bool ) ) );
+		connect( fitOrigin, SIGNAL( toggled( bool ) ), scaleSpin, SLOT( setEnabled( bool ) ) );
 	}
 
 	ScaleImage::ScaleMode ScaleImage::getScaleMode() const {
