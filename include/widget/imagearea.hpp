@@ -20,7 +20,7 @@ namespace KomiX {
 	 */
 	class ImageArea : public QScrollArea {
 		Q_OBJECT
-	
+
 	public:
 		/// Viewport position states
 		enum ViewPortState {
@@ -46,26 +46,49 @@ namespace KomiX {
 		 * @param image opened image
 		 */
 		void setImage( const QPixmap & image );
-		
+
+		/**
+		 * @brief refresh image size
+		 @ @sa scale(int)
+		 *
+		 * This function will use the setuped status to scale image.\n
+		 * The real action function.
+		 */
+		void scale();
+
 		/**
 		 * @brief scale image
 		 * @param ratio the scale rate
+		 * @sa scale()
 		 *
-		 * The ratio means percents, so 100 actually means 100%.
+		 * The @p ratio means percents, so 100 actually means 100%.
 		 */
 		void scale( int ratio );
-		
-		/// move to top by time pass
+
+		/**
+		 * @brief move to top by time pass
+		 * @sa stepBottom(), stepLeft(), stepRight(), smoothMove()
+		 */
 		void stepTop();
-		/// move to bottom by time pass
+		/**
+		 * @brief move to bottom by time pass
+		 * @sa stepTop(), stepLeft(), stepRight(), smoothMove()
+		 */
 		void stepBottom();
-		/// move to left by time pass
+		/**
+		 * @brief move to left by time pass
+		 * @sa stepTop(), stepBottom(), stepRight(), smoothMove()
+		 */
 		void stepLeft();
-		/// move to right by time pass
+		/**
+		 * @brief move to right by time pass
+		 * @sa stepTop(), stepBottom(), stepLeft(), smoothMove()
+		 */
 		void stepRight();
 		
 		/**
 		 * @brief smooth move navigation
+		 * @sa stepTop(), stepBottom(), stepLeft(), stepRight()
 		 *
 		 * The initial state is top-right,
 		 * then move to bottom-right,
@@ -94,17 +117,19 @@ namespace KomiX {
 
 	protected:
 		/// overrided method
-		virtual void mousePressEvent( QMouseEvent * event );
+		virtual void mousePressEvent( QMouseEvent * );
 		/// overrided method
-		virtual void mouseReleaseEvent( QMouseEvent * event );
+		virtual void mouseReleaseEvent( QMouseEvent * );
 		/// overrided method
-		virtual void mouseMoveEvent( QMouseEvent * event );
+		virtual void mouseMoveEvent( QMouseEvent * );
 		/// overrided method
-		virtual void wheelEvent( QWheelEvent * event );
+		virtual void wheelEvent( QWheelEvent * );
 		/// overrided method
-		virtual void dragEnterEvent( QDragEnterEvent * event );
+		virtual void dragEnterEvent( QDragEnterEvent * );
 		/// overrided method
-		virtual void dropEvent( QDropEvent * event );
+		virtual void dropEvent( QDropEvent * );
+		/// overrided method
+		virtual void resizeEvent( QResizeEvent * );
 
 	private:
 		void stopAllStep_();
