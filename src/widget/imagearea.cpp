@@ -123,11 +123,13 @@ namespace KomiX {
 			if( ratio_ >= 0.0 ) {
 				image_->resize( imageSize_ * ratio_ );
 			} else if( ratio_ == -1.0 ) {
-				image_->resize( viewport()->width(), image_->height() );
+				image_->resize( viewport()->width(), imageSize_.height() * ( viewport()->width() / static_cast< double >( imageSize_.width() ) ) );
 			} else if( ratio_ == -2.0 ) {
-				image_->resize( image_->width(), viewport()->height() );
+				image_->resize( imageSize_.width() * ( viewport()->height() / static_cast< double >( imageSize_.height() ) ), viewport()->height() );
 			} else if( ratio_ == -3.0 ) {
-				image_->resize( viewport()->size() );
+				QSize bound = image_->size();
+				bound.scale( viewport()->size(), Qt::KeepAspectRatio );
+				image_->resize( bound );
 			}
 		}
 	}
@@ -138,11 +140,7 @@ namespace KomiX {
 		qDebug() << "ratio_: " << ratio_;
 		qDebug() << "imageSize_: " << imageSize_;
 
-		if( ratio >= 0 ) {
-			ratio_ = ratio / 100.0;
-		} else{
-			ratio_ = ratio;
-		}
+		ratio_ = ( ratio >= 0 ) ? ( ratio / 100.0 ) : ( ratio );
 		scale();
 	}
 

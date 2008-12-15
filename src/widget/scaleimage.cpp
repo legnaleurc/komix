@@ -21,22 +21,22 @@ namespace KomiX {
 		QVBoxLayout * fitBox = new QVBoxLayout;
 		fit->setLayout( fitBox );
 
-		QRadioButton * fitOrigin = new QRadioButton( tr( "Original size" ), this );
+		QRadioButton * fitOrigin = new QRadioButton( tr( "&Customize" ), this );
 		fitness_->addButton( fitOrigin );
 		fitness_->setId( fitOrigin, Origin );
 		fitBox->addWidget( fitOrigin );
 		connect( fitOrigin, SIGNAL( clicked() ), this, SLOT( valueHelper_() ) );
-		QRadioButton * fitWidth = new QRadioButton( tr( "Fit to width" ), this );
+		QRadioButton * fitWidth = new QRadioButton( tr( "Fit to &Width" ), this );
 		fitness_->addButton( fitWidth );
 		fitness_->setId( fitWidth, Width );
 		fitBox->addWidget( fitWidth );
 		connect( fitWidth, SIGNAL( clicked() ), this, SLOT( valueHelper_() ) );
-		QRadioButton * fitHeight = new QRadioButton( tr( "Fit to height" ), this );
+		QRadioButton * fitHeight = new QRadioButton( tr( "Fit to &Height" ), this );
 		fitness_->addButton( fitHeight );
 		fitness_->setId( fitHeight, Height );
 		fitBox->addWidget( fitHeight );
 		connect( fitHeight, SIGNAL( clicked() ), this, SLOT( valueHelper_() ) );
-		QRadioButton * fitWindow = new QRadioButton( tr( "Fit to window" ), this );
+		QRadioButton * fitWindow = new QRadioButton( tr( "&Fit to Window" ), this );
 		fitness_->addButton( fitWindow );
 		fitness_->setId( fitWindow, Window );
 		fitBox->addWidget( fitWindow );
