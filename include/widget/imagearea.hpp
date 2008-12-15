@@ -51,7 +51,7 @@ namespace KomiX {
 		 * @brief scale image
 		 * @param ratio the scale rate
 		 *
-		 * The ratio means percents, so 100 actually means 100%.
+		 * The @p ratio means percents, so 100 actually means 100%.
 		 */
 		void scale( int ratio );
 		
