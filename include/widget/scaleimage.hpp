@@ -19,14 +19,8 @@ namespace KomiX {
 	 */
 	class ScaleImage : public QDialog {
 		Q_OBJECT
-	
+
 	public:
-		enum ScaleMode {
-			Origin,
-			Width,
-			Height,
-			Window
-		};
 		/**
 		 * @brief default constructor
 		 * @param parent parent widget
@@ -49,6 +43,13 @@ namespace KomiX {
 	private:
 		QButtonGroup * fitness_;
 		QSlider * scaleSlider_;
+
+		enum ScaleMode {
+			Origin,
+			Width,
+			Height,
+			Window
+		};
 	};
 	
 }
