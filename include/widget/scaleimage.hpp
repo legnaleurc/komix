@@ -34,7 +34,6 @@ namespace KomiX {
 		 */
 		ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-		ScaleMode getScaleMode() const;
 	signals:
 		/**
 		 * @brief scale event

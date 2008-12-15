@@ -85,8 +85,4 @@ namespace KomiX {
 		}
 	}
 
-	ScaleImage::ScaleMode ScaleImage::getScaleMode() const {
-		return static_cast< ScaleImage::ScaleMode >( fitness_->checkedId() );
-	}
-
 }
