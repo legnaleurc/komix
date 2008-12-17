@@ -64,7 +64,7 @@ namespace KomiX {
 		void initTrayIcon_();
 		void initAbout_();
 
-		static const QString fileFilter_;
+		static const QString & fileFilter_();
 
 		ImageArea * imageArea_;
 		ScaleImage * scaleImage_;

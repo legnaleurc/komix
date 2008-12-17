@@ -74,7 +74,10 @@ namespace {
 
 namespace KomiX {
 	
-	const QString MainWindow::fileFilter_ = formatList();
+	const QString & MainWindow::fileFilter_() {
+		static QString ff = formatList();
+		return ff;
+	}
 	
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 	QMainWindow( parent, f ),
@@ -293,7 +296,10 @@ namespace KomiX {
 	}
 
 	void MainWindow::openFileDialog() {
-		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_ );
+		qDebug( "<MainWindow::openFileDialog()>" );
+		qDebug() << fileFilter_();
+		qDebug( "</MainWindow::openFileDialog()>" );
+		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
 		if( !filePath.isEmpty() ) {
 			open( filePath );
 		}

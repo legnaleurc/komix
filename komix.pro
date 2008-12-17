@@ -43,4 +43,7 @@ unix {
 
 win32 {
 	TEMPLATE = vcapp
+	CONFIG( debug, debug|release ) {
+		CONFIG += console
+	}
 }
