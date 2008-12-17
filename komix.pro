@@ -33,14 +33,12 @@ CONFIG( debug, debug|release ) {
 }
 
 #platform
-
 unix {
 	TEMPLATE = app
 	CONFIG( release, debug|release ) {
 		QMAKE_POST_LINK=strip $(TARGET)
 	}
 }
-
 win32 {
 	TEMPLATE = vcapp
 	CONFIG( debug, debug|release ) {
