@@ -41,6 +41,7 @@ unix {
 }
 win32 {
 	TEMPLATE = vcapp
+	CONFIG += embed_manifest_exe
 	CONFIG( debug, debug|release ) {
 		CONFIG += console
 	}

@@ -74,7 +74,7 @@ namespace {
 
 namespace KomiX {
 	
-	const QString & MainWindow::fileFilter_() {
+	inline const QString & MainWindow::fileFilter_() {
 		static QString ff = formatList();
 		return ff;
 	}
@@ -233,7 +233,12 @@ namespace KomiX {
 		head->addWidget( logo );
 
 		QLabel * version = new QLabel( about_ );
-		version->setText( "KomiX 0.0.1" );
+		version->setText( tr(
+			"<h1>KomiX</h1>"
+			"Version: 0.0.1<br/>"
+			"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
+		) );
+		version->setTextFormat( Qt::RichText );
 		head->addWidget( version );
 
 		QTabWidget * tabPages = new QTabWidget( about_ );
