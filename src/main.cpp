@@ -3,12 +3,25 @@
 #include <QApplication>
 #include <QtDebug>
 
+#ifdef _WIN32
+# include <QtPlugin>
+
+Q_IMPORT_PLUGIN(qgif)
+Q_IMPORT_PLUGIN(qico)
+Q_IMPORT_PLUGIN(qjpeg)
+Q_IMPORT_PLUGIN(qmng)
+Q_IMPORT_PLUGIN(qsvg)
+Q_IMPORT_PLUGIN(qtiff)
+#endif
+
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
 	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
 
+	QApplication::addLibraryPath( QApplication::applicationDirPath() + "/imageformats" );
+
 	qDebug( "<libraryPaths>" );
-	foreach( QString path, app.libraryPaths() ) {
+	foreach( QString path, QApplication::libraryPaths() ) {
 		qDebug() << path;
 	}
 	qDebug( "</libraryPaths>" );
