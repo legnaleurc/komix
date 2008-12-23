@@ -4,11 +4,7 @@
 #ifndef KOMIX_GLOBAL_HPP
 #define KOMIX_GLOBAL_HPP
 
-#include <QtGlobal>
-
-QT_BEGIN_NAMESPACE
-class QStringList;
-QT_END_NAMESPACE
+#include <QStringList>
 
 /**
  * @namespace KomiX
@@ -19,7 +15,7 @@ namespace KomiX {
 	/**
 	 * @brief Get supported formats
 	 * @return A QStringList contains all supported formats
-	 * @note Not thread-safe on initialization.
+	 * @note Not thread-safe on initialization. Do not initialize before QApplication.
 	 *
 	 * The formats is read from QImageReader::supportedImageFormats().\n
 	 * This list transforms to lower string, sort it, and remove deprecated

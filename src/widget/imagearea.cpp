@@ -100,8 +100,9 @@ namespace KomiX {
 		event->acceptProposedAction();
 	}
 
-	void ImageArea::resizeEvent( QResizeEvent * ) {
+	void ImageArea::resizeEvent( QResizeEvent * event ) {
 		scale();
+		QScrollArea::resizeEvent( event );
 	}
 
 	void ImageArea::setImage( const QPixmap & image ) {
