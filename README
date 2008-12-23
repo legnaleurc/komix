@@ -3,12 +3,23 @@ Build Dependancy:
 		http://trolltech.com/products
 	Loki -- Generic Programming and Design Pattern library for C++:
 		http://loki-lib.sourceforge.net
+
+Build toolchain:
+	Unix-like:
+		g++ >= 4
+	Windows (XP or Vista):
+		Visual C++ >= Express 2005
+
 How to Build:
 	Unix-like:
 		$ qmake
 		$ make -j2
 	Windows:
-		Open the command prompt
-		qmake
-		Open komix.vcproj with Visual C++
-		build
+		Run qmake.exe in the project directory
+		Open komix.vcproj with Visual C++ and build
+
+Run-time spec @ Windows:
+	dll provide by MSVC:
+		You may just install Redistributable Package for your machine.
+		http://www.microsoft.com/downloads/details.aspx?familyid=A5C84275-3B97-4AB7-A40D-3802B2AF5FC2&displaylang=en
+	dll provide by Qt toolkit

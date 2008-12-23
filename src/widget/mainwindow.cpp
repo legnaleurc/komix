@@ -74,7 +74,10 @@ namespace {
 
 namespace KomiX {
 	
-	const QString MainWindow::fileFilter_ = formatList();
+	inline const QString & MainWindow::fileFilter_() {
+		static QString ff = formatList();
+		return ff;
+	}
 	
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 	QMainWindow( parent, f ),
@@ -230,7 +233,12 @@ namespace KomiX {
 		head->addWidget( logo );
 
 		QLabel * version = new QLabel( about_ );
-		version->setText( "KomiX 0.0.1" );
+		version->setText( tr(
+			"<h1>KomiX</h1>"
+			"Version: 0.0.1<br/>"
+			"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
+		) );
+		version->setTextFormat( Qt::RichText );
 		head->addWidget( version );
 
 		QTabWidget * tabPages = new QTabWidget( about_ );
@@ -293,7 +301,10 @@ namespace KomiX {
 	}
 
 	void MainWindow::openFileDialog() {
-		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_ );
+		qDebug( "<MainWindow::openFileDialog()>" );
+		qDebug() << fileFilter_();
+		qDebug( "</MainWindow::openFileDialog()>" );
+		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
 		if( !filePath.isEmpty() ) {
 			open( filePath );
 		}
