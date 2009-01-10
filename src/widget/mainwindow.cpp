@@ -235,7 +235,7 @@ namespace KomiX {
 		QLabel * version = new QLabel( about_ );
 		version->setText( tr(
 			"<h1>KomiX</h1>"
-			"Version: 0.0.1<br/>"
+			"Version: 0.0.2 Alpha<br/>"
 			"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
 		) );
 		version->setTextFormat( Qt::RichText );
@@ -248,7 +248,7 @@ namespace KomiX {
 		about__->setText( tr(
 			"KomiX - A comics viewer\n"
 			"\n"
-			"(c) 2008 FoolproofProject\n"
+			"(c) 2008-2009 FoolproofProject\n"
 			"License: GPLv3\n"
 		) );
 		tabPages->addTab( about__, tr( "&About" ) );
@@ -301,9 +301,9 @@ namespace KomiX {
 	}
 
 	void MainWindow::openFileDialog() {
-		qDebug( "<MainWindow::openFileDialog()>" );
-		qDebug() << fileFilter_();
-		qDebug( "</MainWindow::openFileDialog()>" );
+// 		qDebug( "<MainWindow::openFileDialog()>" );
+// 		qDebug() << fileFilter_();
+// 		qDebug( "</MainWindow::openFileDialog()>" );
 		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
 		if( !filePath.isEmpty() ) {
 			open( filePath );
@@ -318,11 +318,17 @@ namespace KomiX {
 	}
 
 	void MainWindow::toggleFullScreen() {
+// 		qDebug( "<MainWindow::toggleFullScreen()>" );
+// 		qDebug() << "before: " << windowState();
 		menuBar()->setVisible( !menuBar()->isVisible() );
 		setWindowState( windowState() ^ Qt::WindowFullScreen );
+// 		qDebug() << "after: " << windowState();
+// 		qDebug( "</MainWindow::toggleFullScreen()>" );
 	}
 
 	void MainWindow::toggleSystemTray() {
+// 		qDebug( "<MainWindow::toggleSystemTray()>" );
+// 		qDebug() << "before: " << windowState();
 		if( isVisible() ) {
 			dumpState_ = windowState();
 			hide();
@@ -330,6 +336,8 @@ namespace KomiX {
 			show();
 			setWindowState( dumpState_ );
 		}
+// 		qDebug() << "after: " << windowState();
+// 		qDebug( "</MainWindow::toggleSystemTray()>" );
 	}
 
 	void MainWindow::about() {
