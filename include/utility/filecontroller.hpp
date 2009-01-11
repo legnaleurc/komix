@@ -138,7 +138,7 @@ namespace KomiX {
 		int index_;
 		QQueue< QString > history_;
 		QMap< QString, QPixmap > cache_;
-		QMutex lock;
+		QMutex lock_;
 	};
 
 	/// File controller singleton
