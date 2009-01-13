@@ -5,7 +5,7 @@ INCLUDEPATH += . include include/utility include/widget
 MOC_DIR      = tmp/moc
 RCC_DIR      = tmp/rcc
 DESTDIR      = bin
-CONFIG      += debug_and_release
+CONFIG      += debug_and_release warn_all
 
 # Input
 HEADERS   += include/utility/filecontroller.hpp \

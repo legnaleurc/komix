@@ -15,7 +15,7 @@ namespace KomiX {
 	index_( 0 ),
 	history_(),
 	cache_(),
-	lock() {
+	lock_() {
 		if( limit_ < 0 ) {
 			limit_ = 0;
 		}
@@ -27,7 +27,7 @@ namespace KomiX {
 	}
 
 	bool FileControllerBase::open( const QString & filePath ) {
-		QMutexLocker locker( &lock );
+		QMutexLocker locker( &lock_ );
 		if( !update_( filePath ) || files_.empty() ) {
 			return false;
 		} else {
@@ -37,7 +37,7 @@ namespace KomiX {
 	}
 
 	void FileControllerBase::next() {
-		QMutexLocker locker( &lock );
+		QMutexLocker locker( &lock_ );
 		if( !files_.empty() ) {
 			++index_;
 			if( index_ >= files_.size() ) {
@@ -49,7 +49,7 @@ namespace KomiX {
 	}
 
 	void FileControllerBase::prev() {
-		QMutexLocker locker( &lock );
+		QMutexLocker locker( &lock_ );
 		if( !files_.empty() ) {
 			--index_;
 			if( index_ < 0 ) {
@@ -88,33 +88,33 @@ namespace KomiX {
 	}
 
 	const QPixmap & FileControllerBase::getImage( const QString & filePath ) {
-		QMutexLocker locker( &lock );
+		QMutexLocker locker( &lock_ );
 		return fetch_( filePath );
 	}
 
 	const QPixmap & FileControllerBase::fetch_( const QString & key ) {
 		if( !cache_.contains( key ) ) {
-			qDebug() << "Cache miss:" << key;
+// 			qDebug() << "Cache miss:" << key;
 			cache_.insert( key, QPixmap( key ) );
 			history_.enqueue( key );
 			if( cache_.size() > limit_ ) {
 				cache_.remove( history_.dequeue() );
 			}
 		} else {
-			qDebug() << "Cache hit:" << key;
+// 			qDebug() << "Cache hit:" << key;
 		}
 		return cache_[key];
 	}
 
 	void FileControllerBase::prefetch_( int index ) {
-		qDebug( "<FileControllerBase::prefetch_>" );
+// 		qDebug( "<FileControllerBase::prefetch_>" );
 		for( int i = 1; i <= prefetchMax_; ++i ) {
 			if( index + i >= files_.size() ) {
 				index -= files_.size();
 			}
 			fetch_( dir_.filePath( files_[index+i] ) );
 		}
-		qDebug( "</FileControllerBase::prefetch_>" );
+// 		qDebug( "</FileControllerBase::prefetch_>" );
 	}
 
 	bool FileControllerBase::update_( const QString & filePath ) {
@@ -123,8 +123,16 @@ namespace KomiX {
 			if( dir_ == tmp.absoluteFilePath() ) {
 				return false;
 			} else {
+// 				qDebug() << tmp.absoluteFilePath();
+// 				qDebug() << tmp.filePath();
+// 				qDebug() << tmp.absoluteDir();
+// 				qDebug() << tmp.dir();
+				QStringList tmpList = QDir( tmp.absoluteFilePath() ).entryList( SupportedFormatsFilter(), QDir::Files );
+				if( tmpList.isEmpty() ) {
+					return false;
+				}
 				dir_ = tmp.absoluteFilePath();
-				files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
+				files_ = tmpList;
 				index_ = 0;
 			}
 		} else {
