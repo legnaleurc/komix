@@ -28,6 +28,8 @@ namespace KomiX {
 		QPalette p = palette();
 		p.setColor( QPalette::Dark, QColor::fromRgb( 0, 0, 0 ) );
 		setPalette( p );
+		image_->setMouseTracking( true );
+		setMouseTracking( true );
 
 		connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 		connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
@@ -71,9 +73,16 @@ namespace KomiX {
 
 	void ImageArea::mouseMoveEvent( QMouseEvent * event ) {
 		if( event->buttons() & Qt::LeftButton ) {
+			if( image_->cursor().shape() == Qt::BlankCursor ) {
+				image_->setCursor( Qt::ClosedHandCursor );
+			}
 			QPoint d = movePosition_ - event->pos();
 			moveScrollBars_( d.x(), d.y() );
 			movePosition_ = event->pos();
+		} else {
+			if( image_->cursor().shape() == Qt::BlankCursor ) {
+				image_->setCursor( Qt::OpenHandCursor );
+			}
 		}
 	}
 
@@ -118,7 +127,7 @@ namespace KomiX {
 	}
 
 	void ImageArea::scale() {
-		qDebug() << "ImageArea::scale()";
+// 		qDebug() << "ImageArea::scale()";
 
 		if( image_->pixmap() ) {
 			if( ratio_ >= 0.0 ) {
@@ -136,10 +145,10 @@ namespace KomiX {
 	}
 
 	void ImageArea::scale( int ratio ) {
-		qDebug() << "ImageArea::scale( int ):";
-		qDebug() << "ratio: " << ratio;
-		qDebug() << "ratio_: " << ratio_;
-		qDebug() << "imageSize_: " << imageSize_;
+// 		qDebug() << "ImageArea::scale( int ):";
+// 		qDebug() << "ratio: " << ratio;
+// 		qDebug() << "ratio_: " << ratio_;
+// 		qDebug() << "imageSize_: " << imageSize_;
 
 		ratio_ = ( ratio >= 0 ) ? ( ratio / 100.0 ) : ( ratio );
 		scale();
@@ -178,7 +187,10 @@ namespace KomiX {
 	}
 
 	void ImageArea::smoothMove() {
-		qDebug() << viewport()->size();
+		if( image_->cursor().shape() != Qt::BlankCursor ) {
+			image_->setCursor( Qt::BlankCursor );
+		}
+// 		qDebug() << viewport()->size();
 		if( image_->pixmap() ) {
 			stopAllStep_();
 			switch( state_ ) {
