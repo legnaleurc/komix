@@ -44,6 +44,9 @@ komix_static {
 	            qsvg \
 	            qtiff
 	DEFINES  += KOMIX_STATIC
+	unix {
+		LIBS += -ljpeg -lmng
+	}
 }
 
 # Platform
