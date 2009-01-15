@@ -2,7 +2,7 @@
 
 #include <QApplication>
 
-#ifdef _WIN32
+#ifdef KOMIX_STATIC
 # include <QtPlugin>
 
 Q_IMPORT_PLUGIN(qgif)
