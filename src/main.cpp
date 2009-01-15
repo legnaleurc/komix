@@ -1,7 +1,6 @@
 #include "mainwindow.hpp"
 
 #include <QApplication>
-#include <QtDebug>
 
 #ifdef _WIN32
 # include <QtPlugin>
@@ -17,14 +16,6 @@ Q_IMPORT_PLUGIN(qtiff)
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
 	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
-
-	QApplication::addLibraryPath( QApplication::applicationDirPath() + "/imageformats" );
-
-	qDebug( "<libraryPaths>" );
-	foreach( QString path, QApplication::libraryPaths() ) {
-		qDebug() << path;
-	}
-	qDebug( "</libraryPaths>" );
 	
 	KomiX::MainWindow mainWindow;
 	mainWindow.setWindowTitle( QObject::tr( "KomiX" ) );
