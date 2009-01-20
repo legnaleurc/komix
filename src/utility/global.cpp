@@ -2,8 +2,6 @@
 
 #include <QString>
 #include <QImageReader>
-#include <QtDebug>
-#include <QApplication>
 
 #include <algorithm>
 
@@ -14,10 +12,6 @@ namespace {
 	}
 
 	inline QStringList uniqueList() {
-// 		qDebug( "<uniqueList()>" );
-// 		qDebug() << QApplication::libraryPaths();
-// 		qDebug() << QImageReader::supportedImageFormats();
-// 		qDebug( "</uniqueList()>" );
 		std::list< QByteArray > uniList = QImageReader::supportedImageFormats().toStdList();
 
 		std::for_each( uniList.begin(), uniList.end(), tl );
