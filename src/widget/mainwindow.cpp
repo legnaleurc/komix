@@ -73,12 +73,12 @@ namespace {
 }
 
 namespace KomiX {
-	
+
 	inline const QString & MainWindow::fileFilter_() {
 		static QString ff = formatList();
 		return ff;
 	}
-	
+
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 	QMainWindow( parent, f ),
 	imageArea_( new ImageArea( this ) ),
@@ -97,7 +97,7 @@ namespace KomiX {
 
 		connect( preview_, SIGNAL( open( const QString & ) ), this, SLOT( open( const QString & ) ) );
 	}
-	
+
 	void MainWindow::initMenuBar_() {
 		QMenuBar * menuBar = new QMenuBar( this );
 
@@ -121,26 +121,49 @@ namespace KomiX {
 
 		QMenu * view = new QMenu( tr( "&View" ), menuBar );
 
+		QAction * smoothNext = new QAction( tr( "Smooth &Next" ), this );
+		smoothNext->setShortcut( Qt::Key_Space );
+		connect( smoothNext, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
+		view->addAction( smoothNext );
+		addAction( smoothNext );
+
+		QAction * smoothPrev = new QAction( tr( "Smooth &Prev" ), this );
+		smoothPrev->setShortcut( Qt::Key_Return );
+		connect( smoothPrev, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
+		view->addAction( smoothPrev );
+		addAction( smoothPrev );
+
+		QAction * home = new QAction( tr( "Page &Head" ), this );
+		home->setShortcut( Qt::Key_Home );
+		connect( home, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
+		view->addAction( home );
+		addAction( home );
+
+		QAction * end = new QAction( tr( "Page &Tail" ), this );
+		end->setShortcut( Qt::Key_End );
+		connect( end, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
+		view->addAction( end );
+		addAction( end );
+
+		view->addSeparator();
+
 		QAction * fullScreen = new QAction( tr( "&Full Screen" ), this );
 		fullScreen->setShortcut( Qt::Key_F11 );
 		connect( fullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
-
 		view->addAction( fullScreen );
 		addAction( fullScreen );
 
 		QAction * hide = new QAction( tr( "&Hide window" ), this );
 		hide->setShortcut( tr( "Esc" ) );
 		connect( hide, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
-
 		view->addAction( hide );
 		addAction( hide );
 
 		view->addSeparator();
-		
+
 		QAction * scale = new QAction( tr( "&Scale image" ), this );
 		scale->setShortcut( tr( "Ctrl+S" ) );
 		connect( scale, SIGNAL( triggered() ), scaleImage_, SLOT( show() ) );
-
 		view->addAction( scale );
 		addAction( scale );
 
@@ -151,7 +174,6 @@ namespace KomiX {
 		QAction * jump = new QAction( tr( "&Jump to image" ), this );
 		jump->setShortcut( tr( "Ctrl+J" ) );
 		connect( jump, SIGNAL( triggered() ), this, SLOT( previewHelper_() ) );
-
 		go->addAction( jump );
 		addAction( jump );
 
@@ -160,14 +182,12 @@ namespace KomiX {
 		QAction * prev = new QAction( tr( "&Preverse image" ), this );
 		prev->setShortcut( Qt::Key_PageUp );
 		connect( prev, SIGNAL( triggered() ), &FileController::Instance(), SLOT( prev() ) );
-
 		go->addAction( prev );
 		addAction( prev );
 
 		QAction * next = new QAction( tr( "&Next image" ), this );
 		next->setShortcut( Qt::Key_PageDown );
 		connect( next, SIGNAL( triggered() ), &FileController::Instance(), SLOT( next() ) );
-
 		go->addAction( next );
 		addAction( next );
 
@@ -200,6 +220,7 @@ namespace KomiX {
 		imageArea_->setAcceptDrops( true );
 
 		connect( imageArea_, SIGNAL( wheelMoved( int ) ), this, SLOT( whellAction( int ) ) );
+		connect( imageArea_, SIGNAL( prevPage() ), &FileController::Instance(), SLOT( prev() ) );
 		connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
 		connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );

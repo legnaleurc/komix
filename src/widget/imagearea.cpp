@@ -35,11 +35,6 @@ namespace KomiX {
 		connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 		connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 		connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
-
-		QAction * space = new QAction( this );
-		space->setShortcut( Qt::Key_Space );
-		addAction( space );
-		connect( space, SIGNAL( triggered() ), this, SLOT( smoothMove() ) );
 	}
 
 	void ImageArea::mousePressEvent( QMouseEvent * event ) {
@@ -275,14 +270,14 @@ namespace KomiX {
 	}
 
 	void ImageArea::home() {
-		horizontalScrollBar()->setValue( horizontalScrollBar()->minimum() );
-		verticalScrollBar()->setValue( verticalScrollBar()->maximum() );
+		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
+		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
 		state_ = TopRight;
 	}
 
 	void ImageArea::end() {
-		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
-		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
+		horizontalScrollBar()->setValue( horizontalScrollBar()->minimum() );
+		verticalScrollBar()->setValue( verticalScrollBar()->maximum() );
 		state_ = BottomLeft;
 	}
 
