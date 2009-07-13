@@ -2,9 +2,10 @@
 #CONFIG += komix_static
 
 # Common
-TARGET  = komix
-CONFIG += debug_and_release warn_all
-QT     += svg
+TEMPLATE = app
+TARGE T  = komix
+CONFIG  += debug_and_release warn_all
+QT      += svg
 
 # Input
 DEPENDPATH  += . include include/utility include/widget src src/utility src/widget
@@ -51,13 +52,11 @@ komix_static {
 
 # Platform
 unix {
-	TEMPLATE = app
 	CONFIG( release, debug|release ) {
 		QMAKE_POST_LINK = strip $(TARGET)
 	}
 }
 win32 {
-	TEMPLATE  = vcapp
 	CONFIG   += embed_manifest_exe
 	CONFIG( debug, debug|release ) {
 		CONFIG += console
