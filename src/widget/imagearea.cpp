@@ -190,7 +190,6 @@ namespace KomiX {
 		if( image_->cursor().shape() != Qt::BlankCursor ) {
 			image_->setCursor( Qt::BlankCursor );
 		}
-// 		qDebug() << viewport()->size();
 		if( image_->pixmap() ) {
 			stopAllStep_();
 			switch( state_ ) {
@@ -229,6 +228,62 @@ namespace KomiX {
 					break;
 			}
 		}
+	}
+
+	void ImageArea::reverseSmoothMove() {
+		if( image_->cursor().shape() != Qt::BlankCursor ) {
+			image_->setCursor( Qt::BlankCursor );
+		}
+		if( image_->pixmap() ) {
+			stopAllStep_();
+			switch( state_ ) {
+				case BottomLeft:
+					if( canMoveTop_() ) {
+						topTimer_->start( interval_ );
+						state_ = TopLeft;
+					} else if( canMoveRight_() ) {
+						rightTimer_->start( interval_ );
+						state_ = BottomRight;
+					} else {
+						emit prevPage();
+					}
+					break;
+				case TopLeft:
+					if( canMoveRight_() ) {
+						rightTimer_->start( interval_ );
+						if( canMoveBottom_() ) {
+							bottomTimer_->start( interval_ );
+						}
+						state_ = BottomRight;
+					} else {
+						emit prevPage();
+					}
+					break;
+				case BottomRight:
+					if( canMoveTop_() ) {
+						topTimer_->start( interval_ );
+						state_ = TopRight;
+					} else {
+						emit prevPage();
+					}
+					break;
+				case TopRight:
+					emit prevPage();
+					break;
+			}
+		}
+	}
+
+	void ImageArea::home() {
+		horizontalScrollBar()->setValue( horizontalScrollBar()->minimum() );
+		verticalScrollBar()->setValue( verticalScrollBar()->maximum() );
+		state_ = TopRight;
+	}
+
+	void ImageArea::end() {
+		horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
+		verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
+		state_ = BottomLeft;
 	}
 
 	void ImageArea::stopAllStep_() {

@@ -96,8 +96,13 @@ namespace KomiX {
 		 * open next page finally.
 		 */
 		void smoothMove();
+		void reverseSmoothMove();
+
+		void home();
+		void end();
 
 	signals:
+		void prevPage();
 		/// go to next page
 		void nextPage();
 		/**
