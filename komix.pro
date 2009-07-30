@@ -8,14 +8,14 @@ CONFIG  += debug_and_release warn_all
 QT      += svg
 
 # Input
-DEPENDPATH  += . include include/utility include/widget src src/utility src/widget
-INCLUDEPATH += . include include/utility include/widget
-HEADERS     += include/utility/filecontroller.hpp \
-               include/utility/global.hpp \
-               include/widget/imagearea.hpp \
-               include/widget/mainwindow.hpp \
-               include/widget/preview.hpp \
-               include/widget/scaleimage.hpp
+DEPENDPATH  += . src src/utility src/widget
+INCLUDEPATH += $${DEPENDPATH}
+HEADERS     += src/utility/filecontroller.hpp \
+               src/utility/global.hpp \
+               src/widget/imagearea.hpp \
+               src/widget/mainwindow.hpp \
+               src/widget/preview.hpp \
+               src/widget/scaleimage.hpp
 SOURCES     += src/utility/filecontroller.cpp \
                src/utility/global.cpp \
                src/main.cpp \
