@@ -32,6 +32,10 @@ namespace KomiX {
 	 */
 	const QStringList & SupportedFormatsFilter();
 
+	const QStringList & ArchiveFormats();
+
+	const QStringList & ArchiveFormatsFilter();
+
 }
 
 #endif

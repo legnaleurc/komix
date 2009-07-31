@@ -79,6 +79,11 @@ namespace KomiX {
 		return ff;
 	}
 
+	inline const QString & MainWindow::archiveFilter_() {
+		static QString af = KomiX::ArchiveFormatsFilter().join( ";;" );
+		return af;
+	}
+
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 	QMainWindow( parent, f ),
 	imageArea_( new ImageArea( this ) ),
@@ -116,6 +121,13 @@ namespace KomiX {
 
 		fileMenu->addAction( openDir );
 		addAction( openDir );
+
+		QAction * openArchive = new QAction( tr( "Open &Archive" ), this );
+		openArchive->setShortcut( tr( "Ctrl+A" ) );
+		connect( openArchive, SIGNAL( triggered() ), this, SLOT( openArchiveDialog() ) );
+
+		fileMenu->addAction( openArchive );
+		addAction( openArchive );
 
 		menuBar->addMenu( fileMenu );
 
@@ -335,6 +347,13 @@ namespace KomiX {
 		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
 		if( !dirPath.isEmpty() ) {
 			open( dirPath );
+		}
+	}
+
+	void MainWindow::openArchiveDialog() {
+		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), FileController::Instance().getDirPath(), archiveFilter_() );
+		if( !archivePath.isEmpty() ) {
+			open( archivePath );
 		}
 	}
 

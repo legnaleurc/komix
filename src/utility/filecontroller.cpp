@@ -3,8 +3,39 @@
 
 #include <QMutexLocker>
 #include <QtDebug>
+#include <QProcess>
+#include <QtGlobal>
+#include <QApplication>
+
+#include <cstdlib>
+
+namespace {
+
+	QDir createTmpDir() {
+		qsrand( qApp->applicationPid() );
+		QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
+		QDir tmpDir( QDir::temp() );
+		if( !tmpDir.mkdir( tmpPath ) ) {
+			qWarning( "can not make temp dir" );
+		} else {
+			tmpDir.cd( tmpPath );
+		}
+		return tmpDir;
+	}
+
+	int rmdir( const QDir & dir ) {
+#ifdef Q_OS_WIN32
+		return std::system( QString( "RMDIR /S /Q %1" ).arg( QDir::toNativeSeparators( dir.absolutePath() ) ).toLocal8Bit().constData() );
+#elif defined( Q_OS_UNIX )
+		return QProcess::execute( "rm", QStringList() << "-rf" << dir.absolutePath() );
+#endif
+	}
+
+}
 
 namespace KomiX {
+
+	const QDir FileControllerBase::TmpDir_ = createTmpDir();
 
 	FileControllerBase::FileControllerBase( int pfMax, int limit, QObject * parent ) :
 	QObject( parent ),
@@ -24,6 +55,10 @@ namespace KomiX {
 		} else if( prefetchMax_ > limit_ ) {
 			prefetchMax_ = limit_;
 		}
+	}
+
+	FileControllerBase::~FileControllerBase() {
+		qDebug() << rmdir( TmpDir_ );
 	}
 
 	bool FileControllerBase::open( const QString & filePath ) {
@@ -135,6 +170,30 @@ namespace KomiX {
 				files_ = tmpList;
 				index_ = 0;
 			}
+		} else if( ArchiveFormats().contains( tmp.completeSuffix(), Qt::CaseInsensitive ) ) {
+			QProcess * p = new QProcess();
+			qDebug() << ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() );
+			p->start( SevenZip_(), ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() ),  QIODevice::ReadOnly );
+			p->waitForFinished( -1 );
+
+			if( p->exitCode() != 0 ) {
+				qWarning() << p->readAllStandardOutput();
+				qWarning() << p->readAllStandardError();
+				return false;
+			} else {
+				QDir aDir = ArchiveDir_( tmp.fileName() );
+				if( dir_ == aDir ) {
+					return false;
+				} else {
+					QStringList tmpList = aDir.entryList( SupportedFormatsFilter(), QDir::Files );
+					if( tmpList.isEmpty() ) {
+						return false;
+					}
+					dir_ = aDir;
+					files_ = tmpList;
+					index_ = 0;
+				}
+			}
 		} else {
 			if( dir_ == tmp.dir() ) {
 				if( files_[index_] == tmp.fileName() ) {
@@ -150,6 +209,31 @@ namespace KomiX {
 		}
 		prefetch_( index_ );
 		return true;
+	}
+
+	const QString & FileControllerBase::SevenZip_() {
+#ifdef Q_OS_WIN32
+		static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
+#elif defined( Q_OS_UNIX )
+		static QString sz = "/usr/bin/7z";
+#endif
+		return sz;
+	}
+
+	QStringList FileControllerBase::Arguments_( const QString & fileName ) {
+		QStringList args( "e" );
+		args << QString( "-o%1" ).arg( ArchiveDir_( fileName ).absolutePath() );
+		args << "-aos";
+		return args;
+	}
+
+	QDir FileControllerBase::ArchiveDir_( const QString & dirName ) {
+		if( !TmpDir_.exists( dirName ) ) {
+			TmpDir_.mkdir( dirName );
+		}
+		QDir tmp( TmpDir_ );
+		tmp.cd( dirName );
+		return tmp;
 	}
 
 }
