@@ -70,6 +70,13 @@ namespace {
 		return tmp.join( ";;" );
 	}
 
+	inline QString archiveList() {
+		QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::ArchiveFormatsFilter().join( " " ) ) );
+		tmp << KomiX::ArchiveFormatsFilter();
+		qDebug() << tmp;
+		return tmp.join( ";;" );
+	}
+
 }
 
 namespace KomiX {
@@ -80,7 +87,7 @@ namespace KomiX {
 	}
 
 	inline const QString & MainWindow::archiveFilter_() {
-		static QString af = KomiX::ArchiveFormatsFilter().join( ";;" );
+		static QString af = archiveList();
 		return af;
 	}
 
