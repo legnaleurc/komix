@@ -58,7 +58,8 @@ namespace KomiX {
 	}
 
 	FileControllerBase::~FileControllerBase() {
-		qDebug() << rmdir( TmpDir_ );
+		int ret = rmdir( TmpDir_ );
+		qDebug() << ret;
 	}
 
 	bool FileControllerBase::open( const QString & filePath ) {
