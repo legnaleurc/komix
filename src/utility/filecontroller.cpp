@@ -41,7 +41,7 @@ namespace KomiX {
 	QObject( parent ),
 	prefetchMax_( pfMax ),
 	limit_( limit ),
-	dir_(),
+	dir_( QDir::home() ),
 	files_(),
 	index_( 0 ),
 	history_(),
