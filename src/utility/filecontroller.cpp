@@ -6,6 +6,7 @@
 #include <QProcess>
 #include <QtGlobal>
 #include <QApplication>
+#include <QFileInfo>
 
 #include <cstdlib>
 
@@ -23,12 +24,20 @@ namespace {
 		return tmpDir;
 	}
 
-	int rmdir( const QDir & dir ) {
-#ifdef Q_OS_WIN32
-		return std::system( QString( "RMDIR /S /Q %1" ).arg( QDir::toNativeSeparators( dir.absolutePath() ) ).toLocal8Bit().constData() );
-#elif defined( Q_OS_UNIX )
-		return QProcess::execute( "rm", QStringList() << "-rf" << dir.absolutePath() );
-#endif
+	int rmdir( QDir dir ) {
+		int sum = 0;
+		QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
+		foreach( QFileInfo e, entry ) {
+			if( e.isDir() ) {
+				sum += rmdir( e.absoluteFilePath() );
+			} else {
+				if( QFile::remove( e.absoluteFilePath() ) ) {
+					++sum;
+				}
+			}
+		}
+		dir.rmdir( dir.absolutePath() );
+		return sum + 1;
 	}
 
 }
