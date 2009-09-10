@@ -68,4 +68,13 @@ namespace KomiX {
 		return sff;
 	}
 
+	bool isArchiveSupported( const QString & path ) {
+		foreach( QString suffix, ArchiveFormats() ) {
+			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -36,6 +36,8 @@ namespace KomiX {
 
 	const QStringList & ArchiveFormatsFilter();
 
+	bool isArchiveSupported( const QString & path );
+
 }
 
 #endif

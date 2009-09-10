@@ -180,7 +180,7 @@ namespace KomiX {
 				files_ = tmpList;
 				index_ = 0;
 			}
-		} else if( ArchiveFormats().contains( tmp.completeSuffix(), Qt::CaseInsensitive ) ) {
+		} else if( isArchiveSupported( tmp.absoluteFilePath() ) ) {
 			QProcess * p = new QProcess();
 			qDebug() << ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() );
 			p->start( SevenZip_(), ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() ),  QIODevice::ReadOnly );
