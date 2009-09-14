@@ -243,7 +243,7 @@ namespace KomiX {
 		connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
 		connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
-		connect( &FileController::Instance(), SIGNAL( getImage( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
+		connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 	}
 
 	void MainWindow::initTrayIcon_() {
