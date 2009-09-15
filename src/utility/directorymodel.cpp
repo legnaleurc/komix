@@ -4,7 +4,7 @@
 namespace {
 
 	KomiX::FileModel * create( const QFileInfo & path ) {
-		return new KomiX::DirectoryModel( path.absoluteFilePath() );
+		return new KomiX::DirectoryModel( path );
 	}
 
 	bool check( const QFileInfo & path ) {
@@ -17,8 +17,8 @@ namespace {
 
 namespace KomiX {
 
-	DirectoryModel::DirectoryModel( const QString & root ):
-	root_( root ),
+	DirectoryModel::DirectoryModel( const QFileInfo & root ):
+	root_( root.absoluteFilePath() ),
 	files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ),
 	currentIndex_( 0 ) {
 	}

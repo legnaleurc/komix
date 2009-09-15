@@ -42,7 +42,7 @@ namespace KomiX {
 			 * If @p pfMax is greater than @p limit, it will sets to @p limit.
 			 */
 			FileController( int pfMax = 1, int limit = 8, QObject * parent = 0 );
-			virtual ~FileController();
+			//virtual ~FileController();
 
 			/**
 			 * @brief open a file or directory by path
@@ -132,10 +132,10 @@ namespace KomiX {
 			void imageLoaded( const QPixmap & image );
 
 		private:
-			static const QString & SevenZip_();
-			static QStringList Arguments_( const QString & );
-			static QDir ArchiveDir_( const QString & );
-			static const QDir TmpDir_;
+			//static const QString & SevenZip_();
+			//static QStringList Arguments_( const QString & );
+			//static QDir ArchiveDir_( const QString & );
+			//static const QDir TmpDir_;
 
 			void prefetch_( int index );
 			const QPixmap & fetch_( const QString & );

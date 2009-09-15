@@ -10,7 +10,7 @@ namespace KomiX {
 
 	class DirectoryModel : public FileModel {
 	public:
-		DirectoryModel( const QString & root );
+		DirectoryModel( const QFileInfo & root );
 
 	private:
 		QDir root_;

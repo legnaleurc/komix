@@ -12,17 +12,17 @@
 
 namespace {
 
-	QDir createTmpDir() {
-		qsrand( qApp->applicationPid() );
-		QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
-		QDir tmpDir( QDir::temp() );
-		if( !tmpDir.mkdir( tmpPath ) ) {
-			qWarning( "can not make temp dir" );
-		} else {
-			tmpDir.cd( tmpPath );
-		}
-		return tmpDir;
-	}
+	//QDir createTmpDir() {
+	//	qsrand( qApp->applicationPid() );
+	//	QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
+	//	QDir tmpDir( QDir::temp() );
+	//	if( !tmpDir.mkdir( tmpPath ) ) {
+	//		qWarning( "can not make temp dir" );
+	//	} else {
+	//		tmpDir.cd( tmpPath );
+	//	}
+	//	return tmpDir;
+	//}
 
 	int rmdir( QDir dir ) {
 		int sum = 0;
@@ -46,7 +46,7 @@ namespace KomiX {
 
 	namespace private_ {
 
-		const QDir FileController::TmpDir_ = createTmpDir();
+		//const QDir FileController::TmpDir_ = createTmpDir();
 
 		FileController::FileController( int pfMax, int limit, QObject * parent ) :
 		QObject( parent ),
@@ -68,10 +68,10 @@ namespace KomiX {
 			}
 		}
 
-		FileController::~FileController() {
-			int ret = rmdir( TmpDir_ );
-			qDebug() << ret;
-		}
+		//FileController::~FileController() {
+		//	int ret = rmdir( TmpDir_ );
+		//	qDebug() << ret;
+		//}
 
 		bool FileController::open( const QString & filePath ) {
 			QMutexLocker locker( &lock_ );
@@ -187,29 +187,29 @@ namespace KomiX {
 //					index_ = 0;
 //				}
 			} else if( isArchiveSupported( tmp.absoluteFilePath() ) ) {
-				QProcess * p = new QProcess();
-				qDebug() << ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() );
-				p->start( SevenZip_(), ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() ),  QIODevice::ReadOnly );
-				p->waitForFinished( -1 );
+				//QProcess * p = new QProcess();
+				//qDebug() << ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() );
+				//p->start( SevenZip_(), ( Arguments_( tmp.fileName() ) << tmp.absoluteFilePath() ),  QIODevice::ReadOnly );
+				//p->waitForFinished( -1 );
 
-				if( p->exitCode() != 0 ) {
-					qWarning() << p->readAllStandardOutput();
-					qWarning() << p->readAllStandardError();
-					return false;
-				} else {
-					QDir aDir = ArchiveDir_( tmp.fileName() );
-					if( dir_ == aDir ) {
-						return false;
-					} else {
-						QStringList tmpList = aDir.entryList( SupportedFormatsFilter(), QDir::Files );
-						if( tmpList.isEmpty() ) {
-							return false;
-						}
-						dir_ = aDir;
-						files_ = tmpList;
-						index_ = 0;
-					}
-				}
+				//if( p->exitCode() != 0 ) {
+				//	qWarning() << p->readAllStandardOutput();
+				//	qWarning() << p->readAllStandardError();
+				//	return false;
+				//} else {
+				//	QDir aDir = ArchiveDir_( tmp.fileName() );
+				//	if( dir_ == aDir ) {
+				//		return false;
+				//	} else {
+				//		QStringList tmpList = aDir.entryList( SupportedFormatsFilter(), QDir::Files );
+				//		if( tmpList.isEmpty() ) {
+				//			return false;
+				//		}
+				//		dir_ = aDir;
+				//		files_ = tmpList;
+				//		index_ = 0;
+				//	}
+				//}
 			} else {
 				if( dir_ == tmp.dir() ) {
 					if( files_[index_] == tmp.fileName() ) {
@@ -227,30 +227,30 @@ namespace KomiX {
 			return true;
 		}
 
-		const QString & FileController::SevenZip_() {
-	#ifdef Q_OS_WIN32
-			static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
-	#elif defined( Q_OS_UNIX )
-			static QString sz = "/usr/bin/7z";
-	#endif
-			return sz;
-		}
+	//	const QString & FileController::SevenZip_() {
+	//#ifdef Q_OS_WIN32
+	//		static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
+	//#elif defined( Q_OS_UNIX )
+	//		static QString sz = "/usr/bin/7z";
+	//#endif
+	//		return sz;
+	//	}
 
-		QStringList FileController::Arguments_( const QString & fileName ) {
-			QStringList args( "e" );
-			args << QString( "-o%1" ).arg( ArchiveDir_( fileName ).absolutePath() );
-			args << "-aos";
-			return args;
-		}
+	//	QStringList FileController::Arguments_( const QString & fileName ) {
+	//		QStringList args( "e" );
+	//		args << QString( "-o%1" ).arg( ArchiveDir_( fileName ).absolutePath() );
+	//		args << "-aos";
+	//		return args;
+	//	}
 
-		QDir FileController::ArchiveDir_( const QString & dirName ) {
-			if( !TmpDir_.exists( dirName ) ) {
-				TmpDir_.mkdir( dirName );
-			}
-			QDir tmp( TmpDir_ );
-			tmp.cd( dirName );
-			return tmp;
-		}
+		//QDir FileController::ArchiveDir_( const QString & dirName ) {
+		//	if( !TmpDir_.exists( dirName ) ) {
+		//		TmpDir_.mkdir( dirName );
+		//	}
+		//	QDir tmp( TmpDir_ );
+		//	tmp.cd( dirName );
+		//	return tmp;
+		//}
 
 	}
 
