@@ -24,7 +24,8 @@ namespace KomiX {
 		FileController::FileController( QObject * parent ) :
 		QObject( parent ),
 		dir_( QDir::home() ),
-		index_( 0 ) {
+		index_( 0 ),
+		model_( NULL ) {
 		}
 
 		bool FileController::open( const QString & filePath ) {
