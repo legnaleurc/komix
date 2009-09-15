@@ -55,13 +55,9 @@ namespace KomiX {
 	}
 
 	int DirectoryModel::rowCount( const QModelIndex & parent ) const {
-		if( !parent.isValid() ) {
+		if( !parent.isValid() || parent.column() == 0 ) {
 			return files_.size();
-		}
-		switch( parent.column() ) {
-		case 0:
-			return files_.size();
-		case 1:
+		} else {
 			return 0;
 		}
 	}
@@ -86,6 +82,14 @@ namespace KomiX {
 			break;
 		}
 		return QVariant();
+	}
+
+	bool DirectoryModel::hasChildren( const QModelIndex & parent ) const {
+		if( !parent.isValid() || parent.column() == 0 ) {
+			return !files_.empty();
+		} else {
+			return false;
+		}
 	}
 
 }
