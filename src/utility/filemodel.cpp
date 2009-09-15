@@ -34,4 +34,16 @@ namespace KomiX {
 		return that.first( path_ );
 	}
 
+	bool FileModel::isEmpty() const {
+		return files_.empty();
+	}
+
+	void FileModel::setFileList( const QStringList & files ) {
+		files_ = files;
+	}
+
+	const QStringList & FileModel::getFileList() const {
+		return files_;
+	}
+
 }

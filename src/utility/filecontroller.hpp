@@ -41,7 +41,7 @@ namespace KomiX {
 			 * If @p pfMax and @p limit are less than 0, it will sets to 0.\n
 			 * If @p pfMax is greater than @p limit, it will sets to @p limit.
 			 */
-			FileController( int pfMax = 1, int limit = 8, QObject * parent = 0 );
+			FileController( /*int pfMax = 1, int limit = 8,*/ QObject * parent = 0 );
 			//virtual ~FileController();
 
 			/**
@@ -63,13 +63,13 @@ namespace KomiX {
 			 *
 			 * If @p pfMax greater than limit, sets to limit.
 			 */
-			void setPrefetchMax( int pfMax );
+			//void setPrefetchMax( int pfMax );
 			/**
 			 * @brief get max prefetch count
 			 * @return max count
 			 * @sa setPrefetchMax()
 			 */
-			int getPrefetchMax() const;
+			//int getPrefetchMax() const;
 			/**
 			 * @brief set max cache count
 			 * @param limit max count
@@ -77,23 +77,23 @@ namespace KomiX {
 			 *
 			 * If @p limit less than 0, sets to 0.
 			 */
-			void setLimit( int limit );
+			//void setLimit( int limit );
 			/**
 			 * @brief set max cache count
 			 * @return max count
 			 * @sa setLimit()
 			 */
-			int getLimit() const;
+			//int getLimit() const;
 			/**
 			 * @brief get current directory path
 			 * @return directory path
 			 */
-			QString getDirPath() const;
+			//QString getDirPath() const;
 			/**
 			 * @brief get current file path
 			 * @return file path
 			 */
-			QString getFilePath() const;
+			//QString getFilePath() const;
 
 			/**
 			 * @brief get image by file path
@@ -104,7 +104,7 @@ namespace KomiX {
 			 * This function well update cache list, that's why it's not
 			 * const member function.
 			 */
-			const QPixmap & getImage( const QString & filePath );
+			//const QPixmap & getImage( const QString & filePath );
 
 		public slots:
 			/**
@@ -137,17 +137,17 @@ namespace KomiX {
 			//static QDir ArchiveDir_( const QString & );
 			//static const QDir TmpDir_;
 
-			void prefetch_( int index );
-			const QPixmap & fetch_( const QString & );
+			//void prefetch_( int index );
+			//const QPixmap & fetch_( const QString & );
 			bool updateModel_( const QString & );
 
-			int prefetchMax_;
-			int limit_;
+			//int prefetchMax_;
+			//int limit_;
 			QDir dir_;
 			QStringList files_;
 			int index_;
-			QQueue< QString > history_;
-			QMap< QString, QPixmap > cache_;
+			//QQueue< QString > history_;
+			//QMap< QString, QPixmap > cache_;
 			QMutex lock_;
 
 			FileModel * fileModel_;
