@@ -18,7 +18,11 @@ namespace KomiX {
 	FileModel * FileModel::createModel( const QFileInfo & path ) {
 		QMutexLocker locker( &::lock );
 		FunctorList::const_iterator it = find_if( functorList_.begin(), functorList_.end(), Matcher( path ) );
-		return it->second( path );
+		if( it == functorList_.end() ) {
+			return NULL;
+		} else {
+			return it->second( path );
+		}
 	}
 
 	bool FileModel::registerModel( const KeyFunctor & key, const ValueFunctor & value ) {
