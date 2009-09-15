@@ -7,18 +7,24 @@
 
 namespace {
 
-	static QMutex lock;
+	static inline QMutex * lock() {
+		static QMutex m;
+		return &m;
+	}
 
 }
 
 namespace KomiX {
 
-	FileModel::FunctorList FileModel::functorList_;
+	FileModel::FunctorList & FileModel::getFunctorList_() {
+		static FileModel::FunctorList fl;
+		return fl;
+	}
 
 	FileModel * FileModel::createModel( const QFileInfo & path ) {
-		QMutexLocker locker( &::lock );
-		FunctorList::const_iterator it = find_if( functorList_.begin(), functorList_.end(), Matcher( path ) );
-		if( it == functorList_.end() ) {
+		QMutexLocker locker( ::lock() );
+		FunctorList::const_iterator it = find_if( getFunctorList_().begin(), getFunctorList_().end(), Matcher( path ) );
+		if( it == getFunctorList_().end() ) {
 			return NULL;
 		} else {
 			return it->second( path );
@@ -26,8 +32,8 @@ namespace KomiX {
 	}
 
 	bool FileModel::registerModel( const KeyFunctor & key, const ValueFunctor & value ) {
-		QMutexLocker locker( &::lock );
-		functorList_.push_back( std::make_pair( key, value ) );
+		QMutexLocker locker( ::lock() );
+		getFunctorList_().push_back( std::make_pair( key, value ) );
 		return true;
 	}
 

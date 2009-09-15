@@ -29,7 +29,7 @@ namespace KomiX {
 			QFileInfo path_;
 		};
 
-		static FunctorList functorList_;
+		static FunctorList & getFunctorList_();
 	};
 
 }

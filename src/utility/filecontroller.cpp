@@ -13,7 +13,10 @@
 
 namespace {
 
-	static QMutex lock;
+	static inline QMutex * lock() {
+		static QMutex m;
+		return &m;
+	}
 
 }
 
@@ -29,7 +32,7 @@ namespace KomiX {
 		}
 
 		bool FileController::open( const QString & filePath ) {
-			QMutexLocker locker( &lock );
+			QMutexLocker locker( ::lock() );
 			model_ = FileModel::createModel( QFileInfo( filePath ) );
 			if( isEmpty() ) {
 				return false;
@@ -42,7 +45,7 @@ namespace KomiX {
 		}
 
 		void FileController::next() {
-			QMutexLocker locker( &lock );
+			QMutexLocker locker( ::lock() );
 			if( !isEmpty() ) {
 				++index_;
 				if( index_ >= model_->rowCount() ) {
@@ -56,7 +59,7 @@ namespace KomiX {
 		}
 
 		void FileController::prev() {
-			QMutexLocker locker( &lock );
+			QMutexLocker locker( ::lock() );
 			if( !isEmpty() ) {
 				--index_;
 				if( index_ < 0 ) {
