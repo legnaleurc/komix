@@ -51,6 +51,8 @@ namespace KomiX {
 
 			/// check if there has openable files.
 			bool isEmpty() const;
+
+			FileModel * getFileModel() const;
 			/**
 			 * @brief get current directory path
 			 * @return directory path

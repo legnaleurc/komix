@@ -34,7 +34,8 @@ namespace KomiX {
 			if( isEmpty() ) {
 				return false;
 			} else {
-				QModelIndex first = model_->index( 0, 0 );
+				index_ = 0;
+				QModelIndex first = model_->index( index_, 0 );
 				emit imageLoaded( first.data( Qt::UserRole ).value< QPixmap >() );
 				return true;
 			}
@@ -72,6 +73,10 @@ namespace KomiX {
 				return true;
 			}
 			return model_->rowCount() == 0;
+		}
+
+		FileModel * FileController::getFileModel() const {
+			return model_;
 		}
 
 	}
