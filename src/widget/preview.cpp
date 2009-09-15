@@ -18,7 +18,7 @@ namespace KomiX {
 
 		view_ = new QListView( this );
 
-		model_ = FileController::Instance().getFileModel();
+		//model_ = FileController::Instance().getFileModel();
 		//model_->setNameFilters( SupportedFormatsFilter() );
 
 		view_->setModel( model_ );
@@ -42,8 +42,10 @@ namespace KomiX {
 
 	void Preview::listDirectory() {
 		// FIXME
+		model_ = FileController::Instance().getFileModel();
+		view_->setModel( model_ );
 		view_->setRootIndex( model_->index( 0, 0 ) );
-		view_->setCurrentIndex( model_->index( 0, 0 ) );
+		view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();
 	}
 
