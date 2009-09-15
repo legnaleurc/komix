@@ -211,17 +211,17 @@ namespace KomiX {
 				//	}
 				//}
 			} else {
-				if( dir_ == tmp.dir() ) {
-					if( files_[index_] == tmp.fileName() ) {
-						return false;
-					} else {
-						index_ = files_.indexOf( tmp.fileName() );
-					}
-				} else {
-					dir_ = tmp.dir();
-					files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
-					index_ = files_.indexOf( tmp.fileName() );
-				}
+				//if( dir_ == tmp.dir() ) {
+				//	if( files_[index_] == tmp.fileName() ) {
+				//		return false;
+				//	} else {
+				//		index_ = files_.indexOf( tmp.fileName() );
+				//	}
+				//} else {
+				//	dir_ = tmp.dir();
+				//	files_ = dir_.entryList( SupportedFormatsFilter(), QDir::Files );
+				//	index_ = files_.indexOf( tmp.fileName() );
+				//}
 			}
 			prefetch_( index_ );
 			return true;
