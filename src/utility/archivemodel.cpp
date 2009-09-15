@@ -35,12 +35,12 @@ namespace {
 		return tmpDir;
 	}
 
-	int rmdir( QDir dir ) {
+	int deltree( QDir dir ) {
 		int sum = 0;
 		QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
 		foreach( QFileInfo e, entry ) {
 			if( e.isDir() ) {
-				sum += rmdir( e.absoluteFilePath() );
+				sum += deltree( e.absoluteFilePath() );
 			} else {
 				if( QFile::remove( e.absoluteFilePath() ) ) {
 					++sum;
@@ -74,7 +74,7 @@ namespace KomiX {
 	}
 
 	ArchiveModel::~ArchiveModel() {
-		int ret = ::rmdir( TmpDir_ );
+		int ret = ::deltree( TmpDir_ );
 		qDebug() << ret;
 	}
 
