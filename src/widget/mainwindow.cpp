@@ -107,7 +107,7 @@ namespace KomiX {
 		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
-		connect( preview_, SIGNAL( open( const QString & ) ), this, SLOT( open( const QString & ) ) );
+		connect( preview_, SIGNAL( required( const QModelIndex & ) ), this, SLOT( open( const QModelIndex & ) ) );
 	}
 
 	void MainWindow::initMenuBar_() {
@@ -340,31 +340,35 @@ namespace KomiX {
 		}
 	}
 
+	void MainWindow::open( const QModelIndex & item ) {
+		imageArea_->setImage( item.data( Qt::UserRole ).value< QPixmap >() );
+	}
+
 	void MainWindow::openFileDialog() {
 // 		qDebug( "<MainWindow::openFileDialog()>" );
 // 		qDebug() << fileFilter_();
 // 		qDebug( "</MainWindow::openFileDialog()>" );
 		// FIXME
-		//QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
-		//if( !filePath.isEmpty() ) {
-		//	open( filePath );
-		//}
+		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), QDir::homePath(), fileFilter_() );
+		if( !filePath.isEmpty() ) {
+			open( filePath );
+		}
 	}
 
 	void MainWindow::openDirDialog() {
 		// FIXME
-		//QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
-		//if( !dirPath.isEmpty() ) {
-		//	open( dirPath );
-		//}
+		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), QDir::homePath() );
+		if( !dirPath.isEmpty() ) {
+			open( dirPath );
+		}
 	}
 
 	void MainWindow::openArchiveDialog() {
 		// FIXME
-		//QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), FileController::Instance().getDirPath(), archiveFilter_() );
-		//if( !archivePath.isEmpty() ) {
-		//	open( archivePath );
-		//}
+		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
+		if( !archivePath.isEmpty() ) {
+			open( archivePath );
+		}
 	}
 
 	void MainWindow::toggleFullScreen() {

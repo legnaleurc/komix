@@ -9,6 +9,7 @@
 
 #include <QDir>
 #include <QPixmap>
+#include <QModelIndex>
 
 #include <loki/Singleton.h>
 
