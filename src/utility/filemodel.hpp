@@ -1,32 +1,21 @@
 #ifndef KOMIX_FILEMODEL_HPP
 #define KOMIX_FILEMODEL_HPP
 
+#include <QAbstractItemModel>
 #include <QFileInfo>
-#include <QStringList>
-#include <QPixmap>
 
 #include <list>
 #include <utility>
 
 namespace KomiX {
 
-	class FileModel {
+	class FileModel : public QAbstractItemModel {
 	public:
 		typedef bool ( * KeyFunctor )( const QFileInfo & );
 		typedef FileModel * ( * ValueFunctor )( const QFileInfo & );
 
 		static FileModel * createModel( const QFileInfo & path );
 		static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
-
-		bool isEmpty() const;
-
-		QPixmap getImage( int index ) const;
-		QPixmap next() const;
-		QPixmap prev() const;
-
-	protected:
-		void setFileList( const QStringList & files );
-		const QStringList & getFileList() const;
 
 	private:
 		typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
@@ -41,8 +30,6 @@ namespace KomiX {
 		};
 
 		static FunctorList functorList_;
-
-		QStringList files_;
 	};
 
 }

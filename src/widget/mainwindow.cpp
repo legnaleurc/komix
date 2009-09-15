@@ -344,24 +344,27 @@ namespace KomiX {
 // 		qDebug( "<MainWindow::openFileDialog()>" );
 // 		qDebug() << fileFilter_();
 // 		qDebug( "</MainWindow::openFileDialog()>" );
-		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
-		if( !filePath.isEmpty() ) {
-			open( filePath );
-		}
+		// FIXME
+		//QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
+		//if( !filePath.isEmpty() ) {
+		//	open( filePath );
+		//}
 	}
 
 	void MainWindow::openDirDialog() {
-		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
-		if( !dirPath.isEmpty() ) {
-			open( dirPath );
-		}
+		// FIXME
+		//QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
+		//if( !dirPath.isEmpty() ) {
+		//	open( dirPath );
+		//}
 	}
 
 	void MainWindow::openArchiveDialog() {
-		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), FileController::Instance().getDirPath(), archiveFilter_() );
-		if( !archivePath.isEmpty() ) {
-			open( archivePath );
-		}
+		// FIXME
+		//QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), FileController::Instance().getDirPath(), archiveFilter_() );
+		//if( !archivePath.isEmpty() ) {
+		//	open( archivePath );
+		//}
 	}
 
 	void MainWindow::toggleFullScreen() {

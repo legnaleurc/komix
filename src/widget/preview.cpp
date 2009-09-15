@@ -38,8 +38,9 @@ namespace KomiX {
 	}
 
 	void Preview::listDirectory() {
-		view_.setRootIndex( model_.index( FileController::Instance().getDirPath() ) );
-		view_.setCurrentIndex( model_.index( FileController::Instance().getFilePath() ) );
+		// FIXME
+		//view_.setRootIndex( model_.index( FileController::Instance().getDirPath() ) );
+		//view_.setCurrentIndex( model_.index( FileController::Instance().getFilePath() ) );
 		exec();
 	}
 
@@ -52,7 +53,8 @@ namespace KomiX {
 	void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 		qDebug( "Preview::viewImage_()" );
 		qDebug() << model_.filePath( current );
-		image_.setPixmap( FileController::Instance().getImage( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
+		// FIXME
+		//image_.setPixmap( FileController::Instance().getImage( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
 	}
 
 }

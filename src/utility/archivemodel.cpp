@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <QDir>
 #include <QApplication>
+#include <QPixmap>
 
 namespace {
 
@@ -67,11 +68,8 @@ namespace KomiX {
 			qWarning() << p->readAllStandardError();
 			// TODO: ERROR HERE
 		} else {
-			QDir aDir = ArchiveDir_( root.fileName() );
-			QStringList tmpList = aDir.entryList( SupportedFormatsFilter(), QDir::Files );
-			dir_ = aDir;
-			files_ = tmpList;
-			index_ = 0;
+			root_ = ArchiveDir_( root.fileName() );;
+			files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
 		}
 	}
 
@@ -103,6 +101,42 @@ namespace KomiX {
 		QDir tmp( TmpDir_ );
 		tmp.cd( dirName );
 		return tmp;
+	}
+
+	QModelIndex ArchiveModel::index( int row, int /*column*/, const QModelIndex & /*parent*/ ) const {
+		if( row < 0 || row >= files_.size() ) {
+			return QModelIndex();
+		} else {
+			// FIXME: parameter 3 needs change
+			return createIndex( row, 0, row );
+		}
+	}
+
+	QModelIndex ArchiveModel::parent( const QModelIndex & /*child*/ ) const {
+		return QModelIndex();
+	}
+
+	int ArchiveModel::rowCount( const QModelIndex & /*parent*/ ) const {
+		return files_.size();
+	}
+
+	int ArchiveModel::columnCount( const QModelIndex & /*parent*/ ) const {
+		return 1;
+	}
+
+	QVariant ArchiveModel::data( const QModelIndex & index, int role ) const {
+		if( !index.isValid() || index.row() < 0 || index.row() >= files_.size() ) {
+			return QVariant();
+		} else {
+			switch( role ) {
+			case Qt::DisplayRole:
+				return files_[index.row()];
+			case Qt::UserRole:
+				return QPixmap( root_.filePath( files_[index.row()] ) );
+			default:
+				return QVariant();
+			}
+		}
 	}
 
 }
