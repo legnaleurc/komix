@@ -8,11 +8,7 @@
 #include "filemodel.hpp"
 
 #include <QDir>
-#include <QStringList>
 #include <QPixmap>
-#include <QQueue>
-#include <QMap>
-#include <QMutex>
 
 #include <loki/Singleton.h>
 
@@ -41,8 +37,7 @@ namespace KomiX {
 			 * If @p pfMax and @p limit are less than 0, it will sets to 0.\n
 			 * If @p pfMax is greater than @p limit, it will sets to @p limit.
 			 */
-			FileController( /*int pfMax = 1, int limit = 8,*/ QObject * parent = 0 );
-			//virtual ~FileController();
+			FileController( QObject * parent = 0 );
 
 			/**
 			 * @brief open a file or directory by path
@@ -56,34 +51,6 @@ namespace KomiX {
 
 			/// check if there has openable files.
 			bool isEmpty() const;
-			/**
-			 * @brief set max prefetch count
-			 * @param pfMax max count
-			 * @sa getPrefetchMax()
-			 *
-			 * If @p pfMax greater than limit, sets to limit.
-			 */
-			//void setPrefetchMax( int pfMax );
-			/**
-			 * @brief get max prefetch count
-			 * @return max count
-			 * @sa setPrefetchMax()
-			 */
-			//int getPrefetchMax() const;
-			/**
-			 * @brief set max cache count
-			 * @param limit max count
-			 * @sa getLimit()
-			 *
-			 * If @p limit less than 0, sets to 0.
-			 */
-			//void setLimit( int limit );
-			/**
-			 * @brief set max cache count
-			 * @return max count
-			 * @sa setLimit()
-			 */
-			//int getLimit() const;
 			/**
 			 * @brief get current directory path
 			 * @return directory path
@@ -132,25 +99,10 @@ namespace KomiX {
 			void imageLoaded( const QPixmap & image );
 
 		private:
-			//static const QString & SevenZip_();
-			//static QStringList Arguments_( const QString & );
-			//static QDir ArchiveDir_( const QString & );
-			//static const QDir TmpDir_;
-
-			//void prefetch_( int index );
-			//const QPixmap & fetch_( const QString & );
-			bool updateModel_( const QString & );
-
-			//int prefetchMax_;
-			//int limit_;
 			QDir dir_;
-			QStringList files_;
 			int index_;
-			//QQueue< QString > history_;
-			//QMap< QString, QPixmap > cache_;
-			QMutex lock_;
 
-			FileModel * fileModel_;
+			FileModel * model_;
 		};
 
 	}

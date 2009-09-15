@@ -7,8 +7,15 @@
 #include <QtGlobal>
 #include <QApplication>
 #include <QFileInfo>
+#include <QMutex>
 
 #include <cstdlib>
+
+namespace {
+
+	static QMutex lock;
+
+}
 
 namespace KomiX {
 
@@ -17,15 +24,13 @@ namespace KomiX {
 		FileController::FileController( QObject * parent ) :
 		QObject( parent ),
 		dir_( QDir::home() ),
-		files_(),
-		index_( 0 ),
-		lock_() {
+		index_( 0 ) {
 		}
 
 		bool FileController::open( const QString & filePath ) {
-			QMutexLocker locker( &lock_ );
-			// check if filePath has been load, to avoid reload event
-			if( !updateModel_( filePath ) ) {
+			QMutexLocker locker( &lock );
+			model_ = FileModel::createModel( QFileInfo( filePath ) );
+			if( !model_ ) {
 				return false;
 			} else {
 				// FIXME
@@ -35,7 +40,7 @@ namespace KomiX {
 		}
 
 		void FileController::next() {
-			QMutexLocker locker( &lock_ );
+			QMutexLocker locker( &lock );
 			//if( !fileModel_->isEmpty() ) {
 				//++index_;
 				//if( index_ >= files_.size() ) {
@@ -48,7 +53,7 @@ namespace KomiX {
 		}
 
 		void FileController::prev() {
-			QMutexLocker locker( &lock_ );
+			QMutexLocker locker( &lock );
 			//if( !files_.empty() ) {
 			//	--index_;
 			//	if( index_ < 0 ) {
@@ -60,16 +65,10 @@ namespace KomiX {
 		}
 
 		bool FileController::isEmpty() const {
-			return true;
-		}
-
-		bool FileController::updateModel_( const QString & filePath ) {
-			fileModel_ = FileModel::createModel( QFileInfo( filePath ) );
-			//if( fileModel_ && !fileModel_->isEmpty() ) {
-			//	return true;
-			//} else {
-				return false;
-			//}
+			if( !model_ ) {
+				return true;
+			}
+			return model_->rowCount() == 0;
 		}
 
 	}
