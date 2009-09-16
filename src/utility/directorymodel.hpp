@@ -12,6 +12,8 @@ namespace KomiX {
 	public:
 		DirectoryModel( const QFileInfo & root );
 
+		virtual QModelIndex index() const;
+
 		virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
 		virtual QModelIndex parent( const QModelIndex & child ) const;
 		virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;

@@ -24,6 +24,11 @@ namespace KomiX {
 	files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 	}
 
+	QModelIndex DirectoryModel::index() const {
+		return createIndex( 0, 0, -1 );
+	}
+
+
 	QModelIndex DirectoryModel::index( int row, int column, const QModelIndex & /*parent*/ ) const {
 		switch( column ) {
 		case 0:

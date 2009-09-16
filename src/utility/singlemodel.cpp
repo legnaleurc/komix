@@ -28,13 +28,17 @@ namespace KomiX {
 	files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 	}
 
+	QModelIndex SingleModel::index() const {
+		return createIndex( 0, 0, -1 );
+	}
+
 	QModelIndex SingleModel::index( int row, int column, const QModelIndex & parent ) const {
 		if( !parent.isValid() ) {
 			return QModelIndex();
 		}
 		switch( parent.column() ) {
 		case 0:
-			return createIndex( row, 0, row );
+			return createIndex( row, 1, row );
 		default:
 			return QModelIndex();
 		}

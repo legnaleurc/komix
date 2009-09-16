@@ -103,6 +103,11 @@ namespace KomiX {
 		return tmp;
 	}
 
+	QModelIndex ArchiveModel::index() const {
+		return createIndex( 0, 0, -1 );
+	}
+
+
 	QModelIndex ArchiveModel::index( int row, int column, const QModelIndex & /*parent*/ ) const {
 		switch( column ) {
 		case 0:
