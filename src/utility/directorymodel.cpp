@@ -25,75 +25,71 @@ namespace KomiX {
 	}
 
 	QModelIndex DirectoryModel::index() const {
-		return createIndex( 0, 0, -1 );
+		return QModelIndex();
 	}
 
 
-	QModelIndex DirectoryModel::index( int row, int column, const QModelIndex & /*parent*/ ) const {
-		switch( column ) {
-		case 0:
-			return createIndex( 0, column, -1 );
-			break;
-		case 1:
-			if( row < 0 || row >= files_.size() ) {
-				return QModelIndex();
+	QModelIndex DirectoryModel::index( int row, int column, const QModelIndex & parent ) const {
+		if( !parent.isValid() ) {
+			// query from root
+			if( column == 0 && row >= 0 && row < files_.size() ) {
+				return createIndex( row, 0, row );
 			} else {
-				// FIXME: parameter 3 needs change
-				return createIndex( row, column, row );
+				return QModelIndex();
 			}
-		default:
+		} else {
+			// other node has no child
 			return QModelIndex();
 		}
 	}
 
 	QModelIndex DirectoryModel::parent( const QModelIndex & child ) const {
-		switch( child.column() ) {
-		case 0:
-			break;
-		case 1:
-			if( child.row() >= 0 && child.row() < files_.size() ) {
-				return createIndex( 0, 0, -1 );
+		if( !child.isValid() ) {
+			// root has no parent
+			return QModelIndex();
+		} else {
+			if( child.column() == 0 && child.row() >= 0 && child.row() < files_.size() ) {
+				return QModelIndex();
+			} else {
+				return QModelIndex();
 			}
-			break;
 		}
-		return QModelIndex();
 	}
 
 	int DirectoryModel::rowCount( const QModelIndex & parent ) const {
-		if( !parent.isValid() || parent.column() == 0 ) {
+		if( !parent.isValid() ) {
+			// root row size
 			return files_.size();
 		} else {
+			// others are leaf
 			return 0;
 		}
 	}
 
 	int DirectoryModel::columnCount( const QModelIndex & /*parent*/ ) const {
-		return 0;
+		return 1;
 	}
 
 	QVariant DirectoryModel::data( const QModelIndex & index, int role ) const {
+		if( !index.isValid() ) {
+			return QVariant();
+		}
 		switch( index.column() ) {
 		case 0:
-			break;
-		case 1:
-			if( index.isValid() && index.row() >= 0 && index.row() < files_.size() ) {
+			if( index.row() >= 0 && index.row() < files_.size() ) {
 				switch( role ) {
 				case Qt::DisplayRole:
 					return files_[index.row()];
 				case Qt::UserRole:
 					return QPixmap( root_.filePath( files_[index.row()] ) );
+				default:
+					return QVariant();
 				}
+			} else {
+				return QVariant();
 			}
-			break;
-		}
-		return QVariant();
-	}
-
-	bool DirectoryModel::hasChildren( const QModelIndex & parent ) const {
-		if( !parent.isValid() || parent.column() == 0 ) {
-			return !files_.empty();
-		} else {
-			return false;
+		default:
+			return QVariant();
 		}
 	}
 
