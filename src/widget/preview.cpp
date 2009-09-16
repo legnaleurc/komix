@@ -5,22 +5,21 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 #include <QtDebug>
 
 namespace KomiX {
 
 	Preview::Preview( QWidget * parent, Qt::WindowFlags f ) :
 	QDialog( parent, f ),
-	model_( SupportedFormatsFilter(), QDir::Files, QDir::Name, this ),
-	view_( this ),
+	model_( NULL ),
+	view_( NULL ),
+	selection_( NULL ),
 	image_( this ) {
 		setModal( true );
 
-		model_.setNameFilters( SupportedFormatsFilter() );
-
-		view_.setFixedSize( 160, 480 );
-		view_.setModel( &model_ );
-		connect( view_.selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+		view_ = new QListView( this );
+		view_->setFixedSize( 160, 480 );
 
 		image_.setFixedSize( 480, 480 );
 		image_.setAlignment( Qt::AlignCenter );
@@ -30,7 +29,7 @@ namespace KomiX {
 		connect( buttonBox, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
 
 		QHBoxLayout * topFrame = new QHBoxLayout;
-		topFrame->addWidget( &view_ );
+		topFrame->addWidget( view_ );
 		topFrame->addWidget( &image_ );
 
 		QVBoxLayout * mainFrame = new QVBoxLayout( this );
@@ -39,21 +38,32 @@ namespace KomiX {
 	}
 
 	void Preview::listDirectory() {
-		view_.setRootIndex( model_.index( FileController::Instance().getDirPath() ) );
-		view_.setCurrentIndex( model_.index( FileController::Instance().getFilePath() ) );
+		if( FileController::Instance().isEmpty() ) {
+			QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
+			return;
+		}
+		model_ = FileController::Instance().getFileModel();
+		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+		view_->setModel( model_ );
+		selection_ = view_->selectionModel();
+		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+		view_->setRootIndex( model_->index() );
+		// FIXME
+		//view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();
 	}
 
 	void Preview::openHelper_() {
-		qDebug() << "Send: " << model_.filePath( view_.currentIndex() );
-		emit open( model_.filePath( view_.currentIndex() ) );
+		qDebug() << "Send: " << view_->currentIndex();
+		emit required( view_->currentIndex() );
 		accept();
 	}
 
 	void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 		qDebug( "Preview::viewImage_()" );
-		qDebug() << model_.filePath( current );
-		image_.setPixmap( FileController::Instance().getImage( model_.filePath( current ) ).scaled( image_.size(), Qt::KeepAspectRatio ) );
+		qDebug() << current;
+		// FIXME
+		image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );
 	}
 
 }

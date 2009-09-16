@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QSystemTrayIcon>
+#include <QModelIndex>
 
 namespace KomiX {
 
@@ -42,7 +43,8 @@ namespace KomiX {
 		 * @brief open file
 		 * @param filePath file path
 		 */
-		void open( const QString & filePath );
+		void open( const QString & path );
+		void open( const QModelIndex & item );
 		/// open file dialog
 		void openFileDialog();
 		/// open directory dialog
@@ -57,7 +59,6 @@ namespace KomiX {
 
 	private slots:
 		void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
-		void previewHelper_();
 
 	private:
 		void initMenuBar_();

@@ -5,9 +5,11 @@
 #ifndef KOMIX_PREVIEW_HPP
 #define KOMIX_PREVIEW_HPP
 
+#include "filemodel.hpp"
+
 #include <QDialog>
 #include <QListView>
-#include <QDirModel>
+#include <QItemSelectionModel>
 #include <QLabel>
 
 namespace KomiX {
@@ -29,6 +31,7 @@ namespace KomiX {
 		 */
 		Preview( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
+	public slots:
 		/**
 		 * @brief list all supported files in opened directory
 		 *
@@ -42,11 +45,12 @@ namespace KomiX {
 		 * @brief open file
 		 * @param filePath file path
 		 */
-		void open( const QString & filePath );
+		void required( const QModelIndex & item );
 	
 	private:
-		QDirModel model_;
-		QListView view_;
+		FileModel * model_;
+		QListView * view_;
+		QItemSelectionModel * selection_;
 		QLabel image_;
 	
 	private slots:

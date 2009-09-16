@@ -107,7 +107,7 @@ namespace KomiX {
 		scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
-		connect( preview_, SIGNAL( open( const QString & ) ), this, SLOT( open( const QString & ) ) );
+		connect( preview_, SIGNAL( required( const QModelIndex & ) ), this, SLOT( open( const QModelIndex & ) ) );
 	}
 
 	void MainWindow::initMenuBar_() {
@@ -192,7 +192,7 @@ namespace KomiX {
 
 		QAction * jump = new QAction( tr( "&Jump to image" ), this );
 		jump->setShortcut( tr( "Ctrl+J" ) );
-		connect( jump, SIGNAL( triggered() ), this, SLOT( previewHelper_() ) );
+		connect( jump, SIGNAL( triggered() ), preview_, SLOT( listDirectory() ) );
 		go->addAction( jump );
 		addAction( jump );
 
@@ -243,7 +243,7 @@ namespace KomiX {
 		connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
 		connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
 		connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
-		connect( &FileController::Instance(), SIGNAL( getImage( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
+		connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 	}
 
 	void MainWindow::initTrayIcon_() {
@@ -317,14 +317,6 @@ namespace KomiX {
 		}
 	}
 
-	void MainWindow::previewHelper_() {
-		if( FileController::Instance().isEmpty() ) {
-			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
-		} else {
-			preview_->listDirectory();
-		}
-	}
-
 	void MainWindow::whellAction( int delta ) {
 		if( delta < 0 ) {
 			FileController::Instance().next();
@@ -334,31 +326,37 @@ namespace KomiX {
 	}
 
 	void MainWindow::open( const QString & filePath ) {
-		FileController::Instance().open( filePath );
-		if( FileController::Instance().isEmpty() ) {
+		if( !FileController::Instance().open( filePath ) ) {
 			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		}
+	}
+
+	void MainWindow::open( const QModelIndex & item ) {
+		imageArea_->setImage( item.data( Qt::UserRole ).value< QPixmap >() );
 	}
 
 	void MainWindow::openFileDialog() {
 // 		qDebug( "<MainWindow::openFileDialog()>" );
 // 		qDebug() << fileFilter_();
 // 		qDebug( "</MainWindow::openFileDialog()>" );
-		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), FileController::Instance().getDirPath(), fileFilter_() );
+		// FIXME
+		QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), QDir::homePath(), fileFilter_() );
 		if( !filePath.isEmpty() ) {
 			open( filePath );
 		}
 	}
 
 	void MainWindow::openDirDialog() {
-		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), FileController::Instance().getDirPath() );
+		// FIXME
+		QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), QDir::homePath() );
 		if( !dirPath.isEmpty() ) {
 			open( dirPath );
 		}
 	}
 
 	void MainWindow::openArchiveDialog() {
-		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), FileController::Instance().getDirPath(), archiveFilter_() );
+		// FIXME
+		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
 		if( !archivePath.isEmpty() ) {
 			open( archivePath );
 		}
