@@ -37,8 +37,13 @@ namespace KomiX {
 			if( isEmpty() ) {
 				return false;
 			} else {
-				index_ = 0;
-				QModelIndex first = model_->index( index_, 0 );
+				QModelIndex first = model_->index( filePath );
+				if( first.isValid() ) {
+					index_ = first.row();
+				} else {
+					first = model_->index( 0, 0 );
+					index_ = 0;
+				}
 				emit imageLoaded( first.data( Qt::UserRole ).value< QPixmap >() );
 				return true;
 			}
@@ -48,7 +53,7 @@ namespace KomiX {
 			QMutexLocker locker( ::lock() );
 			if( !isEmpty() ) {
 				++index_;
-				if( index_ >= model_->rowCount( model_->index() ) ) {
+				if( index_ >= model_->rowCount() ) {
 					index_ = 0;
 				}
 				// FIXME
@@ -63,7 +68,7 @@ namespace KomiX {
 			if( !isEmpty() ) {
 				--index_;
 				if( index_ < 0 ) {
-					index_ = model_->rowCount( model_->index() ) - 1;
+					index_ = model_->rowCount() - 1;
 				}
 				// FIXME
 				QModelIndex item = model_->index( index_, 0 );

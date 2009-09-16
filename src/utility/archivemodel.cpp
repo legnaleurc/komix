@@ -103,8 +103,9 @@ namespace KomiX {
 		return tmp;
 	}
 
-	QModelIndex ArchiveModel::index() const {
-		return QModelIndex();
+	QModelIndex ArchiveModel::index( const QString & name ) const {
+		int row = files_.indexOf( QFileInfo( name ).fileName() );
+		return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 	}
 
 

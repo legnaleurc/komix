@@ -18,7 +18,7 @@ namespace KomiX {
 		static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
 
 		using QAbstractItemModel::index;
-		virtual QModelIndex index() const = 0;
+		virtual QModelIndex index( const QString & name ) const = 0;
 
 	private:
 		typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;

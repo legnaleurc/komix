@@ -13,7 +13,7 @@ namespace KomiX {
 		ArchiveModel( const QFileInfo & root );
 		virtual ~ArchiveModel();
 
-		virtual QModelIndex index() const;
+		virtual QModelIndex index( const QString & name ) const;
 
 		virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
 		virtual QModelIndex parent( const QModelIndex & child ) const;

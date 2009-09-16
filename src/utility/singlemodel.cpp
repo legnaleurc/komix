@@ -28,8 +28,9 @@ namespace KomiX {
 	files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 	}
 
-	QModelIndex SingleModel::index() const {
-		return QModelIndex();
+	QModelIndex SingleModel::index( const QString & name ) const {
+		int row = files_.indexOf( QFileInfo( name ).fileName() );
+		return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 	}
 
 	QModelIndex SingleModel::index( int row, int column, const QModelIndex & parent ) const {

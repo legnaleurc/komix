@@ -47,7 +47,6 @@ namespace KomiX {
 		view_->setModel( model_ );
 		selection_ = view_->selectionModel();
 		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-		view_->setRootIndex( model_->index() );
 		// FIXME
 		//view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();
