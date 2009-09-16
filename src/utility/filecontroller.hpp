@@ -7,7 +7,6 @@
 
 #include "filemodel.hpp"
 
-#include <QDir>
 #include <QPixmap>
 #include <QModelIndex>
 
@@ -54,16 +53,6 @@ namespace KomiX {
 			bool isEmpty() const;
 
 			FileModel * getFileModel() const;
-			/**
-			 * @brief get current directory path
-			 * @return directory path
-			 */
-			//QString getDirPath() const;
-			/**
-			 * @brief get current file path
-			 * @return file path
-			 */
-			//QString getFilePath() const;
 
 			/**
 			 * @brief get image by file path
@@ -102,7 +91,6 @@ namespace KomiX {
 			void imageLoaded( const QPixmap & image );
 
 		private:
-			QDir dir_;
 			int index_;
 
 			FileModel * model_;

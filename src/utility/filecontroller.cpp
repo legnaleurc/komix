@@ -1,15 +1,8 @@
 #include "filecontroller.hpp"
-#include "global.hpp"
 
 #include <QMutexLocker>
-#include <QtDebug>
-#include <QProcess>
-#include <QtGlobal>
-#include <QApplication>
 #include <QFileInfo>
 #include <QMutex>
-
-#include <cstdlib>
 
 namespace {
 
@@ -26,7 +19,6 @@ namespace KomiX {
 
 		FileController::FileController( QObject * parent ) :
 		QObject( parent ),
-		dir_( QDir::home() ),
 		index_( 0 ),
 		model_( NULL ) {
 		}
@@ -59,7 +51,6 @@ namespace KomiX {
 				// FIXME
 				QModelIndex item = model_->index( index_, 0 );
 				emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
-				//fetch_( dir_.filePath( files_[ (index_+prefetchMax_ >= files_.size()) ? index_+prefetchMax_-files_.size() : index_+prefetchMax_ ] ) );
 			}
 		}
 
