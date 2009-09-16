@@ -18,10 +18,11 @@ namespace KomiX {
 
 		model_.setNameFilters( SupportedFormatsFilter() );
 
+		view_.setFixedSize( 160, 480 );
 		view_.setModel( &model_ );
 		connect( view_.selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 
-		image_.setFixedSize( 360, 360 );
+		image_.setFixedSize( 480, 480 );
 		image_.setAlignment( Qt::AlignCenter );
 
 		QDialogButtonBox * buttonBox = new QDialogButtonBox( QDialogButtonBox::Open | QDialogButtonBox::Cancel, Qt::Horizontal, this );
