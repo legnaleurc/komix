@@ -44,8 +44,8 @@ namespace KomiX {
 		// FIXME
 		model_ = FileController::Instance().getFileModel();
 		view_->setModel( model_ );
-		view_->setRootIndex( model_->index( 0, 0 ) );
-		view_->setCurrentIndex( model_->index( 0, 1 ) );
+		view_->setRootIndex( model_->index() );
+		//view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();
 	}
 
