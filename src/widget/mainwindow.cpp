@@ -326,8 +326,7 @@ namespace KomiX {
 	}
 
 	void MainWindow::open( const QString & filePath ) {
-		FileController::Instance().open( filePath );
-		if( FileController::Instance().isEmpty() ) {
+		if( !FileController::Instance().open( filePath ) ) {
 			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		}
 	}
