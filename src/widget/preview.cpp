@@ -13,16 +13,11 @@ namespace KomiX {
 	QDialog( parent, f ),
 	model_( NULL ),
 	view_( NULL ),
+	selection_( NULL ),
 	image_( this ) {
 		setModal( true );
 
 		view_ = new QListView( this );
-
-		//model_ = FileController::Instance().getFileModel();
-		//model_->setNameFilters( SupportedFormatsFilter() );
-
-		view_->setModel( model_ );
-		connect( view_->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 
 		image_.setFixedSize( 360, 360 );
 		image_.setAlignment( Qt::AlignCenter );
@@ -43,7 +38,13 @@ namespace KomiX {
 	void Preview::listDirectory() {
 		// FIXME
 		model_ = FileController::Instance().getFileModel();
+		if( !model_ ) {
+			return;
+		}
+		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 		view_->setModel( model_ );
+		selection_ = view_->selectionModel();
+		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 		view_->setRootIndex( model_->index() );
 		//view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();

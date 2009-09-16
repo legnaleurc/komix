@@ -9,6 +9,7 @@
 
 #include <QDialog>
 #include <QListView>
+#include <QItemSelectionModel>
 #include <QLabel>
 
 namespace KomiX {
@@ -48,6 +49,7 @@ namespace KomiX {
 	private:
 		FileModel * model_;
 		QListView * view_;
+		QItemSelectionModel * selection_;
 		QLabel image_;
 	
 	private slots:
