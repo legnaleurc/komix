@@ -38,7 +38,7 @@ namespace KomiX {
 				return false;
 			} else {
 				index_ = 0;
-				QModelIndex first = model_->index( index_, 1, model_->index() );
+				QModelIndex first = model_->index( index_, 0 );
 				emit imageLoaded( first.data( Qt::UserRole ).value< QPixmap >() );
 				return true;
 			}
@@ -52,7 +52,7 @@ namespace KomiX {
 					index_ = 0;
 				}
 				// FIXME
-				QModelIndex item = model_->index( index_, 1, model_->index() );
+				QModelIndex item = model_->index( index_, 0 );
 				emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
 				//fetch_( dir_.filePath( files_[ (index_+prefetchMax_ >= files_.size()) ? index_+prefetchMax_-files_.size() : index_+prefetchMax_ ] ) );
 			}
@@ -66,7 +66,7 @@ namespace KomiX {
 					index_ = model_->rowCount( model_->index() ) - 1;
 				}
 				// FIXME
-				QModelIndex item = model_->index( index_, 1, model_->index() );
+				QModelIndex item = model_->index( index_, 0 );
 				emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
 			}
 		}
@@ -75,7 +75,7 @@ namespace KomiX {
 			if( !model_ ) {
 				return true;
 			}
-			return model_->rowCount( model_->index() ) == 0;
+			return model_->rowCount() == 0;
 		}
 
 		FileModel * FileController::getFileModel() const {
