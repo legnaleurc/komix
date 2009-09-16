@@ -3,3 +3,6 @@
 Crashes when open directory which has no openable file via command line.
 [Feature]
 Hide cursor when smooth moving.
+Add open archive feature.
+[Project]
+Add static option.
