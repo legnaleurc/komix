@@ -28,38 +28,36 @@ namespace KomiX {
 	files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 	}
 
-	QModelIndex SingleModel::index( int row, int column, const QModelIndex & /*parent*/ ) const {
-		switch( column ) {
+	QModelIndex SingleModel::index( int row, int column, const QModelIndex & parent ) const {
+		if( !parent.isValid() ) {
+			return QModelIndex();
+		}
+		switch( parent.column() ) {
 		case 0:
-			return createIndex( 0, column, -1 );
-			break;
-		case 1:
-			if( row < 0 || row >= files_.size() ) {
-				return QModelIndex();
-			} else {
-				// FIXME: parameter 3 needs change
-				return createIndex( row, column, row );
-			}
+			return createIndex( row, 0, row );
 		default:
 			return QModelIndex();
 		}
 	}
 
 	QModelIndex SingleModel::parent( const QModelIndex & child ) const {
+		if( !child.isValid() ) {
+			return QModelIndex();
+		}
 		switch( child.column() ) {
-		case 0:
-			break;
 		case 1:
 			if( child.row() >= 0 && child.row() < files_.size() ) {
 				return createIndex( 0, 0, -1 );
+			} else {
+				return QModelIndex();
 			}
-			break;
+		default:
+			return QModelIndex();
 		}
-		return QModelIndex();
 	}
 
 	int SingleModel::rowCount( const QModelIndex & parent ) const {
-		if( !parent.isValid() || parent.column() == 0 ) {
+		if( parent.isValid() && parent.column() == 0 ) {
 			return files_.size();
 		} else {
 			return 0;
@@ -67,32 +65,29 @@ namespace KomiX {
 	}
 
 	int SingleModel::columnCount( const QModelIndex & /*parent*/ ) const {
-		return 0;
+		return 1;
 	}
 
 	QVariant SingleModel::data( const QModelIndex & index, int role ) const {
+		if( !index.isValid() ) {
+			return QVariant();
+		}
 		switch( index.column() ) {
-		case 0:
-			break;
 		case 1:
-			if( index.isValid() && index.row() >= 0 && index.row() < files_.size() ) {
+			if( index.row() >= 0 && index.row() < files_.size() ) {
 				switch( role ) {
 				case Qt::DisplayRole:
 					return files_[index.row()];
 				case Qt::UserRole:
 					return QPixmap( root_.filePath( files_[index.row()] ) );
+				default:
+					return QVariant();
 				}
+			} else {
+				return QVariant();
 			}
-			break;
-		}
-		return QVariant();
-	}
-
-	bool SingleModel::hasChildren( const QModelIndex & parent ) const {
-		if( !parent.isValid() || parent.column() == 0 ) {
-			return !files_.empty();
-		} else {
-			return false;
+		default:
+			return QVariant();
 		}
 	}
 

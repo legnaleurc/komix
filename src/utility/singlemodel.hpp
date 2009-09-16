@@ -17,7 +17,6 @@ namespace KomiX {
 		virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
 		virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const;
 		virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-		virtual bool hasChildren( const QModelIndex & parent = QModelIndex() ) const;
 
 	private:
 		QDir root_;
