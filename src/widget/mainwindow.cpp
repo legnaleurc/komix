@@ -192,7 +192,7 @@ namespace KomiX {
 
 		QAction * jump = new QAction( tr( "&Jump to image" ), this );
 		jump->setShortcut( tr( "Ctrl+J" ) );
-		connect( jump, SIGNAL( triggered() ), this, SLOT( previewHelper_() ) );
+		connect( jump, SIGNAL( triggered() ), preview_, SLOT( listDirectory() ) );
 		go->addAction( jump );
 		addAction( jump );
 
@@ -314,14 +314,6 @@ namespace KomiX {
 				break;
 			default:
 				;
-		}
-	}
-
-	void MainWindow::previewHelper_() {
-		if( FileController::Instance().isEmpty() ) {
-			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
-		} else {
-			preview_->listDirectory();
 		}
 	}
 

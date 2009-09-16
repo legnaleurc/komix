@@ -31,6 +31,7 @@ namespace KomiX {
 		 */
 		Preview( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
+	public slots:
 		/**
 		 * @brief list all supported files in opened directory
 		 *

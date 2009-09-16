@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 #include <QtDebug>
 
 namespace KomiX {
@@ -36,16 +37,17 @@ namespace KomiX {
 	}
 
 	void Preview::listDirectory() {
-		// FIXME
-		model_ = FileController::Instance().getFileModel();
-		if( !model_ ) {
+		if( FileController::Instance().isEmpty() ) {
+			QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
 			return;
 		}
+		model_ = FileController::Instance().getFileModel();
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 		view_->setModel( model_ );
 		selection_ = view_->selectionModel();
 		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 		view_->setRootIndex( model_->index() );
+		// FIXME
 		//view_->setCurrentIndex( model_->index( 0, 1 ) );
 		exec();
 	}
