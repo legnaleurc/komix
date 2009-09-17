@@ -17,6 +17,7 @@ namespace KomiX {
 
 	ArchiveHook::ArchiveHook( QWidget * parent ) : QObject( parent ) {
 		action_ = new QAction( tr( "Open A&rchive" ), parent );
+		action_->setShortcut( tr( "Ctrl+A" ) );
 		connect( action_, SIGNAL( triggered() ), this, SLOT( helper_() ) );
 		connect( this, SIGNAL( opened( const QString & ) ), parent, SLOT( open( const QString & ) ) );
 	}
