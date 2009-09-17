@@ -5,12 +5,17 @@
 #define KOMIX_GLOBAL_HPP
 
 #include <QStringList>
+#include <QAction>
 
 /**
  * @namespace KomiX
  * @brief Contains all KomiX components
  */
 namespace KomiX {
+
+	typedef QAction * ( * FileMenuHook )( QWidget * );
+	bool registerFileMenuHook( FileMenuHook hook );
+	const std::list< FileMenuHook > & getFileMenuHooks();
 
 	/**
 	 * @brief Get supported formats
@@ -32,11 +37,11 @@ namespace KomiX {
 	 */
 	const QStringList & SupportedFormatsFilter();
 
-	const QStringList & ArchiveFormats();
-
-	const QStringList & ArchiveFormatsFilter();
-
-	bool isArchiveSupported( const QString & path );
+//	const QStringList & ArchiveFormats();
+//
+//	const QStringList & ArchiveFormatsFilter();
+//
+//	bool isArchiveSupported( const QString & path );
 
 }
 

@@ -70,13 +70,6 @@ namespace {
 		return tmp.join( ";;" );
 	}
 
-	inline QString archiveList() {
-		QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::ArchiveFormatsFilter().join( " " ) ) );
-		tmp << KomiX::ArchiveFormatsFilter();
-		qDebug() << tmp;
-		return tmp.join( ";;" );
-	}
-
 }
 
 namespace KomiX {
@@ -84,11 +77,6 @@ namespace KomiX {
 	inline const QString & MainWindow::fileFilter_() {
 		static QString ff = formatList();
 		return ff;
-	}
-
-	inline const QString & MainWindow::archiveFilter_() {
-		static QString af = archiveList();
-		return af;
 	}
 
 	MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
@@ -129,12 +117,18 @@ namespace KomiX {
 		fileMenu->addAction( openDir );
 		addAction( openDir );
 
-		QAction * openArchive = new QAction( tr( "Open &Archive" ), this );
-		openArchive->setShortcut( tr( "Ctrl+A" ) );
-		connect( openArchive, SIGNAL( triggered() ), this, SLOT( openArchiveDialog() ) );
+//		QAction * openArchive = new QAction( tr( "Open &Archive" ), this );
+//		openArchive->setShortcut( tr( "Ctrl+A" ) );
+//		connect( openArchive, SIGNAL( triggered() ), this, SLOT( openArchiveDialog() ) );
+//
+//		fileMenu->addAction( openArchive );
+//		addAction( openArchive );
 
-		fileMenu->addAction( openArchive );
-		addAction( openArchive );
+		foreach( FileMenuHook hook, getFileMenuHooks() ) {
+			QAction * action = hook( this );
+			fileMenu->addAction( action );
+			addAction( action );
+		}
 
 		menuBar->addMenu( fileMenu );
 
@@ -326,7 +320,7 @@ namespace KomiX {
 	}
 
 	void MainWindow::open( const QString & filePath ) {
-		if( !FileController::Instance().open( filePath ) ) {
+		if( filePath.isEmpty() || !FileController::Instance().open( filePath ) ) {
 			QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		}
 	}
@@ -354,13 +348,13 @@ namespace KomiX {
 		}
 	}
 
-	void MainWindow::openArchiveDialog() {
-		// FIXME
-		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
-		if( !archivePath.isEmpty() ) {
-			open( archivePath );
-		}
-	}
+//	void MainWindow::openArchiveDialog() {
+//		// FIXME
+//		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
+//		if( !archivePath.isEmpty() ) {
+//			open( archivePath );
+//		}
+//	}
 
 	void MainWindow::toggleFullScreen() {
 // 		qDebug( "<MainWindow::toggleFullScreen()>" );

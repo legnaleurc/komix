@@ -31,6 +31,12 @@ namespace KomiX {
 		QStringList files_;
 	};
 
+	const QStringList & ArchiveFormats();
+
+	const QStringList & ArchiveFormatsFilter();
+
+	bool isArchiveSupported( const QString & path );
+
 }
 
 #endif

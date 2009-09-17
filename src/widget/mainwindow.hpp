@@ -49,7 +49,7 @@ namespace KomiX {
 		void openFileDialog();
 		/// open directory dialog
 		void openDirDialog();
-		void openArchiveDialog();
+//		void openArchiveDialog();
 		/// toggle full-screen mode
 		void toggleFullScreen();
 		/// toggle minimize system tray
@@ -67,7 +67,7 @@ namespace KomiX {
 		void initAbout_();
 
 		static const QString & fileFilter_();
-		static const QString & archiveFilter_();
+//		static const QString & archiveFilter_();
 
 		ImageArea * imageArea_;
 		ScaleImage * scaleImage_;

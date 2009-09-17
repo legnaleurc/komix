@@ -1,5 +1,6 @@
 #include "archivemodel.hpp"
 #include "global.hpp"
+#include "archivehook.hpp"
 
 #include <QProcess>
 #include <QtDebug>
@@ -21,7 +22,11 @@ namespace {
 		}
 	}
 
-	static const bool registered = KomiX::FileModel::registerModel( check, create );
+	QAction * hookHelper( QWidget * parent ) {
+		return ( new KomiX::ArchiveHook( parent ) )->action();
+	}
+
+	static const bool registered = KomiX::registerFileMenuHook( hookHelper ) && KomiX::FileModel::registerModel( check, create );
 
 	QDir createTmpDir() {
 		qsrand( qApp->applicationPid() );
@@ -51,11 +56,31 @@ namespace {
 		return sum + 1;
 	}
 
+	inline QStringList addStar( const QStringList & list ) {
+		QStringList temp;
+		foreach( QString str, list ) {
+			temp << str.prepend( "*." );
+		}
+		return temp;
+	}
+
+	inline QStringList archiveList() {
+		QStringList a;
+		a << "7z";
+		a << "rar";
+//		a << "tar.bz2";
+//		a << "tbz2";
+//		a << "tar.gz";
+//		a << "tgz";
+		a << "zip";
+		return a;
+	}
+
 }
 
 namespace KomiX {
 
-	const QDir ArchiveModel::TmpDir_ = ::createTmpDir();
+	const QDir ArchiveModel::TmpDir_ = createTmpDir();
 
 	ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 		QProcess * p = new QProcess();
@@ -74,7 +99,7 @@ namespace KomiX {
 	}
 
 	ArchiveModel::~ArchiveModel() {
-		int ret = ::deltree( TmpDir_ );
+		int ret = deltree( TmpDir_ );
 		qDebug() << ret;
 	}
 
@@ -171,6 +196,25 @@ namespace KomiX {
 		default:
 			return QVariant();
 		}
+	}
+
+	const QStringList & ArchiveFormats() {
+		static QStringList af = archiveList();
+		return af;
+	}
+
+	const QStringList & ArchiveFormatsFilter() {
+		static QStringList sff = addStar( ArchiveFormats() );
+		return sff;
+	}
+
+	bool isArchiveSupported( const QString & path ) {
+		foreach( QString suffix, ArchiveFormats() ) {
+			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

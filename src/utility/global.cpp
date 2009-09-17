@@ -32,21 +32,35 @@ namespace {
 		return temp;
 	}
 
-	inline QStringList archiveList() {
-		QStringList a;
-		a << "7z";
-		a << "rar";
-//		a << "tar.bz2";
-//		a << "tbz2";
-//		a << "tar.gz";
-//		a << "tgz";
-		a << "zip";
-		return a;
-	}
+//	inline QStringList archiveList() {
+//		QStringList a;
+//		a << "7z";
+//		a << "rar";
+////		a << "tar.bz2";
+////		a << "tbz2";
+////		a << "tar.gz";
+////		a << "tgz";
+//		a << "zip";
+//		return a;
+//	}
 
 }
 
 namespace KomiX {
+
+	std::list< FileMenuHook > & fileMenuHooks() {
+		static std::list< FileMenuHook > hooks;
+		return hooks;
+	}
+
+	const std::list< FileMenuHook > & getFileMenuHooks() {
+		return fileMenuHooks();
+	}
+
+	bool registerFileMenuHook( FileMenuHook hook ) {
+		fileMenuHooks().push_back( hook );
+		return true;
+	}
 
 	const QStringList & SupportedFormats() {
 		static QStringList sf = uniqueList();
@@ -58,23 +72,23 @@ namespace KomiX {
 		return sff;
 	}
 
-	const QStringList & ArchiveFormats() {
-		static QStringList af = archiveList();
-		return af;
-	}
-
-	const QStringList & ArchiveFormatsFilter() {
-		static QStringList sff = addStar( ArchiveFormats() );
-		return sff;
-	}
-
-	bool isArchiveSupported( const QString & path ) {
-		foreach( QString suffix, ArchiveFormats() ) {
-			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	const QStringList & ArchiveFormats() {
+//		static QStringList af = archiveList();
+//		return af;
+//	}
+//
+//	const QStringList & ArchiveFormatsFilter() {
+//		static QStringList sff = addStar( ArchiveFormats() );
+//		return sff;
+//	}
+//
+//	bool isArchiveSupported( const QString & path ) {
+//		foreach( QString suffix, ArchiveFormats() ) {
+//			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 }
