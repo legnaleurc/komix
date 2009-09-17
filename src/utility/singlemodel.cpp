@@ -13,8 +13,8 @@ namespace {
 		}
 	}
 
-	KomiX::FileModel * create( const QFileInfo & path ) {
-		return new KomiX::SingleModel( path );
+	QSharedPointer< KomiX::FileModel > create( const QFileInfo & path ) {
+		return QSharedPointer< KomiX::FileModel >( new KomiX::SingleModel( path ) );
 	}
 
 	static const bool registered = KomiX::FileModel::registerModel( check, create );

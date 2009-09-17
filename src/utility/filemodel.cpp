@@ -21,11 +21,11 @@ namespace KomiX {
 		return fl;
 	}
 
-	FileModel * FileModel::createModel( const QFileInfo & path ) {
+	QSharedPointer< FileModel > FileModel::createModel( const QFileInfo & path ) {
 		QMutexLocker locker( ::lock() );
 		FunctorList::const_iterator it = find_if( getFunctorList_().begin(), getFunctorList_().end(), Matcher( path ) );
 		if( it == getFunctorList_().end() ) {
-			return NULL;
+			return QSharedPointer< FileModel >();
 		} else {
 			return it->second( path );
 		}

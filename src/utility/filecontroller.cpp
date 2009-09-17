@@ -74,7 +74,7 @@ namespace KomiX {
 			return model_->rowCount() == 0;
 		}
 
-		FileModel * FileController::getFileModel() const {
+		QSharedPointer< FileModel > FileController::getFileModel() const {
 			return model_;
 		}
 

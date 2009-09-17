@@ -5,8 +5,8 @@
 
 namespace {
 
-	KomiX::FileModel * create( const QFileInfo & path ) {
-		return new KomiX::DirectoryModel( path );
+	QSharedPointer< KomiX::FileModel > create( const QFileInfo & path ) {
+		return QSharedPointer< KomiX::FileModel >( new KomiX::DirectoryModel( path ) );
 	}
 
 	bool check( const QFileInfo & path ) {

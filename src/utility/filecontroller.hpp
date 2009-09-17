@@ -52,7 +52,7 @@ namespace KomiX {
 			/// check if there has openable files.
 			bool isEmpty() const;
 
-			FileModel * getFileModel() const;
+			QSharedPointer< FileModel > getFileModel() const;
 
 			/**
 			 * @brief get image by file path
@@ -93,7 +93,7 @@ namespace KomiX {
 		private:
 			int index_;
 
-			FileModel * model_;
+			QSharedPointer< FileModel > model_;
 		};
 
 	}

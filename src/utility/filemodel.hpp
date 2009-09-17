@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QFileInfo>
+#include <QSharedPointer>
 
 #include <list>
 #include <utility>
@@ -12,9 +13,9 @@ namespace KomiX {
 	class FileModel : public QAbstractItemModel {
 	public:
 		typedef bool ( * KeyFunctor )( const QFileInfo & );
-		typedef FileModel * ( * ValueFunctor )( const QFileInfo & );
+		typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QFileInfo & );
 
-		static FileModel * createModel( const QFileInfo & path );
+		static QSharedPointer< FileModel > createModel( const QFileInfo & path );
 		static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
 
 		using QAbstractItemModel::index;
@@ -37,4 +38,4 @@ namespace KomiX {
 
 }
 
-#endif // ARCHIVEMODEL_HPP
+#endif

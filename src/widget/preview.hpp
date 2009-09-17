@@ -48,7 +48,7 @@ namespace KomiX {
 		void required( const QModelIndex & item );
 	
 	private:
-		FileModel * model_;
+		QSharedPointer< FileModel > model_;
 		QListView * view_;
 		QItemSelectionModel * selection_;
 		QLabel image_;
