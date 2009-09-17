@@ -38,7 +38,7 @@ namespace KomiX {
 		 * The list is locked in current opened directory.
 		 * It will focus current opened file first.
 		 */
-		void listDirectory();
+		void popup();
 	
 	signals:
 		/**

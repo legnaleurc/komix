@@ -192,7 +192,7 @@ namespace KomiX {
 
 		QAction * jump = new QAction( tr( "&Jump to image" ), this );
 		jump->setShortcut( tr( "Ctrl+J" ) );
-		connect( jump, SIGNAL( triggered() ), preview_, SLOT( listDirectory() ) );
+		connect( jump, SIGNAL( triggered() ), preview_, SLOT( popup() ) );
 		go->addAction( jump );
 		addAction( jump );
 

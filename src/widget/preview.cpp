@@ -37,7 +37,7 @@ namespace KomiX {
 		mainFrame->addWidget( buttonBox );
 	}
 
-	void Preview::listDirectory() {
+	void Preview::popup() {
 		if( FileController::Instance().isEmpty() ) {
 			QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
 			return;
