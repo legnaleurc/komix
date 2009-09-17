@@ -47,8 +47,7 @@ namespace KomiX {
 		view_->setModel( model_.data() );
 		selection_ = view_->selectionModel();
 		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-		// FIXME
-		//view_->setCurrentIndex( model_->index( 0, 1 ) );
+		view_->setCurrentIndex( FileController::Instance().getCurrentIndex() );
 		exec();
 	}
 
@@ -61,7 +60,6 @@ namespace KomiX {
 	void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 		qDebug( "Preview::viewImage_()" );
 		qDebug() << current;
-		// FIXME
 		image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );
 	}
 

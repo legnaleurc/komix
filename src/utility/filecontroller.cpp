@@ -41,6 +41,14 @@ namespace KomiX {
 			}
 		}
 
+		QModelIndex FileController::getCurrentIndex() const {
+			if( !isEmpty() ) {
+				return model_->index( index_, 0 );
+			} else {
+				return QModelIndex();
+			}
+		}
+
 		void FileController::next() {
 			QMutexLocker locker( ::lock() );
 			if( !isEmpty() ) {
@@ -48,7 +56,6 @@ namespace KomiX {
 				if( index_ >= model_->rowCount() ) {
 					index_ = 0;
 				}
-				// FIXME
 				QModelIndex item = model_->index( index_, 0 );
 				emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
 			}
@@ -61,7 +68,6 @@ namespace KomiX {
 				if( index_ < 0 ) {
 					index_ = model_->rowCount() - 1;
 				}
-				// FIXME
 				QModelIndex item = model_->index( index_, 0 );
 				emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
 			}

@@ -53,6 +53,7 @@ namespace KomiX {
 			bool isEmpty() const;
 
 			QSharedPointer< FileModel > getModel() const;
+			QModelIndex getCurrentIndex() const;
 
 			/**
 			 * @brief get image by file path
