@@ -16,7 +16,7 @@ namespace {
 
 	bool check( const QFileInfo & path ) {
 		if( !path.isDir() ) {
-			return KomiX::isArchiveSupported( path.absolutePath() );
+			return KomiX::isArchiveSupported( path.suffix().toLower() );
 		} else {
 			return false;
 		}
@@ -200,9 +200,9 @@ namespace KomiX {
 		return sff;
 	}
 
-	bool isArchiveSupported( const QString & path ) {
-		foreach( QString suffix, ArchiveFormats() ) {
-			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
+	bool isArchiveSupported( const QString & suffix ) {
+		foreach( QString ext, ArchiveFormats() ) {
+			if( ext == suffix ) {
 				return true;
 			}
 		}

@@ -7,7 +7,12 @@ namespace {
 
 	bool check( const QFileInfo & path ) {
 		if( !path.isDir() ) {
-			return true;
+			foreach( QString ext, KomiX::SupportedFormats() ) {
+				if( path.suffix().toLower() == ext ) {
+					return true;
+				}
+			}
+			return false;
 		} else {
 			return false;
 		}
