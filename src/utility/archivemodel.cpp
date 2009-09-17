@@ -56,14 +56,6 @@ namespace {
 		return sum + 1;
 	}
 
-	inline QStringList addStar( const QStringList & list ) {
-		QStringList temp;
-		foreach( QString str, list ) {
-			temp << str.prepend( "*." );
-		}
-		return temp;
-	}
-
 	inline QStringList archiveList() {
 		QStringList a;
 		a << "7z";
@@ -204,7 +196,7 @@ namespace KomiX {
 	}
 
 	const QStringList & ArchiveFormatsFilter() {
-		static QStringList sff = addStar( ArchiveFormats() );
+		static QStringList sff = toNameFilter( ArchiveFormats() );
 		return sff;
 	}
 

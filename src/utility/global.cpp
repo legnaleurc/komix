@@ -24,26 +24,6 @@ namespace {
 		return result;
 	}
 
-	inline QStringList addStar( const QStringList & list ) {
-		QStringList temp;
-		foreach( QString str, list ) {
-			temp << str.prepend( "*." );
-		}
-		return temp;
-	}
-
-//	inline QStringList archiveList() {
-//		QStringList a;
-//		a << "7z";
-//		a << "rar";
-////		a << "tar.bz2";
-////		a << "tbz2";
-////		a << "tar.gz";
-////		a << "tgz";
-//		a << "zip";
-//		return a;
-//	}
-
 }
 
 namespace KomiX {
@@ -68,27 +48,16 @@ namespace KomiX {
 	}
 
 	const QStringList & SupportedFormatsFilter() {
-		static QStringList sff = addStar( KomiX::SupportedFormats() );
+		static QStringList sff = toNameFilter( KomiX::SupportedFormats() );
 		return sff;
 	}
 
-//	const QStringList & ArchiveFormats() {
-//		static QStringList af = archiveList();
-//		return af;
-//	}
-//
-//	const QStringList & ArchiveFormatsFilter() {
-//		static QStringList sff = addStar( ArchiveFormats() );
-//		return sff;
-//	}
-//
-//	bool isArchiveSupported( const QString & path ) {
-//		foreach( QString suffix, ArchiveFormats() ) {
-//			if( path.endsWith( suffix, Qt::CaseInsensitive ) ) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	QStringList toNameFilter( const QStringList & exts ) {
+		QStringList tmp;
+		foreach( QString str, exts ) {
+			tmp << str.prepend( "*." );
+		}
+		return tmp;
+	}
 
 }

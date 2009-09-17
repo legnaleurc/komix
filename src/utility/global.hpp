@@ -37,11 +37,7 @@ namespace KomiX {
 	 */
 	const QStringList & SupportedFormatsFilter();
 
-//	const QStringList & ArchiveFormats();
-//
-//	const QStringList & ArchiveFormatsFilter();
-//
-//	bool isArchiveSupported( const QString & path );
+	QStringList toNameFilter( const QStringList & exts );
 
 }
 
