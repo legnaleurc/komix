@@ -52,7 +52,7 @@ namespace KomiX {
 			/// check if there has openable files.
 			bool isEmpty() const;
 
-			QSharedPointer< FileModel > getFileModel() const;
+			QSharedPointer< FileModel > getModel() const;
 
 			/**
 			 * @brief get image by file path

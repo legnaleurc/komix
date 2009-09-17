@@ -43,7 +43,7 @@ namespace KomiX {
 			return;
 		}
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-		model_ = FileController::Instance().getFileModel();
+		model_ = FileController::Instance().getModel();
 		view_->setModel( model_.data() );
 		selection_ = view_->selectionModel();
 		connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
