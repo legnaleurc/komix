@@ -1,5 +1,5 @@
 Build Dependancy:
-	Qt toolkit >= 4.2:
+	Qt toolkit >= 4.5:
 		http://trolltech.com/products
 	Loki -- Generic Programming and Design Pattern library for C++:
 		http://loki-lib.sourceforge.net
@@ -15,7 +15,7 @@ How to Build:
 		$ qmake
 		$ make -j2
 	Windows:
-		Run qmake.exe in the project directory
+		> qmake -tp vc
 		Open komix.vcproj with Visual C++ and build
 
 Run-time spec @ Windows:
