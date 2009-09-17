@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QApplication>
 #include <QPixmap>
+#include <QCryptographicHash>
 
 namespace {
 
@@ -28,12 +29,15 @@ namespace {
 
 	static const bool registered = KomiX::registerFileMenuHook( hookHelper ) && KomiX::FileModel::registerModel( check, create );
 
+	// one-shot action
 	QDir createTmpDir() {
 		qsrand( qApp->applicationPid() );
 		QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
+		qDebug() << tmpPath;
 		QDir tmpDir( QDir::temp() );
 		if( !tmpDir.mkdir( tmpPath ) ) {
 			qWarning( "can not make temp dir" );
+			// TODO: stop using this model
 		} else {
 			tmpDir.cd( tmpPath );
 		}
@@ -48,11 +52,13 @@ namespace {
 				sum += deltree( e.absoluteFilePath() );
 			} else {
 				if( QFile::remove( e.absoluteFilePath() ) ) {
+					qDebug() << e.absoluteFilePath();
 					++sum;
 				}
 			}
 		}
 		dir.rmdir( dir.absolutePath() );
+		qDebug() << dir.absolutePath();
 		return sum + 1;
 	}
 
@@ -76,8 +82,10 @@ namespace KomiX {
 
 	ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 		QProcess * p = new QProcess();
-		qDebug() << ( Arguments_( root.fileName() ) << root.absoluteFilePath() );
-		p->start( SevenZip_(), ( Arguments_( root.fileName() ) << root.absoluteFilePath() ),  QIODevice::ReadOnly );
+		QString hash = QString::fromUtf8( QCryptographicHash::hash( root.fileName().toUtf8(), QCryptographicHash::Sha1 ).toHex() );
+		qDebug() << hash;
+		qDebug() << ( Arguments_( hash ) << root.absoluteFilePath() );
+		p->start( SevenZip_(), ( Arguments_( hash ) << root.absoluteFilePath() ),  QIODevice::ReadOnly );
 		p->waitForFinished( -1 );
 
 		if( p->exitCode() != 0 ) {
@@ -85,7 +93,7 @@ namespace KomiX {
 			qWarning() << p->readAllStandardError();
 			// TODO: ERROR HERE
 		} else {
-			root_ = ArchiveDir_( root.fileName() );;
+			root_ = ArchiveDir_( hash );
 			files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
 		}
 	}
