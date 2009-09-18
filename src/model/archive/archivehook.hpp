@@ -18,6 +18,7 @@ signals:
 
 private slots:
 	void helper_();
+	void cleanup_();
 
 private:
 	const QString & archiveFilter_();

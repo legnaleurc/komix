@@ -2,6 +2,7 @@
 #include "archivemodel.hpp"
 
 #include <QFileDialog>
+#include <QApplication>
 
 namespace {
 
@@ -20,6 +21,8 @@ ArchiveHook::ArchiveHook( QWidget * parent ) : QObject( parent ) {
 	action_->setShortcut( tr( "Ctrl+A" ) );
 	connect( action_, SIGNAL( triggered() ), this, SLOT( helper_() ) );
 	connect( this, SIGNAL( opened( const QString & ) ), parent, SLOT( open( const QString & ) ) );
+	// for cleanup, delete temp dir
+	connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( cleanup_() ) );
 }
 
 QAction * ArchiveHook::action() const {
@@ -28,6 +31,10 @@ QAction * ArchiveHook::action() const {
 
 void ArchiveHook::helper_() {
 	emit opened( QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() ) );
+}
+
+void ArchiveHook::cleanup_() {
+	delTree( ArchiveModel::TmpDir_() );
 }
 
 inline const QString & ArchiveHook::archiveFilter_() {

@@ -57,24 +57,6 @@ QDir createTmpDir() {
 	return tmpDir;
 }
 
-int deltree( QDir dir ) {
-	int sum = 0;
-	QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
-	foreach( QFileInfo e, entry ) {
-		if( e.isDir() ) {
-			sum += deltree( e.absoluteFilePath() );
-		} else {
-			if( QFile::remove( e.absoluteFilePath() ) ) {
-				qDebug() << e.absoluteFilePath();
-				++sum;
-			}
-		}
-	}
-	dir.rmdir( dir.absolutePath() );
-	qDebug() << dir.absolutePath();
-	return sum + 1;
-}
-
 inline QStringList archiveList() {
 	QStringList a;
 	a << "7z";
@@ -130,26 +112,25 @@ bool ArchiveModel::IsPrepared() {
 }
 
 ArchiveModel::ArchiveModel( const QFileInfo & root ) {
-	QProcess * p = new QProcess();
 	QString hash = QString::fromUtf8( QCryptographicHash::hash( root.fileName().toUtf8(), QCryptographicHash::Sha1 ).toHex() );
 	qDebug() << hash;
-	qDebug() << ( Arguments_( hash ) << root.absoluteFilePath() );
-	p->start( SevenZip_(), ( Arguments_( hash ) << root.absoluteFilePath() ),  QIODevice::ReadOnly );
-	p->waitForFinished( -1 );
 
-	if( p->exitCode() != 0 ) {
-		qWarning() << p->readAllStandardOutput();
-		qWarning() << p->readAllStandardError();
-		// TODO: ERROR HERE
-	} else {
-		root_ = ArchiveDir_( hash );
-		files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
+	if( !TmpDir_().exists( hash ) ) {
+		QProcess * p = new QProcess();
+		p->start( SevenZip_(), ( Arguments_( hash ) << root.absoluteFilePath() ),  QIODevice::ReadOnly );
+		p->waitForFinished( -1 );
+		if( p->exitCode() != 0 ) {
+			// delete wrong dir
+			delTree( ArchiveDir_( hash ) );
+			QString err = QString::fromLocal8Bit( p->readAllStandardError() );
+			qWarning() << p->readAllStandardOutput();
+			qWarning() << err;
+			throw error::ArchiveError( err );
+		}
 	}
-}
 
-ArchiveModel::~ArchiveModel() {
-	int ret = deltree( TmpDir_() );
-	qDebug() << ret;
+	root_ = ArchiveDir_( hash );
+	files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
 }
 
 QModelIndex ArchiveModel::index( const QString & name ) const {
@@ -239,6 +220,24 @@ bool isArchiveSupported( const QString & suffix ) {
 		}
 	}
 	return false;
+}
+
+int delTree( QDir dir ) {
+	int sum = 0;
+	QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
+	foreach( QFileInfo e, entry ) {
+		if( e.isDir() ) {
+			sum += delTree( e.absoluteFilePath() );
+		} else {
+			if( QFile::remove( e.absoluteFilePath() ) ) {
+				qDebug() << e.absoluteFilePath();
+				++sum;
+			}
+		}
+	}
+	dir.rmdir( dir.absolutePath() );
+	qDebug() << dir.absolutePath();
+	return sum + 1;
 }
 
 } } } // end of namespace

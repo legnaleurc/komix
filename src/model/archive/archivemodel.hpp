@@ -14,7 +14,6 @@ public:
 	static bool IsPrepared();
 
 	ArchiveModel( const QFileInfo & root );
-	virtual ~ArchiveModel();
 
 	virtual QModelIndex index( const QString & name ) const;
 
@@ -25,6 +24,7 @@ public:
 	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 private:
+	friend class ArchiveHook;
 	static const QString & SevenZip_();
 	static QStringList Arguments_( const QString & );
 	static const QDir & TmpDir_();
@@ -39,6 +39,7 @@ const QStringList & ArchiveFormats();
 const QStringList & ArchiveFormatsFilter();
 
 bool isArchiveSupported( const QString & path );
+int delTree( QDir dir );
 
 } } } // end of namespace
 
