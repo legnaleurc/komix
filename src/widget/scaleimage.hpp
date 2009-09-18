@@ -1,57 +1,57 @@
 /**
  * @file scaleimage.hpp
  */
-#ifndef KOMIX_SCALEIMAGE_HPP
-#define KOMIX_SCALEIMAGE_HPP
+#ifndef KOMIX_WIDGET_SCALEIMAGE_HPP
+#define KOMIX_WIDGET_SCALEIMAGE_HPP
 
 #include <QDialog>
 #include <QButtonGroup>
 #include <QSlider>
 
-namespace KomiX {
+namespace KomiX { namespace widget {
 
+/**
+ * @brief Widget to scale image
+ * @todo "upgrade" its functionality
+ *
+ * This widget is simple ... too simple. Maybe I'll
+ * change this widget to option widget.
+ */
+class ScaleImage : public QDialog {
+	Q_OBJECT
+
+public:
 	/**
-	 * @brief Widget to scale image
-	 * @todo "upgrade" its functionality
-	 *
-	 * This widget is simple ... too simple. Maybe I'll
-	 * change this widget to option widget.
+	 * @brief default constructor
+	 * @param parent parent widget
+	 * @param f window flags
 	 */
-	class ScaleImage : public QDialog {
-		Q_OBJECT
+	ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-	public:
-		/**
-		 * @brief default constructor
-		 * @param parent parent widget
-		 * @param f window flags
-		 */
-		ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+signals:
+	/**
+	 * @brief scale event
+	 * @param ratio scalar ratio
+	 *
+	 * The ratio means percents, so 100 actually means 100%.
+	 */
+	void scaled( int ratio );
 
-	signals:
-		/**
-		 * @brief scale event
-		 * @param ratio scalar ratio
-		 *
-		 * The ratio means percents, so 100 actually means 100%.
-		 */
-		void scaled( int ratio );
+private slots:
+	void valueHelper_( int = -4 );
 
-	private slots:
-		void valueHelper_( int = -4 );
+private:
+	QButtonGroup * fitness_;
+	QSlider * scaleSlider_;
 
-	private:
-		QButtonGroup * fitness_;
-		QSlider * scaleSlider_;
-
-		enum ScaleMode {
-			Origin,
-			Width,
-			Height,
-			Window
-		};
+	enum ScaleMode {
+		Origin,
+		Width,
+		Height,
+		Window
 	};
+};
 	
-}
+} } // end namespace
 
 #endif
