@@ -11,31 +11,35 @@ QT += svg
 DEPENDPATH += . \
     src \
     src/utility \
-    src/widget
+    src/widget \
+    src/model \
+    src/model/archive \
+    src/model/directory \
+    src/model/single
 INCLUDEPATH += $${DEPENDPATH}
 HEADERS += src/utility/filecontroller.hpp \
-    src/utility/filemodel.hpp \
+    src/model/filemodel.hpp \
     src/utility/global.hpp \
     src/widget/imagearea.hpp \
     src/widget/mainwindow.hpp \
     src/widget/preview.hpp \
     src/widget/scaleimage.hpp \
-    src/utility/archivemodel.hpp \
-    src/utility/directorymodel.hpp \
-    src/utility/singlemodel.hpp \
-    src/utility/archivehook.hpp
+    src/model/archive/archivemodel.hpp \
+    src/model/directory/directorymodel.hpp \
+    src/model/single/singlemodel.hpp \
+    src/model/archive/archivehook.hpp
 SOURCES += src/utility/filecontroller.cpp \
-    src/utility/filemodel.cpp \
+    src/model/filemodel.cpp \
     src/utility/global.cpp \
     src/main.cpp \
     src/widget/imagearea.cpp \
     src/widget/mainwindow.cpp \
     src/widget/preview.cpp \
     src/widget/scaleimage.cpp \
-    src/utility/archivemodel.cpp \
-    src/utility/directorymodel.cpp \
-    src/utility/singlemodel.cpp \
-    src/utility/archivehook.cpp
+    src/model/archive/archivemodel.cpp \
+    src/model/directory/directorymodel.cpp \
+    src/model/single/singlemodel.cpp \
+    src/model/archive/archivehook.cpp
 RESOURCES = komix.qrc
 
 # Ouput
