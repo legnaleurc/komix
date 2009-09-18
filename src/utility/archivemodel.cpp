@@ -37,7 +37,7 @@ namespace {
 		QDir tmpDir( QDir::temp() );
 		if( !tmpDir.mkdir( tmpPath ) ) {
 			qWarning( "can not make temp dir" );
-			// TODO: stop using this model
+			// tmpDir will remain to tmp dir
 		} else {
 			tmpDir.cd( tmpPath );
 		}
@@ -126,6 +126,10 @@ namespace KomiX {
 		QDir tmp( TmpDir_ );
 		tmp.cd( dirName );
 		return tmp;
+	}
+
+	bool ArchiveModel::ok_() {
+		return QFileInfo( SevenZip_() ).isExecutable() && QDir::temp() != TmpDir_;
 	}
 
 	QModelIndex ArchiveModel::index( const QString & name ) const {

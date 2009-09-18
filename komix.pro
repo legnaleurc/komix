@@ -23,7 +23,8 @@ HEADERS += src/utility/filecontroller.hpp \
     src/utility/archivemodel.hpp \
     src/utility/directorymodel.hpp \
     src/utility/singlemodel.hpp \
-    src/utility/archivehook.hpp
+    src/utility/archivehook.hpp \
+    src/utility/error.hpp
 SOURCES += src/utility/filecontroller.cpp \
     src/utility/filemodel.cpp \
     src/utility/global.cpp \
@@ -35,7 +36,8 @@ SOURCES += src/utility/filecontroller.cpp \
     src/utility/archivemodel.cpp \
     src/utility/directorymodel.cpp \
     src/utility/singlemodel.cpp \
-    src/utility/archivehook.cpp
+    src/utility/archivehook.cpp \
+    src/utility/error.cpp
 RESOURCES = komix.qrc
 
 # Ouput

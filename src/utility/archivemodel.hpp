@@ -26,6 +26,7 @@ namespace KomiX {
 		static QStringList Arguments_( const QString & );
 		static QDir ArchiveDir_( const QString & );
 		static const QDir TmpDir_;
+		static bool ok_();
 
 		QDir root_;
 		QStringList files_;
