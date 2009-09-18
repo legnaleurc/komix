@@ -1,5 +1,5 @@
-#ifndef KOMIX_FILEMODEL_HPP
-#define KOMIX_FILEMODEL_HPP
+#ifndef KOMIX_MODEL_FILEMODEL_HPP
+#define KOMIX_MODEL_FILEMODEL_HPP
 
 #include <QAbstractItemModel>
 #include <QFileInfo>
@@ -8,34 +8,34 @@
 #include <list>
 #include <utility>
 
-namespace KomiX {
+namespace KomiX { namespace model {
 
-	class FileModel : public QAbstractItemModel {
+class FileModel : public QAbstractItemModel {
+public:
+	typedef bool ( * KeyFunctor )( const QFileInfo & );
+	typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QFileInfo & );
+
+	static QSharedPointer< FileModel > createModel( const QFileInfo & path );
+	static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
+
+	using QAbstractItemModel::index;
+	virtual QModelIndex index( const QString & name ) const = 0;
+
+private:
+	typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
+	typedef std::list< FunctorPair > FunctorList;
+
+	class Matcher {
 	public:
-		typedef bool ( * KeyFunctor )( const QFileInfo & );
-		typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QFileInfo & );
-
-		static QSharedPointer< FileModel > createModel( const QFileInfo & path );
-		static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
-
-		using QAbstractItemModel::index;
-		virtual QModelIndex index( const QString & name ) const = 0;
-
+		Matcher( const QFileInfo & );
+		bool operator ()( const FunctorPair & ) const;
 	private:
-		typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
-		typedef std::list< FunctorPair > FunctorList;
-
-		class Matcher {
-		public:
-			Matcher( const QFileInfo & );
-			bool operator ()( const FunctorPair & ) const;
-		private:
-			QFileInfo path_;
-		};
-
-		static FunctorList & getFunctorList_();
+		QFileInfo path_;
 	};
 
-}
+	static FunctorList & getFunctorList_();
+};
+
+} } // end namespace
 
 #endif

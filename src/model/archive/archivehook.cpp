@@ -5,33 +5,33 @@
 
 namespace {
 
-	inline QString archiveList() {
-		QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::ArchiveFormatsFilter().join( " " ) ) );
-		tmp << KomiX::ArchiveFormatsFilter();
-		return tmp.join( ";;" );
-	}
-
+inline QString archiveList() {
+	QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::model::archive::ArchiveFormatsFilter().join( " " ) ) );
+	tmp << KomiX::model::archive::ArchiveFormatsFilter();
+	return tmp.join( ";;" );
 }
 
-namespace KomiX {
+} // end of namespace
 
-	ArchiveHook::ArchiveHook( QWidget * parent ) : QObject( parent ) {
-		action_ = new QAction( tr( "Open A&rchive" ), parent );
-		connect( action_, SIGNAL( triggered() ), this, SLOT( helper_() ) );
-		connect( this, SIGNAL( opened( const QString & ) ), parent, SLOT( open( const QString & ) ) );
-	}
+namespace KomiX { namespace model { namespace archive {
 
-	QAction * ArchiveHook::action() const {
-		return action_;
-	}
-
-	void ArchiveHook::helper_() {
-		emit opened( QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() ) );
-	}
-
-	inline const QString & ArchiveHook::archiveFilter_() {
-		static QString af = archiveList();
-		return af;
-	}
-
+ArchiveHook::ArchiveHook( QWidget * parent ) : QObject( parent ) {
+	action_ = new QAction( tr( "Open A&rchive" ), parent );
+	connect( action_, SIGNAL( triggered() ), this, SLOT( helper_() ) );
+	connect( this, SIGNAL( opened( const QString & ) ), parent, SLOT( open( const QString & ) ) );
 }
+
+QAction * ArchiveHook::action() const {
+	return action_;
+}
+
+void ArchiveHook::helper_() {
+	emit opened( QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() ) );
+}
+
+inline const QString & ArchiveHook::archiveFilter_() {
+	static QString af = archiveList();
+	return af;
+}
+
+} } } // end of namespace

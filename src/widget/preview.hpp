@@ -48,7 +48,7 @@ signals:
 	void required( const QModelIndex & item );
 
 private:
-	QSharedPointer< FileModel > model_;
+	QSharedPointer< model::FileModel > model_;
 	QListView * view_;
 	QItemSelectionModel * selection_;
 	QLabel image_;
