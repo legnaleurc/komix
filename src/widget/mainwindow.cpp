@@ -117,13 +117,6 @@ namespace KomiX {
 		fileMenu->addAction( openDir );
 		addAction( openDir );
 
-//		QAction * openArchive = new QAction( tr( "Open &Archive" ), this );
-//		openArchive->setShortcut( tr( "Ctrl+A" ) );
-//		connect( openArchive, SIGNAL( triggered() ), this, SLOT( openArchiveDialog() ) );
-//
-//		fileMenu->addAction( openArchive );
-//		addAction( openArchive );
-
 		foreach( FileMenuHook hook, getFileMenuHooks() ) {
 			QAction * action = hook( this );
 			fileMenu->addAction( action );
@@ -347,14 +340,6 @@ namespace KomiX {
 			open( dirPath );
 		}
 	}
-
-//	void MainWindow::openArchiveDialog() {
-//		// FIXME
-//		QString archivePath = QFileDialog::getOpenFileName( this, tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
-//		if( !archivePath.isEmpty() ) {
-//			open( archivePath );
-//		}
-//	}
 
 	void MainWindow::toggleFullScreen() {
 // 		qDebug( "<MainWindow::toggleFullScreen()>" );
