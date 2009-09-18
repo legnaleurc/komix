@@ -96,6 +96,8 @@ namespace KomiX {
 		connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
 		connect( preview_, SIGNAL( required( const QModelIndex & ) ), this, SLOT( open( const QModelIndex & ) ) );
+
+		connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 	}
 
 	void MainWindow::initMenuBar_() {
@@ -346,6 +348,10 @@ namespace KomiX {
 		if( !dirPath.isEmpty() ) {
 			open( dirPath );
 		}
+	}
+
+	void MainWindow::popupError_( const QString & errMsg ) {
+		QMessageBox::critical( this, tr( "Oops!" ), errMsg );
 	}
 
 //	void MainWindow::openArchiveDialog() {

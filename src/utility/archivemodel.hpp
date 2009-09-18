@@ -10,6 +10,9 @@ namespace KomiX {
 
 	class ArchiveModel : public FileModel {
 	public:
+		static bool IsRunnable();
+		static bool IsPrepared();
+
 		ArchiveModel( const QFileInfo & root );
 		virtual ~ArchiveModel();
 
@@ -24,9 +27,8 @@ namespace KomiX {
 	private:
 		static const QString & SevenZip_();
 		static QStringList Arguments_( const QString & );
+		static const QDir & TmpDir_();
 		static QDir ArchiveDir_( const QString & );
-		static const QDir TmpDir_;
-		static bool ok_();
 
 		QDir root_;
 		QStringList files_;

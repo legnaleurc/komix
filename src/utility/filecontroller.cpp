@@ -1,4 +1,6 @@
 #include "filecontroller.hpp"
+#include "global.hpp"
+#include "error.hpp"
 
 #include <QMutexLocker>
 #include <QFileInfo>
@@ -25,7 +27,12 @@ namespace KomiX {
 
 		bool FileController::open( const QString & filePath ) {
 			QMutexLocker locker( ::lock() );
-			model_ = FileModel::createModel( QFileInfo( filePath ) );
+			try {
+				model_ = FileModel::createModel( QFileInfo( filePath ) );
+			} catch( error::BasicError & e ) {
+				emit errorOccured( e.getMessage() );
+				return false;
+			}
 			if( isEmpty() ) {
 				return false;
 			} else {

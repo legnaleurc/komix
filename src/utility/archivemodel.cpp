@@ -1,6 +1,7 @@
 #include "archivemodel.hpp"
 #include "global.hpp"
 #include "archivehook.hpp"
+#include "error.hpp"
 
 #include <QProcess>
 #include <QtDebug>
@@ -9,9 +10,21 @@
 #include <QPixmap>
 #include <QCryptographicHash>
 
+namespace KomiX { namespace error {
+
+class Archive {};
+typedef Error< Archive > ArchiveError;
+
+} } // end of namespace
+
 namespace {
 
 	QSharedPointer< KomiX::FileModel > create( const QFileInfo & path ) {
+		if( !KomiX::ArchiveModel::IsRunnable() ) {
+			throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
+		} else if( !KomiX::ArchiveModel::IsPrepared() ) {
+			throw KomiX::error::ArchiveError( "I could not create temporary directory." );
+		}
 		return QSharedPointer< KomiX::FileModel >( new KomiX::ArchiveModel( path ) );
 	}
 
@@ -78,7 +91,43 @@ namespace {
 
 namespace KomiX {
 
-	const QDir ArchiveModel::TmpDir_ = createTmpDir();
+	const QDir & ArchiveModel::TmpDir_() {
+		static QDir tmp = createTmpDir();
+		return tmp;
+	}
+
+	const QString & ArchiveModel::SevenZip_() {
+#ifdef Q_OS_WIN32
+		static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
+#elif defined( Q_OS_UNIX )
+		static QString sz = "/usr/bin/7z";
+#endif
+		return sz;
+	}
+
+	QStringList ArchiveModel::Arguments_( const QString & fileName ) {
+		QStringList args( "e" );
+		args << QString( "-o%1" ).arg( ArchiveDir_( fileName ).absolutePath() );
+		args << "-aos";
+		return args;
+	}
+
+	QDir ArchiveModel::ArchiveDir_( const QString & dirName ) {
+		if( !TmpDir_().exists( dirName ) ) {
+			TmpDir_().mkdir( dirName );
+		}
+		QDir tmp( TmpDir_() );
+		tmp.cd( dirName );
+		return tmp;
+	}
+
+	bool ArchiveModel::IsRunnable() {
+		return QFileInfo( SevenZip_() ).isExecutable();
+	}
+
+	bool ArchiveModel::IsPrepared() {
+		return QDir::temp() != TmpDir_();
+	}
 
 	ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 		QProcess * p = new QProcess();
@@ -99,37 +148,8 @@ namespace KomiX {
 	}
 
 	ArchiveModel::~ArchiveModel() {
-		int ret = deltree( TmpDir_ );
+		int ret = deltree( TmpDir_() );
 		qDebug() << ret;
-	}
-
-	const QString & ArchiveModel::SevenZip_() {
-#ifdef Q_OS_WIN32
-		static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
-#elif defined( Q_OS_UNIX )
-		static QString sz = "/usr/bin/7z";
-#endif
-		return sz;
-	}
-
-	QStringList ArchiveModel::Arguments_( const QString & fileName ) {
-		QStringList args( "e" );
-		args << QString( "-o%1" ).arg( ArchiveDir_( fileName ).absolutePath() );
-		args << "-aos";
-		return args;
-	}
-
-	QDir ArchiveModel::ArchiveDir_( const QString & dirName ) {
-		if( !TmpDir_.exists( dirName ) ) {
-			TmpDir_.mkdir( dirName );
-		}
-		QDir tmp( TmpDir_ );
-		tmp.cd( dirName );
-		return tmp;
-	}
-
-	bool ArchiveModel::ok_() {
-		return QFileInfo( SevenZip_() ).isExecutable() && QDir::temp() != TmpDir_;
 	}
 
 	QModelIndex ArchiveModel::index( const QString & name ) const {

@@ -90,6 +90,7 @@ namespace KomiX {
 			 * @sa getImage( const QString & )
 			 */
 			void imageLoaded( const QPixmap & image );
+			void errorOccured( const QString & errMsg );
 
 		private:
 			int index_;
