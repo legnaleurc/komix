@@ -25,10 +25,12 @@ public:
 
 private:
 	friend class ArchiveHook;
+
 	static const QString & SevenZip_();
 	static QStringList Arguments_( const QString & );
 	static const QDir & TmpDir_();
 	static QDir ArchiveDir_( const QString & );
+	static void Extract_( const QString &, const QString & );
 
 	QDir root_;
 	QStringList files_;

@@ -30,7 +30,7 @@ QSharedPointer< KomiX::model::FileModel > create( const QFileInfo & path ) {
 
 bool check( const QFileInfo & path ) {
 	if( !path.isDir() ) {
-		return KomiX::model::archive::isArchiveSupported( path.suffix().toLower() );
+		return KomiX::model::archive::isArchiveSupported( path.fileName().toLower() );
 	} else {
 		return false;
 	}
@@ -57,15 +57,26 @@ QDir createTmpDir() {
 	return tmpDir;
 }
 
+inline const QStringList & archiveList2() {
+	static QStringList a2 = QStringList() << "tar.gz" << "tgz" << "tar.bz2" << "tbz2" << "tar.lzma";
+	return a2;
+}
+
+inline bool isTwo( const QString & name ) {
+	foreach( QString ext, archiveList2() ) {
+		if( name.endsWith( ext ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 inline QStringList archiveList() {
-	QStringList a;
+	QStringList a( archiveList2() );
 	a << "7z";
 	a << "rar";
-//		a << "tar.bz2";
-//		a << "tbz2";
-//		a << "tar.gz";
-//		a << "tgz";
 	a << "zip";
+	a << "tar";
 	return a;
 }
 
@@ -103,6 +114,20 @@ QDir ArchiveModel::ArchiveDir_( const QString & dirName ) {
 	return tmp;
 }
 
+void ArchiveModel::Extract_( const QString & hash, const QString & aFilePath ) {
+	QSharedPointer< QProcess > p( new QProcess );
+	p->start( SevenZip_(), ( Arguments_( hash ) << aFilePath ),  QIODevice::ReadOnly );
+	p->waitForFinished( -1 );
+	if( p->exitCode() != 0 ) {
+		// delete wrong dir
+		delTree( ArchiveDir_( hash ) );
+		QString err = QString::fromLocal8Bit( p->readAllStandardError() );
+		qWarning() << p->readAllStandardOutput();
+		qWarning() << err;
+		throw error::ArchiveError( err );
+	}
+}
+
 bool ArchiveModel::IsRunnable() {
 	return QFileInfo( SevenZip_() ).isExecutable();
 }
@@ -116,16 +141,11 @@ ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 	qDebug() << hash;
 
 	if( !TmpDir_().exists( hash ) ) {
-		QProcess * p = new QProcess();
-		p->start( SevenZip_(), ( Arguments_( hash ) << root.absoluteFilePath() ),  QIODevice::ReadOnly );
-		p->waitForFinished( -1 );
-		if( p->exitCode() != 0 ) {
-			// delete wrong dir
-			delTree( ArchiveDir_( hash ) );
-			QString err = QString::fromLocal8Bit( p->readAllStandardError() );
-			qWarning() << p->readAllStandardOutput();
-			qWarning() << err;
-			throw error::ArchiveError( err );
+		Extract_( hash, root.absoluteFilePath() );
+		// check if is tar-compressed
+		if( isTwo( root.fileName() ) ) {
+			QString name = ArchiveDir_( hash ).absoluteFilePath( root.completeBaseName() );
+			Extract_( hash, name );
 		}
 	}
 
@@ -187,6 +207,7 @@ QVariant ArchiveModel::data( const QModelIndex & index, int role ) const {
 	switch( index.column() ) {
 	case 0:
 		if( index.row() >= 0 && index.row() < files_.size() ) {
+			qDebug() << root_.filePath( files_[index.row()] );
 			switch( role ) {
 			case Qt::DisplayRole:
 				return files_[index.row()];
@@ -213,9 +234,9 @@ const QStringList & ArchiveFormatsFilter() {
 	return sff;
 }
 
-bool isArchiveSupported( const QString & suffix ) {
+bool isArchiveSupported( const QString & name ) {
 	foreach( QString ext, ArchiveFormats() ) {
-		if( ext == suffix ) {
+		if( name.endsWith( ext ) ) {
 			return true;
 		}
 	}
