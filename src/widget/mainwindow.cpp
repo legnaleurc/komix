@@ -315,7 +315,7 @@ void MainWindow::whellAction( int delta ) {
 }
 
 void MainWindow::open( const QString & filePath ) {
-	if( filePath.isEmpty() || !FileController::Instance().open( filePath ) ) {
+	if( !FileController::Instance().open( filePath ) ) {
 		QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 	}
 }

@@ -30,7 +30,10 @@ QAction * ArchiveHook::action() const {
 }
 
 void ArchiveHook::helper_() {
-	emit opened( QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() ) );
+	QString name = QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
+	if( !name.isEmpty() ) {
+		emit opened( name );
+	}
 }
 
 void ArchiveHook::cleanup_() {
