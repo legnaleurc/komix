@@ -51,11 +51,11 @@ DESTDIR = bin
 
 # Special
 CONFIG( debug, debug|release ):OBJECTS_DIR = tmp/obj/debug
-else { 
+else {
     OBJECTS_DIR = tmp/obj/release
     DEFINES += QT_NO_DEBUG_OUTPUT
 }
-komix_static { 
+komix_static {
     QTPLUGIN += qgif \
         qico \
         qjpeg \
@@ -70,7 +70,8 @@ komix_static {
 # Platform
 unix:CONFIG( release, debug|release ):QMAKE_POST_LINK = strip \
     $(TARGET)
-win32 { 
+win32 {
     CONFIG += embed_manifest_exe
     CONFIG( debug, debug|release ):CONFIG += console
+    RC_FILE = komix.rc
 }
