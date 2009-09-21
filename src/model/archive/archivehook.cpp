@@ -19,6 +19,11 @@ QAction * hookHelper( QWidget * parent ) {
 
 static const bool registered = KomiX::registerFileMenuHook( hookHelper );
 
+inline const QString & archiveFilter() {
+	static QString af = archiveList();
+	return af;
+}
+
 } // end of namespace
 
 namespace KomiX { namespace model { namespace archive {
@@ -34,7 +39,7 @@ ArchiveHook::ArchiveHook( QWidget * parent ) : QAction( parent ) {
 }
 
 void ArchiveHook::helper_() {
-	QString path = QFileDialog::getOpenFileName( this->parentWidget(), tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
+	QString path = QFileDialog::getOpenFileName( this->parentWidget(), tr( "Open archive" ), QDir::homePath(), archiveFilter() );
 	if( !path.isEmpty() ) {
 		emit opened( QUrl::fromLocalFile( path ) );
 	}
@@ -42,11 +47,6 @@ void ArchiveHook::helper_() {
 
 void ArchiveHook::cleanup_() {
 	delTree( ArchiveModel::TmpDir_() );
-}
-
-inline const QString & ArchiveHook::archiveFilter_() {
-	static QString af = archiveList();
-	return af;
 }
 
 } } } // end of namespace
