@@ -48,7 +48,7 @@ public slots:
 	/// open file dialog
 	void openFileDialog();
 	/// open directory dialog
-	void openDirDialog();
+//	void openDirDialog();
 	/// toggle full-screen mode
 	void toggleFullScreen();
 	/// toggle minimize system tray

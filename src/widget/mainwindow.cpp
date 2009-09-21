@@ -112,12 +112,12 @@ void MainWindow::initMenuBar_() {
 	fileMenu->addAction( openImage );
 	addAction( openImage );
 
-	QAction * openDir = new QAction( tr( "Open &Directory" ), this );
-	openDir->setShortcut( tr( "Ctrl+D" ) );
-	connect( openDir, SIGNAL( triggered() ), this, SLOT( openDirDialog() ) );
-
-	fileMenu->addAction( openDir );
-	addAction( openDir );
+//	QAction * openDir = new QAction( tr( "Open &Directory" ), this );
+//	openDir->setShortcut( tr( "Ctrl+D" ) );
+//	connect( openDir, SIGNAL( triggered() ), this, SLOT( openDirDialog() ) );
+//
+//	fileMenu->addAction( openDir );
+//	addAction( openDir );
 
 	foreach( FileMenuHook hook, getFileMenuHooks() ) {
 		QAction * action = hook( this );
@@ -335,13 +335,13 @@ void MainWindow::openFileDialog() {
 	}
 }
 
-void MainWindow::openDirDialog() {
-	// FIXME
-	QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), QDir::homePath() );
-	if( !dirPath.isEmpty() ) {
-		open( dirPath );
-	}
-}
+//void MainWindow::openDirDialog() {
+//	// FIXME
+//	QString dirPath = QFileDialog::getExistingDirectory( this, tr( "Open dicrectory" ), QDir::homePath() );
+//	if( !dirPath.isEmpty() ) {
+//		open( dirPath );
+//	}
+//}
 
 void MainWindow::popupError_( const QString & errMsg ) {
 	QMessageBox::critical( this, tr( "Oops!" ), errMsg );

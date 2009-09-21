@@ -28,7 +28,8 @@ HEADERS += src/utility/filecontroller.hpp \
     src/model/archive/archivemodel.hpp \
     src/model/directory/directorymodel.hpp \
     src/model/single/singlemodel.hpp \
-    src/model/archive/archivehook.hpp
+    src/model/archive/archivehook.hpp \
+    src/model/directory/directoryhook.hpp
 SOURCES += src/utility/filecontroller.cpp \
     src/model/filemodel.cpp \
     src/utility/global.cpp \
@@ -41,7 +42,8 @@ SOURCES += src/utility/filecontroller.cpp \
     src/model/archive/archivemodel.cpp \
     src/model/directory/directorymodel.cpp \
     src/model/single/singlemodel.cpp \
-    src/model/archive/archivehook.cpp
+    src/model/archive/archivehook.cpp \
+    src/model/directory/directoryhook.cpp
 RESOURCES = komix.qrc
 
 # Ouput
@@ -51,11 +53,11 @@ DESTDIR = bin
 
 # Special
 CONFIG( debug, debug|release ):OBJECTS_DIR = tmp/obj/debug
-else {
+else { 
     OBJECTS_DIR = tmp/obj/release
     DEFINES += QT_NO_DEBUG_OUTPUT
 }
-komix_static {
+komix_static { 
     QTPLUGIN += qgif \
         qico \
         qjpeg \
@@ -70,7 +72,7 @@ komix_static {
 # Platform
 unix:CONFIG( release, debug|release ):QMAKE_POST_LINK = strip \
     $(TARGET)
-win32 {
+win32 { 
     CONFIG += embed_manifest_exe
     CONFIG( debug, debug|release ):CONFIG += console
     RC_FILE = komix.rc
