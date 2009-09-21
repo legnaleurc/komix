@@ -230,7 +230,7 @@ void MainWindow::initCentralWidget_() {
 	connect( imageArea_, SIGNAL( wheelMoved( int ) ), this, SLOT( whellAction( int ) ) );
 	connect( imageArea_, SIGNAL( prevPage() ), &FileController::Instance(), SLOT( prev() ) );
 	connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
-	connect( imageArea_, SIGNAL( fileDroped( const QString & ) ), this, SLOT( open( const QString & ) ) );
+	connect( imageArea_, SIGNAL( fileDroped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
 	connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
 	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 }
@@ -314,9 +314,9 @@ void MainWindow::whellAction( int delta ) {
 	}
 }
 
-void MainWindow::open( const QString & filePath ) {
-	if( !FileController::Instance().open( filePath ) ) {
-		QMessageBox::information( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
+void MainWindow::open( const QUrl & url ) {
+	if( !FileController::Instance().open( url ) ) {
+		QMessageBox::critical( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 	}
 }
 

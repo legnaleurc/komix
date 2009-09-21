@@ -43,7 +43,7 @@ public slots:
 	 * @brief open file
 	 * @param filePath file path
 	 */
-	void open( const QString & path );
+	void open( const QUrl & url );
 	void open( const QModelIndex & item );
 	/// open file dialog
 	void openFileDialog();

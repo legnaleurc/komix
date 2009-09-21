@@ -25,10 +25,10 @@ index_( 0 ),
 model_( NULL ) {
 }
 
-bool FileController::open( const QString & filePath ) {
+bool FileController::open( const QUrl & url ) {
 	QMutexLocker locker( lock() );
 	try {
-		model_ = FileModel::createModel( QFileInfo( filePath ) );
+		model_ = FileModel::createModel( url );
 	} catch( error::BasicError & e ) {
 		emit errorOccured( e.getMessage() );
 		return false;
@@ -36,7 +36,7 @@ bool FileController::open( const QString & filePath ) {
 	if( isEmpty() ) {
 		return false;
 	} else {
-		QModelIndex first = model_->index( filePath );
+		QModelIndex first = model_->index( url );
 		if( first.isValid() ) {
 			index_ = first.row();
 		} else {

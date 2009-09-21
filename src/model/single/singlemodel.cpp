@@ -5,21 +5,23 @@
 
 namespace {
 
-bool check( const QFileInfo & path ) {
-	if( !path.isDir() ) {
-		foreach( QString ext, KomiX::SupportedFormats() ) {
-			if( path.suffix().toLower() == ext ) {
-				return true;
+bool check( const QUrl & url ) {
+	if( url.scheme() == "file" ) {
+		QFileInfo fi( url.toLocalFile() );
+		if( !fi.isDir() ) {
+			QString suffix = fi.suffix().toLower();
+			foreach( QString ext, KomiX::SupportedFormats() ) {
+				if( suffix == ext ) {
+					return true;
+				}
 			}
 		}
-		return false;
-	} else {
-		return false;
 	}
+	return false;
 }
 
-QSharedPointer< KomiX::model::FileModel > create( const QFileInfo & path ) {
-	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::single::SingleModel( path ) );
+QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
+	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );
@@ -33,8 +35,8 @@ root_( root.dir() ),
 files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 }
 
-QModelIndex SingleModel::index( const QString & name ) const {
-	int row = files_.indexOf( QFileInfo( name ).fileName() );
+QModelIndex SingleModel::index( const QUrl & url ) const {
+	int row = files_.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
 	return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 }
 

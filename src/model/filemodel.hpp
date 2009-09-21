@@ -2,7 +2,7 @@
 #define KOMIX_MODEL_FILEMODEL_HPP
 
 #include <QAbstractItemModel>
-#include <QFileInfo>
+#include <QUrl>
 #include <QSharedPointer>
 
 #include <list>
@@ -12,14 +12,14 @@ namespace KomiX { namespace model {
 
 class FileModel : public QAbstractItemModel {
 public:
-	typedef bool ( * KeyFunctor )( const QFileInfo & );
-	typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QFileInfo & );
+	typedef bool ( * KeyFunctor )( const QUrl & );
+	typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QUrl & );
 
-	static QSharedPointer< FileModel > createModel( const QFileInfo & path );
+	static QSharedPointer< FileModel > createModel( const QUrl & url );
 	static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
 
 	using QAbstractItemModel::index;
-	virtual QModelIndex index( const QString & name ) const = 0;
+	virtual QModelIndex index( const QUrl & url ) const = 0;
 
 private:
 	typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
@@ -27,10 +27,10 @@ private:
 
 	class Matcher {
 	public:
-		Matcher( const QFileInfo & );
+		Matcher( const QUrl & );
 		bool operator ()( const FunctorPair & ) const;
 	private:
-		QFileInfo path_;
+		QUrl url_;
 	};
 
 	static FunctorList & getFunctorList_();

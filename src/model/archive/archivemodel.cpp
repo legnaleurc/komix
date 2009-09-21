@@ -19,21 +19,23 @@ typedef Error< Archive > ArchiveError;
 
 namespace {
 
-QSharedPointer< KomiX::model::FileModel > create( const QFileInfo & path ) {
+bool check( const QUrl & url ) {
+	if( url.scheme() == "file" ) {
+		QFileInfo fi( url.toLocalFile() );
+		if( !fi.isDir() ) {
+			return KomiX::model::archive::isArchiveSupported( fi.fileName().toLower() );
+		}
+	}
+	return false;
+}
+
+QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
 	if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
 		throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
 	} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
 		throw KomiX::error::ArchiveError( "I could not create temporary directory." );
 	}
-	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::archive::ArchiveModel( path ) );
-}
-
-bool check( const QFileInfo & path ) {
-	if( !path.isDir() ) {
-		return KomiX::model::archive::isArchiveSupported( path.fileName().toLower() );
-	} else {
-		return false;
-	}
+	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 QAction * hookHelper( QWidget * parent ) {
@@ -153,8 +155,8 @@ ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 	files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
 }
 
-QModelIndex ArchiveModel::index( const QString & name ) const {
-	int row = files_.indexOf( QFileInfo( name ).fileName() );
+QModelIndex ArchiveModel::index( const QUrl & url ) const {
+	int row = files_.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
 	return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 }
 

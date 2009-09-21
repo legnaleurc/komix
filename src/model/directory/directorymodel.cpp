@@ -5,12 +5,16 @@
 
 namespace {
 
-QSharedPointer< KomiX::model::FileModel > create( const QFileInfo & path ) {
-	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( path ) );
+bool check( const QUrl & url ) {
+	if( url.scheme() == "file" ) {
+		QFileInfo fi( url.toLocalFile() );
+		return fi.isDir();
+	}
+	return false;
 }
 
-bool check( const QFileInfo & path ) {
-	return path.isDir();
+QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
+	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );
@@ -24,8 +28,8 @@ root_( root.absoluteFilePath() ),
 files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 }
 
-QModelIndex DirectoryModel::index( const QString & name ) const {
-	int row = files_.indexOf( QFileInfo( name ).fileName() );
+QModelIndex DirectoryModel::index( const QUrl & url ) const {
+	int row = files_.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
 	return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 }
 

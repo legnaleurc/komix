@@ -21,13 +21,13 @@ FileModel::FunctorList & FileModel::getFunctorList_() {
 	return fl;
 }
 
-QSharedPointer< FileModel > FileModel::createModel( const QFileInfo & path ) {
+QSharedPointer< FileModel > FileModel::createModel( const QUrl & url ) {
 	QMutexLocker locker( ::lock() );
-	FunctorList::const_iterator it = find_if( getFunctorList_().begin(), getFunctorList_().end(), Matcher( path ) );
+	FunctorList::const_iterator it = find_if( getFunctorList_().begin(), getFunctorList_().end(), Matcher( url ) );
 	if( it == getFunctorList_().end() ) {
 		return QSharedPointer< FileModel >();
 	} else {
-		return it->second( path );
+		return it->second( url );
 	}
 }
 
@@ -37,11 +37,11 @@ bool FileModel::registerModel( const KeyFunctor & key, const ValueFunctor & valu
 	return true;
 }
 
-FileModel::Matcher::Matcher( const QFileInfo & path ) : path_( path ) {
+FileModel::Matcher::Matcher( const QUrl & url ) : url_( url ) {
 }
 
 bool FileModel::Matcher::operator ()( const FileModel::FunctorPair & that ) const {
-	return that.first( path_ );
+	return that.first( url_ );
 }
 
 } } // end of namespace

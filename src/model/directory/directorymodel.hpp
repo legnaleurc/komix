@@ -12,7 +12,7 @@ class DirectoryModel : public FileModel {
 public:
 	DirectoryModel( const QFileInfo & root );
 
-	virtual QModelIndex index( const QString & name ) const;
+	virtual QModelIndex index( const QUrl & url ) const;
 
 	virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
 	virtual QModelIndex parent( const QModelIndex & child ) const;

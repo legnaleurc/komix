@@ -45,7 +45,7 @@ public:
 	 *
 	 * It will emit getImage( const QPixmap & ) if necessary.
 	 */
-	bool open( const QString & filePath );
+	bool open( const QUrl & url );
 
 	/// check if there has openable files.
 	bool isEmpty() const;

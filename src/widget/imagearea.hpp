@@ -9,6 +9,7 @@
 #include <QPoint>
 #include <QLabel>
 #include <QSize>
+#include <QUrl>
 
 namespace KomiX { namespace widget {
 
@@ -116,7 +117,7 @@ signals:
 	 *
 	 * Invalid file will not emit this signal.
 	 */
-	void fileDroped( const QString & filePath );
+	void fileDroped( const QUrl & url );
 	/// middle click event
 	void middleClicked();
 

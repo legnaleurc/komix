@@ -1,6 +1,7 @@
 #include "mainwindow.hpp"
 
 #include <QApplication>
+#include <QUrl>
 
 #ifdef KOMIX_STATIC
 # include <QtPlugin>
@@ -22,7 +23,7 @@ int main( int argc, char * argv[] ) {
 	mainWindow.resize( 800, 600 );
 	
 	if( argc > 1 ) {
-		mainWindow.open( QApplication::arguments().at( 1 ) );
+		mainWindow.open( QUrl::fromLocalFile( QApplication::arguments().at( 1 ) ) );
 	}
 	
 	mainWindow.show();

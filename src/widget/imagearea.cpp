@@ -97,7 +97,7 @@ void ImageArea::dropEvent( QDropEvent * event ) {
 		
 		if( !urlList.empty() ) {
 			foreach( QUrl url, urlList ) {
-				emit fileDroped( url.toLocalFile() );
+				emit fileDroped( url );
 			}
 		}
 	}
