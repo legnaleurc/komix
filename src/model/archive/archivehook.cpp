@@ -1,5 +1,6 @@
 #include "archivehook.hpp"
 #include "archivemodel.hpp"
+#include "global.hpp"
 
 #include <QFileDialog>
 #include <QApplication>
@@ -12,27 +13,30 @@ inline QString archiveList() {
 	return tmp.join( ";;" );
 }
 
+QAction * hookHelper( QWidget * parent ) {
+	return new KomiX::model::archive::ArchiveHook( parent );
+}
+
+static const bool registered = KomiX::registerFileMenuHook( hookHelper );
+
 } // end of namespace
 
 namespace KomiX { namespace model { namespace archive {
 
-ArchiveHook::ArchiveHook( QWidget * parent ) : QObject( parent ) {
-	action_ = new QAction( tr( "Open A&rchive" ), parent );
-	action_->setShortcut( tr( "Ctrl+A" ) );
-	connect( action_, SIGNAL( triggered() ), this, SLOT( helper_() ) );
-	connect( this, SIGNAL( opened( const QString & ) ), parent, SLOT( open( const QString & ) ) );
+ArchiveHook::ArchiveHook( QWidget * parent ) : QAction( parent ) {
+	setText( tr( "Open A&rchive" ) );
+	setShortcut( tr( "Ctrl+A" ) );
+
+	connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
+	connect( this, SIGNAL( opened( const QUrl & ) ), parent, SLOT( open( const QUrl & ) ) );
 	// for cleanup, delete temp dir
 	connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( cleanup_() ) );
 }
 
-QAction * ArchiveHook::action() const {
-	return action_;
-}
-
 void ArchiveHook::helper_() {
-	QString name = QFileDialog::getOpenFileName( qobject_cast< QWidget * >( this->parent() ), tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
-	if( !name.isEmpty() ) {
-		emit opened( name );
+	QString path = QFileDialog::getOpenFileName( this->parentWidget(), tr( "Open archive" ), QDir::homePath(), archiveFilter_() );
+	if( !path.isEmpty() ) {
+		emit opened( QUrl::fromLocalFile( path ) );
 	}
 }
 

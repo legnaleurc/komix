@@ -38,11 +38,7 @@ QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
 	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
-QAction * hookHelper( QWidget * parent ) {
-	return ( new KomiX::model::archive::ArchiveHook( parent ) )->action();
-}
-
-static const bool registered = KomiX::registerFileMenuHook( hookHelper ) && KomiX::model::FileModel::registerModel( check, create );
+static const bool registered = KomiX::model::FileModel::registerModel( check, create );
 
 // one-shot action
 QDir createTmpDir() {
