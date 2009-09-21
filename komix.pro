@@ -29,7 +29,8 @@ HEADERS += src/utility/filecontroller.hpp \
     src/model/directory/directorymodel.hpp \
     src/model/single/singlemodel.hpp \
     src/model/archive/archivehook.hpp \
-    src/model/directory/directoryhook.hpp
+    src/model/directory/directoryhook.hpp \
+    src/model/single/singlehook.hpp
 SOURCES += src/utility/filecontroller.cpp \
     src/model/filemodel.cpp \
     src/utility/global.cpp \
@@ -43,7 +44,8 @@ SOURCES += src/utility/filecontroller.cpp \
     src/model/directory/directorymodel.cpp \
     src/model/single/singlemodel.cpp \
     src/model/archive/archivehook.cpp \
-    src/model/directory/directoryhook.cpp
+    src/model/directory/directoryhook.cpp \
+    src/model/single/singlehook.cpp
 RESOURCES = komix.qrc
 
 # Ouput

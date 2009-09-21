@@ -46,7 +46,7 @@ public slots:
 	void open( const QUrl & url );
 	void open( const QModelIndex & item );
 	/// open file dialog
-	void openFileDialog();
+//	void openFileDialog();
 	/// open directory dialog
 //	void openDirDialog();
 	/// toggle full-screen mode
@@ -66,7 +66,7 @@ private:
 	void initTrayIcon_();
 	void initAbout_();
 
-	static const QString & fileFilter_();
+//	static const QString & fileFilter_();
 
 	ImageArea * imageArea_;
 	ScaleImage * scaleImage_;

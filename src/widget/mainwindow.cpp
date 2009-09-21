@@ -15,69 +15,69 @@
 #include <QtDebug>
 #include <QVBoxLayout>
 
-namespace {
+//namespace {
 
-inline QString formatList() {
-	QMultiMap< QString, QString > cat;
+//inline QString formatList() {
+//	QMultiMap< QString, QString > cat;
+//
+//	foreach( QString str, KomiX::SupportedFormats() ) {
+//		if( str == "bmp" ) {
+//			cat.insert( QObject::tr( "Windows Bitmap" ), str.prepend( "*." ) );
+//		} else if( str == "gif" ) {
+//			cat.insert( QObject::tr( "Graphic Interchange Format" ), str.prepend( "*." ) );
+//		} else if( str == "jpg" || str == "jpeg" || str == "jp2" ) {
+//			cat.insert( QObject::tr( "Joint Photographic Experts Group" ), str.prepend( "*." ) );
+//		} else if( str == "mng" || str == "png" ) {
+//			cat.insert( QObject::tr( "Network Graphics" ), str.prepend( "*." ) );
+//		} else if( str == "pbm" || str == "pgm" || str == "ppm" ) {
+//			cat.insert( QObject::tr( "Portable anymap" ), str.prepend( "*." ) );
+//		} else if( str == "tif" || str == "tiff" ) {
+//			cat.insert( QObject::tr( "Tagged Image File Format" ), str.prepend( "*." ) );
+//		} else if( str == "xbm" || str == "xpm" ) {
+//			cat.insert( QObject::tr( "X11" ), str.prepend( "*." ) );
+//		} else if( str == "sgi" || str == "rgba" || str == "rgb" || str == "bw" ) {
+//			cat.insert( QObject::tr( "Silicon Graphics Image" ), str.prepend( "*." ) );
+//		} else if( str == "tga" ) {
+//			cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.prepend( "*." ) );
+//		} else if( str == "eps" || str == "epsf" || str == "epsi" ) {
+//			cat.insert( QObject::tr( "Encapsulated PostScript" ), str.prepend( "*." ) );
+//		} else if( str == "svg" ) {
+//			cat.insert( QObject::tr( "Scalable Vector Graphics" ), str.prepend( "*." ) );
+//		} else if( str == "xcf" ) {
+//			cat.insert( QObject::tr( "eXperimental Computing Facility" ), str.prepend( "*." ) );
+//		} else if( str == "psd" ) {
+//			cat.insert( QObject::tr( "Photoshop Document" ), str.prepend( "*." ) );
+//		} else if( str == "pcx" ) {
+//			cat.insert( QObject::tr( "PC Paintbrush Exchange" ), str.prepend( "*." ) );
+//		} else if( str == "ico" ) {
+//			cat.insert( QObject::tr( "Windows icon" ), str.prepend( "*." ) );
+//		} else if( str == "dds" ) {
+//			cat.insert( QObject::tr( "DirectDraw Surface" ), str.prepend( "*." ) );
+//		} else if( str == "exr" ) {
+//			cat.insert( QObject::tr( "OpenEXR" ), str.prepend( "*." ) );
+//		} else {
+//			cat.insert( QObject::tr( "Others" ), str.prepend( "*." ) );
+//		}
+//	}
+//
+//	QStringList tmp;
+//	foreach( QString key, cat.uniqueKeys() ) {
+//		tmp.push_back( key + " ( " + QStringList( cat.values( key ) ).join( " " ) + " )" );
+//	}
+//	tmp.push_front( QObject::tr( "All Supported File" ) + " ( " + KomiX::SupportedFormatsFilter().join( " " ) + " )" );
+//
+//	qDebug() << tmp;
+//	return tmp.join( ";;" );
+//}
 
-	foreach( QString str, KomiX::SupportedFormats() ) {
-		if( str == "bmp" ) {
-			cat.insert( QObject::tr( "Windows Bitmap" ), str.prepend( "*." ) );
-		} else if( str == "gif" ) {
-			cat.insert( QObject::tr( "Graphic Interchange Format" ), str.prepend( "*." ) );
-		} else if( str == "jpg" || str == "jpeg" || str == "jp2" ) {
-			cat.insert( QObject::tr( "Joint Photographic Experts Group" ), str.prepend( "*." ) );
-		} else if( str == "mng" || str == "png" ) {
-			cat.insert( QObject::tr( "Network Graphics" ), str.prepend( "*." ) );
-		} else if( str == "pbm" || str == "pgm" || str == "ppm" ) {
-			cat.insert( QObject::tr( "Portable anymap" ), str.prepend( "*." ) );
-		} else if( str == "tif" || str == "tiff" ) {
-			cat.insert( QObject::tr( "Tagged Image File Format" ), str.prepend( "*." ) );
-		} else if( str == "xbm" || str == "xpm" ) {
-			cat.insert( QObject::tr( "X11" ), str.prepend( "*." ) );
-		} else if( str == "sgi" || str == "rgba" || str == "rgb" || str == "bw" ) {
-			cat.insert( QObject::tr( "Silicon Graphics Image" ), str.prepend( "*." ) );
-		} else if( str == "tga" ) {
-			cat.insert( QObject::tr( "Truevision Advanced Raster Graphics Adapter" ), str.prepend( "*." ) );
-		} else if( str == "eps" || str == "epsf" || str == "epsi" ) {
-			cat.insert( QObject::tr( "Encapsulated PostScript" ), str.prepend( "*." ) );
-		} else if( str == "svg" ) {
-			cat.insert( QObject::tr( "Scalable Vector Graphics" ), str.prepend( "*." ) );
-		} else if( str == "xcf" ) {
-			cat.insert( QObject::tr( "eXperimental Computing Facility" ), str.prepend( "*." ) );
-		} else if( str == "psd" ) {
-			cat.insert( QObject::tr( "Photoshop Document" ), str.prepend( "*." ) );
-		} else if( str == "pcx" ) {
-			cat.insert( QObject::tr( "PC Paintbrush Exchange" ), str.prepend( "*." ) );
-		} else if( str == "ico" ) {
-			cat.insert( QObject::tr( "Windows icon" ), str.prepend( "*." ) );
-		} else if( str == "dds" ) {
-			cat.insert( QObject::tr( "DirectDraw Surface" ), str.prepend( "*." ) );
-		} else if( str == "exr" ) {
-			cat.insert( QObject::tr( "OpenEXR" ), str.prepend( "*." ) );
-		} else {
-			cat.insert( QObject::tr( "Others" ), str.prepend( "*." ) );
-		}
-	}
-
-	QStringList tmp;
-	foreach( QString key, cat.uniqueKeys() ) {
-		tmp.push_back( key + " ( " + QStringList( cat.values( key ) ).join( " " ) + " )" );
-	}
-	tmp.push_front( QObject::tr( "All Supported File" ) + " ( " + KomiX::SupportedFormatsFilter().join( " " ) + " )" );
-
-	qDebug() << tmp;
-	return tmp.join( ";;" );
-}
-
-} // end namespace
+//} // end namespace
 
 namespace KomiX { namespace widget {
 
-inline const QString & MainWindow::fileFilter_() {
-	static QString ff = formatList();
-	return ff;
-}
+//inline const QString & MainWindow::fileFilter_() {
+//	static QString ff = formatList();
+//	return ff;
+//}
 
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
@@ -105,12 +105,12 @@ void MainWindow::initMenuBar_() {
 
 	QMenu * fileMenu = new QMenu( tr( "&File" ), menuBar );
 
-	QAction * openImage = new QAction( tr( "&Open Image File" ), this );
-	openImage->setShortcut( tr( "Ctrl+O" ) );
-	connect( openImage, SIGNAL( triggered() ), this, SLOT( openFileDialog() ) );
-
-	fileMenu->addAction( openImage );
-	addAction( openImage );
+//	QAction * openImage = new QAction( tr( "&Open Image File" ), this );
+//	openImage->setShortcut( tr( "Ctrl+O" ) );
+//	connect( openImage, SIGNAL( triggered() ), this, SLOT( openFileDialog() ) );
+//
+//	fileMenu->addAction( openImage );
+//	addAction( openImage );
 
 //	QAction * openDir = new QAction( tr( "Open &Directory" ), this );
 //	openDir->setShortcut( tr( "Ctrl+D" ) );
@@ -324,16 +324,16 @@ void MainWindow::open( const QModelIndex & item ) {
 	imageArea_->setImage( item.data( Qt::UserRole ).value< QPixmap >() );
 }
 
-void MainWindow::openFileDialog() {
-// 		qDebug( "<MainWindow::openFileDialog()>" );
-// 		qDebug() << fileFilter_();
-// 		qDebug( "</MainWindow::openFileDialog()>" );
-	// FIXME
-	QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), QDir::homePath(), fileFilter_() );
-	if( !filePath.isEmpty() ) {
-		open( filePath );
-	}
-}
+//void MainWindow::openFileDialog() {
+//// 		qDebug( "<MainWindow::openFileDialog()>" );
+//// 		qDebug() << fileFilter_();
+//// 		qDebug( "</MainWindow::openFileDialog()>" );
+//	// FIXME
+//	QString filePath = QFileDialog::getOpenFileName( this, tr( "Open image file" ), QDir::homePath(), fileFilter_() );
+//	if( !filePath.isEmpty() ) {
+//		open( filePath );
+//	}
+//}
 
 //void MainWindow::openDirDialog() {
 //	// FIXME
