@@ -80,6 +80,7 @@ public slots:
 	 * This function well emit getImage( const QPixmap & ).
 	 */
 	void prev();
+	void open( const QModelIndex & index );
 
 signals:
 	/**

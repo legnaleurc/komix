@@ -48,6 +48,13 @@ bool FileController::open( const QUrl & url ) {
 	}
 }
 
+void FileController::open( const QModelIndex & index ) {
+	if( !isEmpty() ) {
+		index_ = index.row();
+		emit imageLoaded( index.data( Qt::UserRole ).value< QPixmap >() );
+	}
+}
+
 QModelIndex FileController::getCurrentIndex() const {
 	if( !isEmpty() ) {
 		return model_->index( index_, 0 );

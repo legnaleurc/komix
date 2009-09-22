@@ -44,7 +44,6 @@ public slots:
 	 * @param filePath file path
 	 */
 	void open( const QUrl & url );
-	void open( const QModelIndex & item );
 	/// toggle full-screen mode
 	void toggleFullScreen();
 	/// toggle minimize system tray

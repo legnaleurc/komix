@@ -33,7 +33,7 @@ dumpState_( Qt::WindowNoState ) {
 	scaleImage_->setWindowTitle( tr( "Scale Image" ) );
 	connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
-	connect( preview_, SIGNAL( required( const QModelIndex & ) ), this, SLOT( open( const QModelIndex & ) ) );
+	connect( preview_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
 
 	connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
@@ -242,10 +242,6 @@ void MainWindow::open( const QUrl & url ) {
 	if( !FileController::Instance().open( url ) ) {
 		QMessageBox::critical( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 	}
-}
-
-void MainWindow::open( const QModelIndex & item ) {
-	imageArea_->setImage( item.data( Qt::UserRole ).value< QPixmap >() );
 }
 
 void MainWindow::popupError_( const QString & errMsg ) {
