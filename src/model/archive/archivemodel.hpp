@@ -1,27 +1,16 @@
 #ifndef KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP
 #define KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP
 
-#include "filemodel.hpp"
-
-#include <QDir>
-#include <QStringList>
+#include "localfilemodel.hpp"
 
 namespace KomiX { namespace model { namespace archive {
 
-class ArchiveModel : public FileModel {
+class ArchiveModel : public LocalFileModel {
 public:
 	static bool IsRunnable();
 	static bool IsPrepared();
 
 	ArchiveModel( const QFileInfo & root );
-
-	virtual QModelIndex index( const QUrl & url ) const;
-
-	virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
-	virtual QModelIndex parent( const QModelIndex & child ) const;
-	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-	virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const;
-	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 private:
 	friend class ArchiveHook;
@@ -31,9 +20,6 @@ private:
 	static const QDir & TmpDir_();
 	static QDir ArchiveDir_( const QString & );
 	static void Extract_( const QString &, const QString & );
-
-	QDir root_;
-	QStringList files_;
 };
 
 const QStringList & ArchiveFormats();
