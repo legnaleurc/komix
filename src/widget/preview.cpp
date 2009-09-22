@@ -42,7 +42,9 @@ void Preview::popup() {
 		QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		return;
 	}
-	disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+	if( selection_ ) {
+		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+	}
 	model_ = FileController::Instance().getModel();
 	view_->setModel( model_.data() );
 	selection_ = view_->selectionModel();
