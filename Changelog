@@ -1,3 +1,8 @@
+[Project]
+Change file model to make it easier extend.
+[Feature]
+Archive support: 7z, zip, rar, tar.gz, tar.bz2, tar.lzma
+Add reverse navigation.
 0.0.2:
 [BugFix]
 Crashes when open directory which has no openable file via command line.
