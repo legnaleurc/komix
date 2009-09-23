@@ -120,10 +120,7 @@ void ImageArea::setImage( const QPixmap & image ) {
 	imageSize_ = image_->pixmap()->size();
 	scale();
 	
-	horizontalScrollBar()->setValue( horizontalScrollBar()->maximum() );
-	verticalScrollBar()->setValue( verticalScrollBar()->minimum() );
-	
-	state_ = TopRight;
+	home();
 }
 
 void ImageArea::scale() {
@@ -271,6 +268,7 @@ void ImageArea::reverseSmoothMove() {
 			emit prevPage();
 			break;
 		}
+		end();
 	}
 }
 
