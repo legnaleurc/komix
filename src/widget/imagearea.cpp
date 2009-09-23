@@ -235,6 +235,7 @@ void ImageArea::reverseSmoothMove() {
 		stopAllStep_();
 		switch( state_ ) {
 		case BottomLeft:
+			qDebug( "BottomLeft" );
 			if( canMoveTop_() ) {
 				topTimer_->start( interval_ );
 				state_ = TopLeft;
@@ -243,9 +244,11 @@ void ImageArea::reverseSmoothMove() {
 				state_ = BottomRight;
 			} else {
 				emit prevPage();
+				end();
 			}
 			break;
 		case TopLeft:
+			qDebug( "TopLeft" );
 			if( canMoveRight_() ) {
 				rightTimer_->start( interval_ );
 				if( canMoveBottom_() ) {
@@ -254,21 +257,25 @@ void ImageArea::reverseSmoothMove() {
 				state_ = BottomRight;
 			} else {
 				emit prevPage();
+				end();
 			}
 			break;
 		case BottomRight:
+			qDebug( "BottomRight" );
 			if( canMoveTop_() ) {
 				topTimer_->start( interval_ );
 				state_ = TopRight;
 			} else {
 				emit prevPage();
+				end();
 			}
 			break;
 		case TopRight:
+			qDebug( "TopRight" );
 			emit prevPage();
+			end();
 			break;
 		}
-		end();
 	}
 }
 
@@ -317,7 +324,7 @@ inline bool ImageArea::canMoveLeft_() const {
 }
 
 inline bool ImageArea::canMoveRight_() const {
-	return horizontalScrollBar()->value() > horizontalScrollBar()->maximum();
+	return horizontalScrollBar()->value() < horizontalScrollBar()->maximum();
 }
 
 } } // end namespace
