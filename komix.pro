@@ -77,7 +77,6 @@ komix_static {
 unix:CONFIG( release, debug|release ):QMAKE_POST_LINK = strip \
     $(TARGET)
 win32 { 
-    CONFIG += embed_manifest_exe
     CONFIG( debug, debug|release ):CONFIG += console
     RC_FILE = komix.rc
 }
