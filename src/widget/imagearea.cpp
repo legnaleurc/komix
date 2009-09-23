@@ -61,6 +61,11 @@ void ImageArea::mouseReleaseEvent( QMouseEvent * event ) {
 			emit middleClicked();
 		}
 		break;
+	case Qt::RightButton:
+		if( downPosition_ == event->pos() ) {
+			emit reverseSmoothMove();
+		}
+		break;
 	default:
 		;
 	}
