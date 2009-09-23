@@ -128,7 +128,7 @@ void MainWindow::initMenuBar_() {
 	QMenu * help = new QMenu( tr( "&Help" ), menuBar );
 
 	QAction * about__ = new QAction( tr( "&About" ), this );
-	connect( about__, SIGNAL( triggered() ), this, SLOT( about() ) );
+	connect( about__, SIGNAL( triggered() ), about_, SLOT( show() ) );
 
 	help->addAction( about__ );
 
@@ -249,17 +249,17 @@ void MainWindow::popupError_( const QString & errMsg ) {
 }
 
 void MainWindow::toggleFullScreen() {
-// 		qDebug( "<MainWindow::toggleFullScreen()>" );
-// 		qDebug() << "before: " << windowState();
+		qDebug( "<MainWindow::toggleFullScreen()>" );
+		qDebug() << "before: " << windowState();
 	menuBar()->setVisible( !menuBar()->isVisible() );
 	setWindowState( windowState() ^ Qt::WindowFullScreen );
-// 		qDebug() << "after: " << windowState();
-// 		qDebug( "</MainWindow::toggleFullScreen()>" );
+		qDebug() << "after: " << windowState();
+		qDebug( "</MainWindow::toggleFullScreen()>" );
 }
 
 void MainWindow::toggleSystemTray() {
-// 		qDebug( "<MainWindow::toggleSystemTray()>" );
-// 		qDebug() << "before: " << windowState();
+		qDebug( "<MainWindow::toggleSystemTray()>" );
+		qDebug() << "before: " << windowState();
 	if( isVisible() ) {
 		dumpState_ = windowState();
 		hide();
@@ -267,12 +267,8 @@ void MainWindow::toggleSystemTray() {
 		show();
 		setWindowState( dumpState_ );
 	}
-// 		qDebug() << "after: " << windowState();
-// 		qDebug( "</MainWindow::toggleSystemTray()>" );
-}
-
-void MainWindow::about() {
-	about_->show();
+		qDebug() << "after: " << windowState();
+		qDebug( "</MainWindow::toggleSystemTray()>" );
 }
 
 } } // end namespace

@@ -48,8 +48,6 @@ public slots:
 	void toggleFullScreen();
 	/// toggle minimize system tray
 	void toggleSystemTray();
-	/// show about
-	void about();
 
 private slots:
 	void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
