@@ -2,6 +2,8 @@
 
 #include <QString>
 #include <QImageReader>
+#include <QtGlobal>
+#include <QCoreApplication>
 
 #include <algorithm>
 
@@ -12,6 +14,7 @@ namespace {
 	}
 
 	inline QStringList uniqueList() {
+		Q_ASSERT( QCoreApplication::instance() != NULL );
 		std::list< QByteArray > uniList = QImageReader::supportedImageFormats().toStdList();
 
 		std::for_each( uniList.begin(), uniList.end(), tl );
