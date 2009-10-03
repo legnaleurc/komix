@@ -30,7 +30,7 @@
 namespace KomiX { namespace widget {
 
 class ImageArea;
-class ScaleImage;
+//class ScaleImage;
 class Preview;
 
 /**
@@ -71,7 +71,7 @@ private:
 	void initAbout_();
 
 	ImageArea * imageArea_;
-	ScaleImage * scaleImage_;
+//	ScaleImage * scaleImage_;
 	Preview * preview_;
 	QSystemTrayIcon * trayIcon_;
 	QWidget * about_;

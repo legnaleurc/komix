@@ -19,6 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "imagearea.hpp"
+#include "scalepanel.hpp"
+#include "filecontroller.hpp"
 
 #include <QTimer>
 #include <QAction>
@@ -32,6 +34,7 @@ namespace KomiX { namespace widget {
 
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
+scale_( new ScalePanel( this, Qt::Dialog ) ),
 image_( new QLabel( this ) ),
 imageSize_(),
 topTimer_( new QTimer( this ) ),
@@ -40,6 +43,12 @@ leftTimer_( new QTimer( this ) ),
 rightTimer_( new QTimer( this ) ),
 ratio_( 1.0 ), step_( 2 ),
 interval_( 1 ) {
+	setBackgroundRole( QPalette::Dark );
+	setAlignment( Qt::AlignCenter );
+	setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+	setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+	setAcceptDrops( true );
+
 	setWidget( image_ );
 	image_->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 	image_->setScaledContents( true );
@@ -51,10 +60,20 @@ interval_( 1 ) {
 	image_->setMouseTracking( true );
 	setMouseTracking( true );
 
+	connect( this, SIGNAL( prevPage() ), &FileController::Instance(), SLOT( prev() ) );
+	connect( this, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
+	connect( this, SIGNAL( scaled( int ) ), scale_, SLOT( scale( int ) ) );
+	connect( scale_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
+	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
+
 	connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 	connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 	connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 	connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
+}
+
+void ImageArea::showScalePanel() {
+	scale_->show();
 }
 
 void ImageArea::mousePressEvent( QMouseEvent * event ) {
@@ -147,7 +166,7 @@ void ImageArea::dropEvent( QDropEvent * event ) {
 }
 
 void ImageArea::resizeEvent( QResizeEvent * event ) {
-	scale();
+	updateImageSize();
 	QScrollArea::resizeEvent( event );
 }
 
@@ -155,14 +174,12 @@ void ImageArea::setImage( const QPixmap & image ) {
 	stopAllStep_();
 	image_->setPixmap( image );
 	imageSize_ = image_->pixmap()->size();
-	scale();
+	updateImageSize();
 	
 	home();
 }
 
-void ImageArea::scale() {
-// 		qDebug() << "ImageArea::scale()";
-
+void ImageArea::updateImageSize() {
 	if( image_->pixmap() ) {
 		if( ratio_ >= 0.0 ) {
 			image_->resize( imageSize_ * ratio_ );
@@ -185,7 +202,7 @@ void ImageArea::scale( int ratio ) {
 // 		qDebug() << "imageSize_: " << imageSize_;
 
 	ratio_ = ( ratio >= 0 ) ? ( ratio / 100.0 ) : ( ratio );
-	scale();
+	updateImageSize();
 }
 
 void ImageArea::stepTop() {

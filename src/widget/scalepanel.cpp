@@ -1,5 +1,5 @@
 /**
- * @file scaleimage.cpp
+ * @file scalepanel.cpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "scaleimage.hpp"
+#include "scalepanel.hpp"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -39,10 +39,12 @@ enum ScaleMode {
 
 namespace KomiX { namespace widget {
 
-ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ):
-QDialog( parent, f ),
+ScalePanel::ScalePanel( QWidget * parent, Qt::WindowFlags f ):
+QWidget( parent, f ),
 fitness_( new QButtonGroup( this ) ),
 scaleSlider_( new QSlider( Qt::Horizontal, this ) ) {
+	setWindowTitle( tr( "Scale Image" ) );
+
 	QVBoxLayout * mainLayout = new QVBoxLayout( this );
 	setLayout( mainLayout );
 
@@ -96,7 +98,7 @@ scaleSlider_( new QSlider( Qt::Horizontal, this ) ) {
 	connect( fitOrigin, SIGNAL( toggled( bool ) ), scaleSpin, SLOT( setEnabled( bool ) ) );
 }
 
-void ScaleImage::scale( int ratio ) {
+void ScalePanel::scale( int ratio ) {
 	fitness_->button( Origin )->setChecked( true );
 	if( ratio != 0 ) {
 		scaleSlider_->setValue( scaleSlider_->value() + ratio );
@@ -105,7 +107,7 @@ void ScaleImage::scale( int ratio ) {
 	}
 }
 
-void ScaleImage::valueHelper_( int ) {
+void ScalePanel::valueHelper_( int ) {
 	qDebug( "ScaleImage::valueHelper_" );
 	switch( fitness_->checkedId() ) {
 	case Origin:

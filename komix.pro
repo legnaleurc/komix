@@ -24,7 +24,7 @@ HEADERS += src/utility/filecontroller.hpp \
     src/widget/imagearea.hpp \
     src/widget/mainwindow.hpp \
     src/widget/preview.hpp \
-    src/widget/scaleimage.hpp \
+    src/widget/scalepanel.hpp \
     src/model/archive/archivemodel.hpp \
     src/model/directory/directorymodel.hpp \
     src/model/single/singlemodel.hpp \
@@ -40,7 +40,7 @@ SOURCES += src/utility/filecontroller.cpp \
     src/widget/imagearea.cpp \
     src/widget/mainwindow.cpp \
     src/widget/preview.cpp \
-    src/widget/scaleimage.cpp \
+    src/widget/scalepanel.cpp \
     src/model/archive/archivemodel.cpp \
     src/model/directory/directorymodel.cpp \
     src/model/single/singlemodel.cpp \

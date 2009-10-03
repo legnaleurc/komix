@@ -1,5 +1,5 @@
 /**
- * @file scaleimage.hpp
+ * @file scalepanel.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,10 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_SCALEIMAGE_HPP
-#define KOMIX_WIDGET_SCALEIMAGE_HPP
+#ifndef KOMIX_WIDGET_SCALEPANEL_HPP
+#define KOMIX_WIDGET_SCALEPANEL_HPP
 
-#include <QDialog>
+#include <QWidget>
 #include <QButtonGroup>
 #include <QSlider>
 
@@ -34,7 +34,7 @@ namespace KomiX { namespace widget {
  * This widget is simple ... too simple. Maybe I'll
  * change this widget to option widget.
  */
-class ScaleImage : public QDialog {
+class ScalePanel : public QWidget {
 	Q_OBJECT
 
 public:
@@ -43,7 +43,7 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	ScalePanel( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 public slots:
 	void scale( int ratio );

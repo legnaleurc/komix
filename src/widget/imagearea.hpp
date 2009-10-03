@@ -29,6 +29,8 @@
 
 namespace KomiX { namespace widget {
 
+class ScalePanel;
+
 /**
  * @brief The main display area
  * @todo improve the performance of smoothMove()
@@ -64,6 +66,8 @@ public slots:
 	 */
 	void setImage( const QPixmap & image );
 
+	void showScalePanel();
+
 	/**
 	 * @brief refresh image size
 	 @ @sa scale(int)
@@ -71,7 +75,7 @@ public slots:
 	 * This function will use the setuped status to scale image.\n
 	 * The real action function.
 	 */
-	void scale();
+	void updateImageSize();
 
 	/**
 	 * @brief scale image
@@ -157,6 +161,7 @@ private:
 	bool canMoveLeft_() const;
 	bool canMoveRight_() const;
 
+	ScalePanel * scale_;
 	QLabel * image_;
 	QSize imageSize_;
 	QTimer * topTimer_;
