@@ -166,7 +166,7 @@ void ImageArea::dropEvent( QDropEvent * event ) {
 }
 
 void ImageArea::resizeEvent( QResizeEvent * event ) {
-	updateImageSize();
+	updateImageSize_();
 	QScrollArea::resizeEvent( event );
 }
 
@@ -174,12 +174,12 @@ void ImageArea::setImage( const QPixmap & image ) {
 	stopAllStep_();
 	image_->setPixmap( image );
 	imageSize_ = image_->pixmap()->size();
-	updateImageSize();
+	updateImageSize_();
 	
 	home();
 }
 
-void ImageArea::updateImageSize() {
+void ImageArea::updateImageSize_() {
 	if( image_->pixmap() ) {
 		if( ratio_ >= 0.0 ) {
 			image_->resize( imageSize_ * ratio_ );
@@ -202,7 +202,7 @@ void ImageArea::scale( int ratio ) {
 // 		qDebug() << "imageSize_: " << imageSize_;
 
 	ratio_ = ( ratio >= 0 ) ? ( ratio / 100.0 ) : ( ratio );
-	updateImageSize();
+	updateImageSize_();
 }
 
 void ImageArea::stepTop() {

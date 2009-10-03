@@ -69,15 +69,6 @@ public slots:
 	void showScalePanel();
 
 	/**
-	 * @brief refresh image size
-	 @ @sa scale(int)
-	 *
-	 * This function will use the setuped status to scale image.\n
-	 * The real action function.
-	 */
-	void updateImageSize();
-
-	/**
 	 * @brief scale image
 	 * @param ratio the scale rate
 	 * @sa scale()
@@ -160,6 +151,7 @@ private:
 	bool canMoveBottom_() const;
 	bool canMoveLeft_() const;
 	bool canMoveRight_() const;
+	void updateImageSize_();
 
 	ScalePanel * scale_;
 	QLabel * image_;
