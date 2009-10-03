@@ -175,7 +175,7 @@ void MainWindow::initCentralWidget_() {
 	connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
 	connect( imageArea_, SIGNAL( scaled( int ) ), scaleImage_, SLOT( scale( int ) ) );
 	connect( imageArea_, SIGNAL( fileDroped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
-	connect( imageArea_, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
+	connect( imageArea_, SIGNAL( requireToogleScreen() ), this, SLOT( toggleFullScreen() ) );
 	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 }
 

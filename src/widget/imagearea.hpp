@@ -131,7 +131,7 @@ signals:
 	 */
 	void fileDroped( const QUrl & url );
 	/// middle click event
-	void middleClicked();
+	void requireToogleScreen();
 
 protected:
 	/// overrided method
