@@ -208,7 +208,7 @@ void MainWindow::initAbout_() {
 	QLabel * version = new QLabel( about_ );
 	version->setText( tr(
 		"<h1>KomiX</h1>"
-		"Version: 0.0.80<br/>"
+		"Version: 0.0.85<br/>"
 		"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
 	) );
 	version->setTextFormat( Qt::RichText );
