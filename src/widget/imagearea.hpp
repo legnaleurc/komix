@@ -122,6 +122,7 @@ signals:
 	void prevPage();
 	/// go to next page
 	void nextPage();
+	void scaled( int delta );
 	/**
 	 * @brief acceptable file dropped event
 	 * @param filePath the droped file path

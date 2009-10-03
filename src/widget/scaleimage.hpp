@@ -45,6 +45,9 @@ public:
 	 */
 	ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
+public slots:
+	void scale( int ratio );
+
 signals:
 	/**
 	 * @brief scale event
@@ -60,13 +63,6 @@ private slots:
 private:
 	QButtonGroup * fitness_;
 	QSlider * scaleSlider_;
-
-	enum ScaleMode {
-		Origin,
-		Width,
-		Height,
-		Window
-	};
 };
 	
 } } // end namespace

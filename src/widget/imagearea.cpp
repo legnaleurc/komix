@@ -108,10 +108,18 @@ void ImageArea::mouseMoveEvent( QMouseEvent * event ) {
 
 void ImageArea::wheelEvent( QWheelEvent * event ) {
 	int delta = event->delta();
-	if( delta < 0 ) {
-		emit nextPage();
+	if( event->modifiers() & Qt::ControlModifier ) {
+		if( delta < 0 ) {
+			emit scaled( -10 );
+		} else if( delta > 0 ) {
+			emit scaled( 10 );
+		}
 	} else {
-		emit prevPage();
+		if( delta < 0 ) {
+			emit nextPage();
+		} else if( delta > 0 ) {
+			emit prevPage();
+		}
 	}
 }
 

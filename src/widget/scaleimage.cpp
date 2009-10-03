@@ -26,6 +26,17 @@
 #include <QGroupBox>
 #include <QRadioButton>
 
+namespace {
+
+enum ScaleMode {
+	Origin,
+	Width,
+	Height,
+	Window
+};
+
+} // end of namespace
+
 namespace KomiX { namespace widget {
 
 ScaleImage::ScaleImage( QWidget * parent, Qt::WindowFlags f ):
@@ -83,6 +94,11 @@ scaleSlider_( new QSlider( Qt::Horizontal, this ) ) {
 
 	connect( fitOrigin, SIGNAL( toggled( bool ) ), scaleSlider_, SLOT( setEnabled( bool ) ) );
 	connect( fitOrigin, SIGNAL( toggled( bool ) ), scaleSpin, SLOT( setEnabled( bool ) ) );
+}
+
+void ScaleImage::scale( int ratio ) {
+	fitness_->button( Origin )->setChecked( true );
+	scaleSlider_->setValue( scaleSlider_->value() + ratio );
 }
 
 void ScaleImage::valueHelper_( int ) {
