@@ -78,7 +78,11 @@ void ImageArea::mouseReleaseEvent( QMouseEvent * event ) {
 		break;
 	case Qt::MidButton:
 		if( downPosition_ == event->pos() ) {
-			emit requireToogleScreen();
+			if( event->modifiers() & Qt::ControlModifier ) {
+				emit scaled( 0 );
+			} else {
+				emit requireToogleScreen();
+			}
 		}
 		break;
 	case Qt::RightButton:

@@ -98,7 +98,11 @@ scaleSlider_( new QSlider( Qt::Horizontal, this ) ) {
 
 void ScaleImage::scale( int ratio ) {
 	fitness_->button( Origin )->setChecked( true );
-	scaleSlider_->setValue( scaleSlider_->value() + ratio );
+	if( ratio != 0 ) {
+		scaleSlider_->setValue( scaleSlider_->value() + ratio );
+	} else {
+		scaleSlider_->setValue( 100 );
+	}
 }
 
 void ScaleImage::valueHelper_( int ) {
