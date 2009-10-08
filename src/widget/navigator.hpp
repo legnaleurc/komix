@@ -1,5 +1,5 @@
 /**
- * @file preview.hpp
+ * @file navigator.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.

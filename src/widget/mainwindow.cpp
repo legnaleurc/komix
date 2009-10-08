@@ -21,7 +21,7 @@
 #include "mainwindow.hpp"
 //#include "scaleimage.hpp"
 #include "imagearea.hpp"
-#include "preview.hpp"
+#include "navigator.hpp"
 #include "global.hpp"
 #include "filecontroller.hpp"
 
