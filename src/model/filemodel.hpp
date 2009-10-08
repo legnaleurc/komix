@@ -30,15 +30,33 @@
 
 namespace KomiX { namespace model {
 
+/**
+ * @brief Abstract file model
+ * 
+ * Describe how to retrive files.
+ */
 class FileModel : public QAbstractItemModel {
 public:
+	/// Functor of key comparsion
 	typedef bool ( * KeyFunctor )( const QUrl & );
+	/// Functor of model creation
 	typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QUrl & );
 
+	/**
+	 * @brief Create concrete model
+	 * @param url opening url
+	 */
 	static QSharedPointer< FileModel > createModel( const QUrl & url );
+	/**
+	 * @brief Register model
+	 * @param key compare function
+	 * @param value create function
+	 * @return always true
+	 */
 	static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
 
 	using QAbstractItemModel::index;
+	/// Query the index @p url in the model
 	virtual QModelIndex index( const QUrl & url ) const = 0;
 
 private:
