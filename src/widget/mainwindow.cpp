@@ -19,9 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "mainwindow.hpp"
-//#include "scaleimage.hpp"
 #include "imagearea.hpp"
-//#include "navigator.hpp"
 #include "global.hpp"
 #include "filecontroller.hpp"
 
@@ -40,8 +38,6 @@ namespace KomiX { namespace widget {
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 imageArea_( new ImageArea( this ) ),
-//scaleImage_( new ScaleImage( this ) ),
-//preview_( new Preview( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new QWidget( this, Qt::Dialog ) ),
 dumpState_( Qt::WindowNoState ) {
@@ -49,10 +45,6 @@ dumpState_( Qt::WindowNoState ) {
 	initCentralWidget_();
 	initTrayIcon_();
 	initAbout_();
-
-//	connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
-
-//	connect( preview_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
 
 	connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
@@ -164,18 +156,8 @@ void MainWindow::initMenuBar_() {
 void MainWindow::initCentralWidget_() {
 	setCentralWidget( imageArea_ );
 
-//	imageArea_->setBackgroundRole( QPalette::Dark );
-//	imageArea_->setAlignment( Qt::AlignCenter );
-//	imageArea_->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-//	imageArea_->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-//	imageArea_->setAcceptDrops( true );
-
-//	connect( imageArea_, SIGNAL( prevPage() ), &FileController::Instance(), SLOT( prev() ) );
-//	connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
-//	connect( imageArea_, SIGNAL( scaled( int ) ), scaleImage_, SLOT( scale( int ) ) );
 	connect( imageArea_, SIGNAL( fileDroped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
 	connect( imageArea_, SIGNAL( requireToogleScreen() ), this, SLOT( toggleFullScreen() ) );
-//	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 }
 
 void MainWindow::initTrayIcon_() {
