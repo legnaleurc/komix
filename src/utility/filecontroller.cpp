@@ -22,20 +22,9 @@
 #include "global.hpp"
 #include "error.hpp"
 
-#include <QMutexLocker>
 #include <QFileInfo>
-#include <QMutex>
 
-namespace {
-
-static inline QMutex * lock() {
-	static QMutex m;
-	return &m;
-}
-
-} // end of namespace
-
-namespace KomiX { namespace private_ {
+namespace KomiX {// namespace private_ {
 
 using model::FileModel;
 
@@ -46,7 +35,6 @@ model_( NULL ) {
 }
 
 bool FileController::open( const QUrl & url ) {
-	QMutexLocker locker( lock() );
 	try {
 		model_ = FileModel::createModel( url );
 	} catch( error::BasicError & e ) {
@@ -84,7 +72,6 @@ QModelIndex FileController::getCurrentIndex() const {
 }
 
 void FileController::next() {
-	QMutexLocker locker( ::lock() );
 	if( !isEmpty() ) {
 		++index_;
 		if( index_ >= model_->rowCount() ) {
@@ -96,7 +83,6 @@ void FileController::next() {
 }
 
 void FileController::prev() {
-	QMutexLocker locker( ::lock() );
 	if( !isEmpty() ) {
 		--index_;
 		if( index_ < 0 ) {
@@ -118,4 +104,4 @@ QSharedPointer< FileModel > FileController::getModel() const {
 	return model_;
 }
 
-} } // end of namespace
+}// } // end of namespace

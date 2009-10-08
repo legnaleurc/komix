@@ -27,7 +27,14 @@
 #include <QSize>
 #include <QUrl>
 
-namespace KomiX { namespace widget {
+namespace KomiX {
+
+class FileController;
+
+namespace widget {
+
+class ScalePanel;
+class Navigator;
 
 /**
  * @brief The main display area
@@ -57,6 +64,8 @@ public:
 	 */
 	ImageArea( QWidget * parent = 0 );
 
+	bool open( const QUrl & url );
+
 public slots:
 	/**
 	 * @brief set display image
@@ -64,14 +73,11 @@ public slots:
 	 */
 	void setImage( const QPixmap & image );
 
-	/**
-	 * @brief refresh image size
-	 @ @sa scale(int)
-	 *
-	 * This function will use the setuped status to scale image.\n
-	 * The real action function.
-	 */
-	void scale();
+	void next();
+	void prev();
+
+	void showScalePanel();
+	void showNavigator();
 
 	/**
 	 * @brief scale image
@@ -119,9 +125,6 @@ public slots:
 	void end();
 
 signals:
-	void prevPage();
-	/// go to next page
-	void nextPage();
 	void scaled( int delta );
 	/**
 	 * @brief acceptable file dropped event
@@ -132,6 +135,7 @@ signals:
 	void fileDroped( const QUrl & url );
 	/// middle click event
 	void requireToogleScreen();
+	void errorOccured( const QString & errmsg );
 
 protected:
 	/// overrided method
@@ -156,7 +160,11 @@ private:
 	bool canMoveBottom_() const;
 	bool canMoveLeft_() const;
 	bool canMoveRight_() const;
+	void updateImageSize_();
 
+	ScalePanel * scale_;
+	Navigator * navi_;
+	FileController * ctrl_;
 	QLabel * image_;
 	QSize imageSize_;
 	QTimer * topTimer_;

@@ -1,5 +1,5 @@
 /**
- * @file preview.cpp
+ * @file navigator.cpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,9 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "preview.hpp"
+#include "navigator.hpp"
 #include "global.hpp"
-#include "filecontroller.hpp"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -30,7 +29,7 @@
 
 namespace KomiX { namespace widget {
 
-Preview::Preview( QWidget * parent, Qt::WindowFlags f ) :
+Navigator::Navigator( QWidget * parent, Qt::WindowFlags f ) :
 QDialog( parent, f ),
 model_( NULL ),
 view_( NULL ),
@@ -57,29 +56,27 @@ image_( this ) {
 	mainFrame->addWidget( buttonBox );
 }
 
-void Preview::popup() {
-	if( FileController::Instance().isEmpty() ) {
-		QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
-		return;
-	}
+void Navigator::setModel( QSharedPointer< model::FileModel > model ) {
 	if( selection_ ) {
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 	}
-	model_ = FileController::Instance().getModel();
+	model_ = model;
 	view_->setModel( model_.data() );
 	selection_ = view_->selectionModel();
 	connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-	view_->setCurrentIndex( FileController::Instance().getCurrentIndex() );
-	exec();
 }
 
-void Preview::openHelper_() {
+void Navigator::setCurrentIndex( const QModelIndex & index ) {
+	view_->setCurrentIndex( index );
+}
+
+void Navigator::openHelper_() {
 	qDebug() << "Send: " << view_->currentIndex();
 	emit required( view_->currentIndex() );
 	accept();
 }
 
-void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
+void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	qDebug( "Preview::viewImage_()" );
 	qDebug() << current;
 	image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );

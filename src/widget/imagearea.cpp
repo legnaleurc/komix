@@ -19,6 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "imagearea.hpp"
+#include "scalepanel.hpp"
+#include "navigator.hpp"
+#include "filecontroller.hpp"
 
 #include <QTimer>
 #include <QAction>
@@ -32,6 +35,9 @@ namespace KomiX { namespace widget {
 
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
+scale_( new ScalePanel( this, Qt::Dialog ) ),
+navi_( new Navigator( this ) ),
+ctrl_( new FileController( this ) ),
 image_( new QLabel( this ) ),
 imageSize_(),
 topTimer_( new QTimer( this ) ),
@@ -40,6 +46,12 @@ leftTimer_( new QTimer( this ) ),
 rightTimer_( new QTimer( this ) ),
 ratio_( 1.0 ), step_( 2 ),
 interval_( 1 ) {
+	setBackgroundRole( QPalette::Dark );
+	setAlignment( Qt::AlignCenter );
+	setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+	setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+	setAcceptDrops( true );
+
 	setWidget( image_ );
 	image_->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 	image_->setScaledContents( true );
@@ -51,10 +63,43 @@ interval_( 1 ) {
 	image_->setMouseTracking( true );
 	setMouseTracking( true );
 
+	connect( this, SIGNAL( scaled( int ) ), scale_, SLOT( scale( int ) ) );
+	connect( scale_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
+	connect( ctrl_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
+	connect( ctrl_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
+
+	connect( navi_, SIGNAL( required( const QModelIndex & ) ), ctrl_, SLOT( open( const QModelIndex & ) ) );
+
 	connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 	connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 	connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 	connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
+}
+
+bool ImageArea::open( const QUrl & url ) {
+	return ctrl_->open( url );
+}
+
+void ImageArea::prev() {
+	ctrl_->prev();
+}
+
+void ImageArea::next() {
+	ctrl_->next();
+}
+
+void ImageArea::showScalePanel() {
+	scale_->show();
+}
+
+void ImageArea::showNavigator() {
+	if( ctrl_->isEmpty() ) {
+		emit errorOccured( tr( "No openable file." ) );
+		return;
+	}
+	navi_->setModel( ctrl_->getModel() );
+	navi_->setCurrentIndex( ctrl_->getCurrentIndex() );
+	navi_->exec();
 }
 
 void ImageArea::mousePressEvent( QMouseEvent * event ) {
@@ -120,9 +165,9 @@ void ImageArea::wheelEvent( QWheelEvent * event ) {
 		}
 	} else {
 		if( delta < 0 ) {
-			emit nextPage();
+			ctrl_->next();
 		} else if( delta > 0 ) {
-			emit prevPage();
+			ctrl_->prev();
 		}
 	}
 }
@@ -147,7 +192,7 @@ void ImageArea::dropEvent( QDropEvent * event ) {
 }
 
 void ImageArea::resizeEvent( QResizeEvent * event ) {
-	scale();
+	updateImageSize_();
 	QScrollArea::resizeEvent( event );
 }
 
@@ -155,14 +200,12 @@ void ImageArea::setImage( const QPixmap & image ) {
 	stopAllStep_();
 	image_->setPixmap( image );
 	imageSize_ = image_->pixmap()->size();
-	scale();
+	updateImageSize_();
 	
 	home();
 }
 
-void ImageArea::scale() {
-// 		qDebug() << "ImageArea::scale()";
-
+void ImageArea::updateImageSize_() {
 	if( image_->pixmap() ) {
 		if( ratio_ >= 0.0 ) {
 			image_->resize( imageSize_ * ratio_ );
@@ -185,7 +228,7 @@ void ImageArea::scale( int ratio ) {
 // 		qDebug() << "imageSize_: " << imageSize_;
 
 	ratio_ = ( ratio >= 0 ) ? ( ratio / 100.0 ) : ( ratio );
-	scale();
+	updateImageSize_();
 }
 
 void ImageArea::stepTop() {
@@ -235,7 +278,7 @@ void ImageArea::smoothMove() {
 				leftTimer_->start( interval_ );
 				state_ = TopLeft;
 			} else {
-				emit nextPage();
+				ctrl_->next();
 			}
 			break;
 		case BottomRight:
@@ -246,7 +289,7 @@ void ImageArea::smoothMove() {
 				}
 				state_ = TopLeft;
 			} else {
-				emit nextPage();
+				ctrl_->next();
 			}
 			break;
 		case TopLeft:
@@ -254,11 +297,11 @@ void ImageArea::smoothMove() {
 				bottomTimer_->start( interval_ );
 				state_ = BottomLeft;
 			} else {
-				emit nextPage();
+				ctrl_->next();
 			}
 			break;
 		case BottomLeft:
-			emit nextPage();
+			ctrl_->next();
 			break;
 		}
 	}
@@ -280,7 +323,7 @@ void ImageArea::reverseSmoothMove() {
 				rightTimer_->start( interval_ );
 				state_ = BottomRight;
 			} else {
-				emit prevPage();
+				ctrl_->prev();
 				end();
 			}
 			break;
@@ -293,7 +336,7 @@ void ImageArea::reverseSmoothMove() {
 				}
 				state_ = BottomRight;
 			} else {
-				emit prevPage();
+				ctrl_->prev();
 				end();
 			}
 			break;
@@ -303,13 +346,13 @@ void ImageArea::reverseSmoothMove() {
 				topTimer_->start( interval_ );
 				state_ = TopRight;
 			} else {
-				emit prevPage();
+				ctrl_->prev();
 				end();
 			}
 			break;
 		case TopRight:
 			qDebug( "TopRight" );
-			emit prevPage();
+			ctrl_->prev();
 			end();
 			break;
 		}

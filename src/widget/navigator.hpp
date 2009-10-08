@@ -1,5 +1,5 @@
 /**
- * @file scaleimage.hpp
+ * @file navigator.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,23 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_SCALEIMAGE_HPP
-#define KOMIX_WIDGET_SCALEIMAGE_HPP
+#ifndef KOMIX_WIDGET_PREVIEW_HPP
+#define KOMIX_WIDGET_PREVIEW_HPP
+
+#include "filemodel.hpp"
 
 #include <QDialog>
-#include <QButtonGroup>
-#include <QSlider>
+#include <QListView>
+#include <QItemSelectionModel>
+#include <QLabel>
 
 namespace KomiX { namespace widget {
 
 /**
- * @brief Widget to scale image
- * @todo "upgrade" its functionality
+ * @brief Preview and goto widget
  *
- * This widget is simple ... too simple. Maybe I'll
- * change this widget to option widget.
+ * This widget can preview other images in same dicrectory, and
+ * open which you want.
  */
-class ScaleImage : public QDialog {
+class Navigator : public QDialog {
 	Q_OBJECT
 
 public:
@@ -43,28 +45,29 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	ScaleImage( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	Navigator( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-public slots:
-	void scale( int ratio );
+	void setModel( QSharedPointer< model::FileModel > model );
+	void setCurrentIndex( const QModelIndex & index );
 
 signals:
 	/**
-	 * @brief scale event
-	 * @param ratio scalar ratio
-	 *
-	 * The ratio means percents, so 100 actually means 100%.
+	 * @brief open file
+	 * @param filePath file path
 	 */
-	void scaled( int ratio );
-
-private slots:
-	void valueHelper_( int = -4 );
+	void required( const QModelIndex & item );
 
 private:
-	QButtonGroup * fitness_;
-	QSlider * scaleSlider_;
+	QSharedPointer< model::FileModel > model_;
+	QListView * view_;
+	QItemSelectionModel * selection_;
+	QLabel image_;
+
+private slots:
+	void openHelper_();
+	void viewImage_( const QModelIndex &, const QModelIndex & );
 };
-	
+
 } } // end namespace
 
 #endif

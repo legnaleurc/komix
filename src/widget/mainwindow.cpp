@@ -19,11 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "mainwindow.hpp"
-#include "scaleimage.hpp"
 #include "imagearea.hpp"
-#include "preview.hpp"
 #include "global.hpp"
-#include "filecontroller.hpp"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -40,8 +37,6 @@ namespace KomiX { namespace widget {
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 imageArea_( new ImageArea( this ) ),
-scaleImage_( new ScaleImage( this ) ),
-preview_( new Preview( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new QWidget( this, Qt::Dialog ) ),
 dumpState_( Qt::WindowNoState ) {
@@ -50,12 +45,7 @@ dumpState_( Qt::WindowNoState ) {
 	initTrayIcon_();
 	initAbout_();
 
-	scaleImage_->setWindowTitle( tr( "Scale Image" ) );
-	connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
-
-	connect( preview_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
-
-	connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
+	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
 
 void MainWindow::initMenuBar_() {
@@ -115,7 +105,7 @@ void MainWindow::initMenuBar_() {
 
 	QAction * scale = new QAction( tr( "&Scale image" ), this );
 	scale->setShortcut( tr( "Ctrl+S" ) );
-	connect( scale, SIGNAL( triggered() ), scaleImage_, SLOT( show() ) );
+	connect( scale, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
 	view->addAction( scale );
 	addAction( scale );
 
@@ -123,9 +113,9 @@ void MainWindow::initMenuBar_() {
 
 	QMenu * go = new QMenu( tr( "&Go" ), menuBar );
 
-	QAction * jump = new QAction( tr( "&Jump to image" ), this );
-	jump->setShortcut( tr( "Ctrl+J" ) );
-	connect( jump, SIGNAL( triggered() ), preview_, SLOT( popup() ) );
+	QAction * jump = new QAction( tr( "&Go To..." ), this );
+	jump->setShortcut( tr( "Ctrl+G" ) );
+	connect( jump, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
 	go->addAction( jump );
 	addAction( jump );
 
@@ -133,13 +123,13 @@ void MainWindow::initMenuBar_() {
 
 	QAction * prev = new QAction( tr( "&Preverse image" ), this );
 	prev->setShortcut( Qt::Key_PageUp );
-	connect( prev, SIGNAL( triggered() ), &FileController::Instance(), SLOT( prev() ) );
+	connect( prev, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
 	go->addAction( prev );
 	addAction( prev );
 
 	QAction * next = new QAction( tr( "&Next image" ), this );
 	next->setShortcut( Qt::Key_PageDown );
-	connect( next, SIGNAL( triggered() ), &FileController::Instance(), SLOT( next() ) );
+	connect( next, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
 	go->addAction( next );
 	addAction( next );
 
@@ -165,18 +155,8 @@ void MainWindow::initMenuBar_() {
 void MainWindow::initCentralWidget_() {
 	setCentralWidget( imageArea_ );
 
-	imageArea_->setBackgroundRole( QPalette::Dark );
-	imageArea_->setAlignment( Qt::AlignCenter );
-	imageArea_->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-	imageArea_->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-	imageArea_->setAcceptDrops( true );
-
-	connect( imageArea_, SIGNAL( prevPage() ), &FileController::Instance(), SLOT( prev() ) );
-	connect( imageArea_, SIGNAL( nextPage() ), &FileController::Instance(), SLOT( next() ) );
-	connect( imageArea_, SIGNAL( scaled( int ) ), scaleImage_, SLOT( scale( int ) ) );
 	connect( imageArea_, SIGNAL( fileDroped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
 	connect( imageArea_, SIGNAL( requireToogleScreen() ), this, SLOT( toggleFullScreen() ) );
-	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), imageArea_, SLOT( setImage( const QPixmap & ) ) );
 }
 
 void MainWindow::initTrayIcon_() {
@@ -208,7 +188,7 @@ void MainWindow::initAbout_() {
 	QLabel * version = new QLabel( about_ );
 	version->setText( tr(
 		"<h1>KomiX</h1>"
-		"Version: 0.0.80<br/>"
+		"Version: 0.0.85<br/>"
 		"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
 	) );
 	version->setTextFormat( Qt::RichText );
@@ -251,7 +231,7 @@ void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
 }
 
 void MainWindow::open( const QUrl & url ) {
-	if( !FileController::Instance().open( url ) ) {
+	if( !imageArea_->open( url ) ) {
 		QMessageBox::critical( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 	}
 }

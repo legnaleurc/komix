@@ -1,5 +1,5 @@
 /**
- * @file preview.hpp
+ * @file scalepanel.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,25 +18,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_PREVIEW_HPP
-#define KOMIX_WIDGET_PREVIEW_HPP
+#ifndef KOMIX_WIDGET_SCALEPANEL_HPP
+#define KOMIX_WIDGET_SCALEPANEL_HPP
 
-#include "filemodel.hpp"
-
-#include <QDialog>
-#include <QListView>
-#include <QItemSelectionModel>
-#include <QLabel>
+#include <QWidget>
+#include <QButtonGroup>
+#include <QSlider>
 
 namespace KomiX { namespace widget {
 
 /**
- * @brief Preview and goto widget
+ * @brief Widget to scale image
+ * @todo "upgrade" its functionality
  *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
+ * This widget is simple ... too simple. Maybe I'll
+ * change this widget to option widget.
  */
-class Preview : public QDialog {
+class ScalePanel : public QWidget {
 	Q_OBJECT
 
 public:
@@ -45,35 +43,28 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	Preview( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	ScalePanel( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 public slots:
-	/**
-	 * @brief list all supported files in opened directory
-	 *
-	 * The list is locked in current opened directory.
-	 * It will focus current opened file first.
-	 */
-	void popup();
+	void scale( int ratio );
 
 signals:
 	/**
-	 * @brief open file
-	 * @param filePath file path
+	 * @brief scale event
+	 * @param ratio scalar ratio
+	 *
+	 * The ratio means percents, so 100 actually means 100%.
 	 */
-	void required( const QModelIndex & item );
-
-private:
-	QSharedPointer< model::FileModel > model_;
-	QListView * view_;
-	QItemSelectionModel * selection_;
-	QLabel image_;
+	void scaled( int ratio );
 
 private slots:
-	void openHelper_();
-	void viewImage_( const QModelIndex &, const QModelIndex & );
-};
+	void valueHelper_( int = -4 );
 
+private:
+	QButtonGroup * fitness_;
+	QSlider * scaleSlider_;
+};
+	
 } } // end namespace
 
 #endif

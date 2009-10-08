@@ -26,9 +26,7 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-#include <loki/Singleton.h>
-
-namespace KomiX { namespace private_ {
+namespace KomiX {
 
 /**
  * @brief The base file controller
@@ -54,9 +52,9 @@ public:
 	FileController( QObject * parent = 0 );
 
 	/**
-	 * @brief open a file or directory by path
-	 * @param filePath file path
-	 * @retval true if emited getImage( const QPixmap & )
+	 * @brief open a url
+	 * @param url url
+	 * @retval true emited getImage( const QPixmap & )
 	 * @retval false nothing happend
 	 *
 	 * It will emit getImage( const QPixmap & ) if necessary.
@@ -112,11 +110,6 @@ private:
 
 	QSharedPointer< model::FileModel > model_;
 };
-
-} // end of KomiX::private_
-
-/// File controller singleton
-typedef Loki::SingletonHolder< private_::FileController > FileController;
 
 } // end of KomiX
 
