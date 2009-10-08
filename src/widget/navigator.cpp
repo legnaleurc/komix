@@ -20,7 +20,7 @@
  */
 #include "navigator.hpp"
 #include "global.hpp"
-#include "filecontroller.hpp"
+//#include "filecontroller.hpp"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -57,20 +57,34 @@ image_( this ) {
 	mainFrame->addWidget( buttonBox );
 }
 
-void Navigator::popup() {
-	if( FileController::Instance().isEmpty() ) {
-		QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
-		return;
-	}
+//void Navigator::popup() {
+//	if( FileController::Instance().isEmpty() ) {
+//		QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
+//		return;
+//	}
+//	if( selection_ ) {
+//		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+//	}
+//	model_ = FileController::Instance().getModel();
+//	view_->setModel( model_.data() );
+//	selection_ = view_->selectionModel();
+//	connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+//	view_->setCurrentIndex( FileController::Instance().getCurrentIndex() );
+//	exec();
+//}
+
+void Navigator::setModel( QSharedPointer< model::FileModel > model ) {
 	if( selection_ ) {
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 	}
-	model_ = FileController::Instance().getModel();
+	model_ = model;
 	view_->setModel( model_.data() );
 	selection_ = view_->selectionModel();
 	connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-	view_->setCurrentIndex( FileController::Instance().getCurrentIndex() );
-	exec();
+}
+
+void Navigator::setCurrentIndex( const QModelIndex & index ) {
+	view_->setCurrentIndex( index );
 }
 
 void Navigator::openHelper_() {

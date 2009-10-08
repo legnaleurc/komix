@@ -53,7 +53,9 @@ public:
 	 * The list is locked in current opened directory.
 	 * It will focus current opened file first.
 	 */
-	void popup();
+//	void popup();
+	void setModel( QSharedPointer< model::FileModel > model );
+	void setCurrentIndex( const QModelIndex & index );
 
 signals:
 	/**

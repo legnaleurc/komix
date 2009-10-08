@@ -21,7 +21,7 @@
 #include "mainwindow.hpp"
 #include "imagearea.hpp"
 #include "global.hpp"
-#include "filecontroller.hpp"
+//#include "filecontroller.hpp"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -46,7 +46,7 @@ dumpState_( Qt::WindowNoState ) {
 	initTrayIcon_();
 	initAbout_();
 
-	connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
+	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
 
 void MainWindow::initMenuBar_() {
@@ -124,13 +124,13 @@ void MainWindow::initMenuBar_() {
 
 	QAction * prev = new QAction( tr( "&Preverse image" ), this );
 	prev->setShortcut( Qt::Key_PageUp );
-	connect( prev, SIGNAL( triggered() ), &FileController::Instance(), SLOT( prev() ) );
+	connect( prev, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
 	go->addAction( prev );
 	addAction( prev );
 
 	QAction * next = new QAction( tr( "&Next image" ), this );
 	next->setShortcut( Qt::Key_PageDown );
-	connect( next, SIGNAL( triggered() ), &FileController::Instance(), SLOT( next() ) );
+	connect( next, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
 	go->addAction( next );
 	addAction( next );
 
@@ -232,7 +232,7 @@ void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
 }
 
 void MainWindow::open( const QUrl & url ) {
-	if( !FileController::Instance().open( url ) ) {
+	if( !imageArea_->open( url ) ) {
 		QMessageBox::critical( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
 	}
 }
