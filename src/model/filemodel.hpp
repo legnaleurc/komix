@@ -30,6 +30,9 @@
 
 namespace KomiX { namespace model {
 
+class FileModel;
+typedef QSharedPointer< FileModel > FileModelSP;
+
 /**
  * @brief Abstract file model
  * 
@@ -40,13 +43,13 @@ public:
 	/// Functor of key comparsion
 	typedef bool ( * KeyFunctor )( const QUrl & );
 	/// Functor of model creation
-	typedef QSharedPointer< FileModel > ( * ValueFunctor )( const QUrl & );
+	typedef FileModelSP ( * ValueFunctor )( const QUrl & );
 
 	/**
 	 * @brief Create concrete model
 	 * @param url opening url
 	 */
-	static QSharedPointer< FileModel > createModel( const QUrl & url );
+	static FileModelSP createModel( const QUrl & url );
 	/**
 	 * @brief Register model
 	 * @param key compare function

@@ -41,7 +41,7 @@ FileModel::FunctorList & FileModel::getFunctorList_() {
 	return fl;
 }
 
-QSharedPointer< FileModel > FileModel::createModel( const QUrl & url ) {
+FileModelSP FileModel::createModel( const QUrl & url ) {
 	QMutexLocker locker( ::lock() );
 	FunctorList::const_iterator it = find_if( getFunctorList_().begin(), getFunctorList_().end(), Matcher( url ) );
 	if( it == getFunctorList_().end() ) {

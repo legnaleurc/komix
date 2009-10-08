@@ -47,7 +47,7 @@ public:
 	 */
 	Navigator( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-	void setModel( QSharedPointer< model::FileModel > model );
+	void setModel( model::FileModelSP model );
 	void setCurrentIndex( const QModelIndex & index );
 
 signals:
@@ -58,7 +58,7 @@ signals:
 	void required( const QModelIndex & item );
 
 private:
-	QSharedPointer< model::FileModel > model_;
+	model::FileModelSP model_;
 	QListView * view_;
 	QItemSelectionModel * selection_;
 	QLabel image_;

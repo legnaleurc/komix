@@ -30,8 +30,8 @@ bool check( const QUrl & url ) {
 	return false;
 }
 
-QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
-	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
+KomiX::model::FileModelSP create( const QUrl & url ) {
+	return KomiX::model::FileModelSP( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );

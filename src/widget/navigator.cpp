@@ -56,7 +56,7 @@ image_( this ) {
 	mainFrame->addWidget( buttonBox );
 }
 
-void Navigator::setModel( QSharedPointer< model::FileModel > model ) {
+void Navigator::setModel( model::FileModelSP model ) {
 	if( selection_ ) {
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 	}

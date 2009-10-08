@@ -64,7 +64,7 @@ public:
 	/// check if there has openable files.
 	bool isEmpty() const;
 
-	QSharedPointer< model::FileModel > getModel() const;
+	model::FileModelSP getModel() const;
 	QModelIndex getCurrentIndex() const;
 
 	/**
@@ -108,7 +108,7 @@ signals:
 private:
 	int index_;
 
-	QSharedPointer< model::FileModel > model_;
+	model::FileModelSP model_;
 };
 
 } // end of KomiX

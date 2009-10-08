@@ -49,13 +49,13 @@ bool check( const QUrl & url ) {
 	return false;
 }
 
-QSharedPointer< KomiX::model::FileModel > create( const QUrl & url ) {
+KomiX::model::FileModelSP create( const QUrl & url ) {
 	if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
 		throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
 	} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
 		throw KomiX::error::ArchiveError( "I could not create temporary directory." );
 	}
-	return QSharedPointer< KomiX::model::FileModel >( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
+	return KomiX::model::FileModelSP( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );

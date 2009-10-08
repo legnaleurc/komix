@@ -100,7 +100,7 @@ bool FileController::isEmpty() const {
 	return model_->rowCount() == 0;
 }
 
-QSharedPointer< FileModel > FileController::getModel() const {
+KomiX::model::FileModelSP FileController::getModel() const {
 	return model_;
 }
 
