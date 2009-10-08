@@ -21,7 +21,6 @@
 #include "mainwindow.hpp"
 #include "imagearea.hpp"
 #include "global.hpp"
-//#include "filecontroller.hpp"
 
 #include <QMenuBar>
 #include <QMenu>

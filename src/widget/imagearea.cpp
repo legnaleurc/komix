@@ -63,8 +63,6 @@ interval_( 1 ) {
 	image_->setMouseTracking( true );
 	setMouseTracking( true );
 
-//	connect( this, SIGNAL( prevPage() ), ctrl_, SLOT( prev() ) );
-//	connect( this, SIGNAL( nextPage() ), ctrl_, SLOT( next() ) );
 	connect( this, SIGNAL( scaled( int ) ), scale_, SLOT( scale( int ) ) );
 	connect( scale_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
 	connect( ctrl_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );

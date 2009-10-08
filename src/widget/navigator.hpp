@@ -47,13 +47,6 @@ public:
 	 */
 	Navigator( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-	/**
-	 * @brief list all supported files in opened directory
-	 *
-	 * The list is locked in current opened directory.
-	 * It will focus current opened file first.
-	 */
-//	void popup();
 	void setModel( QSharedPointer< model::FileModel > model );
 	void setCurrentIndex( const QModelIndex & index );
 

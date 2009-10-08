@@ -26,9 +26,7 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-//#include <loki/Singleton.h>
-
-namespace KomiX {// namespace private_ {
+namespace KomiX {
 
 /**
  * @brief The base file controller
@@ -112,11 +110,6 @@ private:
 
 	QSharedPointer< model::FileModel > model_;
 };
-
-//} // end of KomiX::private_
-
-/// File controller singleton
-//typedef Loki::SingletonHolder< private_::FileController > FileController;
 
 } // end of KomiX
 
