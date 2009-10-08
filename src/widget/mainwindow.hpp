@@ -31,7 +31,7 @@ namespace KomiX { namespace widget {
 
 class ImageArea;
 //class ScaleImage;
-class Preview;
+//class Preview;
 
 /**
  * @brief Main window
@@ -72,7 +72,7 @@ private:
 
 	ImageArea * imageArea_;
 //	ScaleImage * scaleImage_;
-	Preview * preview_;
+//	Preview * preview_;
 	QSystemTrayIcon * trayIcon_;
 	QWidget * about_;
 	Qt::WindowStates dumpState_;

@@ -21,7 +21,7 @@
 #include "mainwindow.hpp"
 //#include "scaleimage.hpp"
 #include "imagearea.hpp"
-#include "navigator.hpp"
+//#include "navigator.hpp"
 #include "global.hpp"
 #include "filecontroller.hpp"
 
@@ -41,7 +41,7 @@ MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 imageArea_( new ImageArea( this ) ),
 //scaleImage_( new ScaleImage( this ) ),
-preview_( new Preview( this ) ),
+//preview_( new Preview( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new QWidget( this, Qt::Dialog ) ),
 dumpState_( Qt::WindowNoState ) {
@@ -52,7 +52,7 @@ dumpState_( Qt::WindowNoState ) {
 
 //	connect( scaleImage_, SIGNAL( scaled( int ) ), imageArea_, SLOT( scale( int ) ) );
 
-	connect( preview_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
+//	connect( preview_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
 
 	connect( &FileController::Instance(), SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
@@ -122,9 +122,9 @@ void MainWindow::initMenuBar_() {
 
 	QMenu * go = new QMenu( tr( "&Go" ), menuBar );
 
-	QAction * jump = new QAction( tr( "&Jump to image" ), this );
-	jump->setShortcut( tr( "Ctrl+J" ) );
-	connect( jump, SIGNAL( triggered() ), preview_, SLOT( popup() ) );
+	QAction * jump = new QAction( tr( "&Go To..." ), this );
+	jump->setShortcut( tr( "Ctrl+G" ) );
+	connect( jump, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
 	go->addAction( jump );
 	addAction( jump );
 

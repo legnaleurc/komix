@@ -30,7 +30,7 @@
 
 namespace KomiX { namespace widget {
 
-Preview::Preview( QWidget * parent, Qt::WindowFlags f ) :
+Navigator::Navigator( QWidget * parent, Qt::WindowFlags f ) :
 QDialog( parent, f ),
 model_( NULL ),
 view_( NULL ),
@@ -57,7 +57,7 @@ image_( this ) {
 	mainFrame->addWidget( buttonBox );
 }
 
-void Preview::popup() {
+void Navigator::popup() {
 	if( FileController::Instance().isEmpty() ) {
 		QMessageBox::information( qobject_cast< QWidget * >( this->parent() ), tr( "No file to open" ), tr( "No openable file in this directory." ) );
 		return;
@@ -73,13 +73,13 @@ void Preview::popup() {
 	exec();
 }
 
-void Preview::openHelper_() {
+void Navigator::openHelper_() {
 	qDebug() << "Send: " << view_->currentIndex();
 	emit required( view_->currentIndex() );
 	accept();
 }
 
-void Preview::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
+void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	qDebug( "Preview::viewImage_()" );
 	qDebug() << current;
 	image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );

@@ -30,6 +30,7 @@
 namespace KomiX { namespace widget {
 
 class ScalePanel;
+class Navigator;
 
 /**
  * @brief The main display area
@@ -67,6 +68,7 @@ public slots:
 	void setImage( const QPixmap & image );
 
 	void showScalePanel();
+	void showNavigator();
 
 	/**
 	 * @brief scale image
@@ -154,6 +156,7 @@ private:
 	void updateImageSize_();
 
 	ScalePanel * scale_;
+	Navigator * navi_;
 	QLabel * image_;
 	QSize imageSize_;
 	QTimer * topTimer_;

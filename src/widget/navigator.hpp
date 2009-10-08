@@ -36,7 +36,7 @@ namespace KomiX { namespace widget {
  * This widget can preview other images in same dicrectory, and
  * open which you want.
  */
-class Preview : public QDialog {
+class Navigator : public QDialog {
 	Q_OBJECT
 
 public:
@@ -45,7 +45,7 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	Preview( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	Navigator( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 public slots:
 	/**

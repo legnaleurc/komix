@@ -20,6 +20,7 @@
  */
 #include "imagearea.hpp"
 #include "scalepanel.hpp"
+#include "navigator.hpp"
 #include "filecontroller.hpp"
 
 #include <QTimer>
@@ -35,6 +36,7 @@ namespace KomiX { namespace widget {
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
 scale_( new ScalePanel( this, Qt::Dialog ) ),
+navi_( new Navigator( this ) ),
 image_( new QLabel( this ) ),
 imageSize_(),
 topTimer_( new QTimer( this ) ),
@@ -66,6 +68,8 @@ interval_( 1 ) {
 	connect( scale_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
 	connect( &FileController::Instance(), SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
 
+	connect( navi_, SIGNAL( required( const QModelIndex & ) ), &FileController::Instance(), SLOT( open( const QModelIndex & ) ) );
+
 	connect( topTimer_, SIGNAL( timeout() ), this, SLOT( stepTop() ) );
 	connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 	connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
@@ -74,6 +78,10 @@ interval_( 1 ) {
 
 void ImageArea::showScalePanel() {
 	scale_->show();
+}
+
+void ImageArea::showNavigator() {
+	navi_->popup();;
 }
 
 void ImageArea::mousePressEvent( QMouseEvent * event ) {
