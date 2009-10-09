@@ -65,6 +65,11 @@ private slots:
 
 private:
 	void initMenuBar_();
+	void initFileMenu_( QMenuBar * );
+	void initEditMenu_( QMenuBar * );
+	void initViewMenu_( QMenuBar * );
+	void initGoMenu_( QMenuBar * );
+	void initHelpMenu_( QMenuBar * );
 	void initCentralWidget_();
 	void initTrayIcon_();
 	void initAbout_();

@@ -53,6 +53,16 @@ dumpState_( Qt::WindowNoState ) {
 void MainWindow::initMenuBar_() {
 	QMenuBar * menuBar = new QMenuBar( this );
 
+	initFileMenu_( menuBar );
+	initEditMenu_( menuBar );
+	initViewMenu_( menuBar );
+	initGoMenu_( menuBar );
+	initHelpMenu_( menuBar );
+
+	setMenuBar( menuBar );
+}
+
+void MainWindow::initFileMenu_( QMenuBar * menuBar ) {
 	QMenu * fileMenu = new QMenu( tr( "&File" ), menuBar );
 
 	foreach( FileMenuHook hook, getFileMenuHooks() ) {
@@ -62,16 +72,9 @@ void MainWindow::initMenuBar_() {
 	}
 
 	menuBar->addMenu( fileMenu );
+}
 
-	QMenu * edit = new QMenu( tr( "&Edit" ), menuBar );
-
-	QAction * pref = new QAction(  tr( "&Preference" ), this );
-	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( show() ) );
-	edit->addAction( pref );
-	addAction( pref );
-
-	menuBar->addMenu( edit );
-
+void MainWindow::initViewMenu_( QMenuBar * menuBar ) {
 	QMenu * view = new QMenu( tr( "&View" ), menuBar );
 
 	QAction * smoothNext = new QAction( tr( "Smooth &Next" ), this );
@@ -121,7 +124,20 @@ void MainWindow::initMenuBar_() {
 	addAction( scale );
 
 	menuBar->addMenu( view );
+}
 
+void MainWindow::initEditMenu_( QMenuBar * menuBar ) {
+	QMenu * edit = new QMenu( tr( "&Edit" ), menuBar );
+
+	QAction * pref = new QAction(  tr( "&Preference" ), this );
+	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( show() ) );
+	edit->addAction( pref );
+	addAction( pref );
+
+	menuBar->addMenu( edit );
+}
+
+void MainWindow::initGoMenu_( QMenuBar * menuBar ) {
 	QMenu * go = new QMenu( tr( "&Go" ), menuBar );
 
 	QAction * jump = new QAction( tr( "&Go To..." ), this );
@@ -145,7 +161,9 @@ void MainWindow::initMenuBar_() {
 	addAction( next );
 
 	menuBar->addMenu( go );
+}
 
+void MainWindow::initHelpMenu_( QMenuBar * menuBar ) {
 	QMenu * help = new QMenu( tr( "&Help" ), menuBar );
 
 	QAction * about__ = new QAction( tr( "&About" ), this );
@@ -159,8 +177,6 @@ void MainWindow::initMenuBar_() {
 	help->addAction( aboutQt_ );
 
 	menuBar->addMenu( help );
-
-	setMenuBar( menuBar );
 }
 
 void MainWindow::initCentralWidget_() {
