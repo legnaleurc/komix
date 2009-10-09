@@ -25,6 +25,9 @@
 
 namespace KomiX { namespace model { namespace directory {
 
+/**
+ * @brief The model to open directory
+ */
 class DirectoryModel : public LocalFileModel {
 public:
 	DirectoryModel( const QFileInfo & root );

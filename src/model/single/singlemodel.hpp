@@ -25,6 +25,9 @@
 
 namespace KomiX { namespace model { namespace single {
 
+/**
+ * @brief The model to open single file
+ */
 class SingleModel : public LocalFileModel {
 public:
 	SingleModel( const QFileInfo & root );

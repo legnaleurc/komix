@@ -25,6 +25,12 @@
 
 namespace KomiX { namespace model { namespace archive {
 
+/**
+ * @brief The model using 7-Zip to open compressed file
+ *
+ * Supported file formats: 7z, zip, rar, tar.gz, tar.bz2.
+ * Do not support password.
+ */
 class ArchiveModel : public LocalFileModel {
 public:
 	static bool IsRunnable();

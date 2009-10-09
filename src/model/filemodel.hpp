@@ -31,6 +31,7 @@
 namespace KomiX { namespace model {
 
 class FileModel;
+/// FileModel smart pointer
 typedef QSharedPointer< FileModel > FileModelSP;
 
 /**

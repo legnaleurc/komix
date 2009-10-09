@@ -27,6 +27,9 @@
 
 namespace KomiX { namespace error {
 
+/**
+ * @brief Basic error type
+ */
 class BasicError : public std::exception {
 public:
 	explicit BasicError( const char * msg );
@@ -38,6 +41,10 @@ private:
 	QString msg_;
 };
 
+/**
+ * @brief Customize error base type
+ * @tparam Type customize point
+ */
 template< typename Type >
 class Error : public BasicError, public Type {
 public:

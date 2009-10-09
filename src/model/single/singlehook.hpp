@@ -26,6 +26,7 @@
 
 namespace KomiX { namespace model { namespace single {
 
+/// Private menu hook
 class SingleHook : public QAction {
 	Q_OBJECT
 public:

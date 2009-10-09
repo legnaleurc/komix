@@ -26,6 +26,7 @@
 
 namespace KomiX { namespace model { namespace directory {
 
+/// Private menu hook
 class DirectoryHook : public QAction {
 	Q_OBJECT
 public:

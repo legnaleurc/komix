@@ -30,8 +30,11 @@
  */
 namespace KomiX {
 
+	/// File menu hook
 	typedef QAction * ( * FileMenuHook )( QWidget * );
+	/// register file menu hook
 	bool registerFileMenuHook( FileMenuHook hook );
+	/// get file menu hooks
 	const std::list< FileMenuHook > & getFileMenuHooks();
 
 	/**

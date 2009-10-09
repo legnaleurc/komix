@@ -28,6 +28,9 @@
 
 namespace KomiX { namespace model {
 
+/**
+ * @brief The model to retrive files in local
+ */
 class LocalFileModel : public FileModel {
 public:
 	LocalFileModel( const QDir & root = QDir() );

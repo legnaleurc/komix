@@ -32,7 +32,9 @@
 
 namespace KomiX { namespace error {
 
+/// Private archive error class
 class Archive {};
+/// Convenient typedef
 typedef Error< Archive > ArchiveError;
 
 } } // end of namespace

@@ -25,6 +25,7 @@
 
 namespace KomiX { namespace model { namespace archive {
 
+/// Private menu hook
 class ArchiveHook : public QAction {
 	Q_OBJECT
 public:

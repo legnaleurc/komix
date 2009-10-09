@@ -29,11 +29,9 @@
 namespace KomiX {
 
 /**
- * @brief The base file controller
- * @warning <strong style="color: red;">DO NOT USE THIS CLASS TO CREATE OBJECT!</strong>
+ * @brief The file controller
  *
- * This class is used to provide a generic open image action, and
- * another important function: <strong>image caching</strong>.
+ * This class is used to provide a generic open image action.
  */
 class FileController : public QObject {
 	Q_OBJECT
@@ -41,13 +39,7 @@ class FileController : public QObject {
 public:
 	/**
 	 * @brief default constructor
-	 * @param pfMax max prefetch count
-	 * @param limit max cache count
 	 * @param parent parent widget
-	 *
-	 * The cache count @p limit is including prefetch count @p pfMax. \n
-	 * If @p pfMax and @p limit are less than 0, it will sets to 0.\n
-	 * If @p pfMax is greater than @p limit, it will sets to @p limit.
 	 */
 	FileController( QObject * parent = 0 );
 
@@ -64,19 +56,10 @@ public:
 	/// check if there has openable files.
 	bool isEmpty() const;
 
+	/// get current model
 	model::FileModelSP getModel() const;
+	/// get current index
 	QModelIndex getCurrentIndex() const;
-
-	/**
-	 * @brief get image by file path
-	 * @param filePath file path
-	 * @return opened image
-	 * @sa getImage( const QPixmap & )
-	 *
-	 * This function well update cache list, that's why it's not
-	 * const member function.
-	 */
-	//const QPixmap & getImage( const QString & filePath );
 
 public slots:
 	/**
@@ -98,11 +81,14 @@ public slots:
 
 signals:
 	/**
-	 * @brief get cached image
-	 * @param image cached image
-	 * @sa getImage( const QString & )
+	 * @brief get image
+	 * @param image image
 	 */
 	void imageLoaded( const QPixmap & image );
+	/**
+	 * @brief Some error occured
+	 * @param errMsg error message
+	 */
 	void errorOccured( const QString & errMsg );
 
 private:

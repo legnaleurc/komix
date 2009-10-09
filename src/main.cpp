@@ -34,6 +34,13 @@ Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
 
+/**
+ * @brief Main entry point
+ * @param argc arguments count
+ * @param argv arguments
+ *
+ * Accept all arguments as url.
+ */
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
 	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
