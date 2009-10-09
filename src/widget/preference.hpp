@@ -27,7 +27,7 @@ namespace KomiX { namespace widget {
 
 class Preference : public QWidget {
 public:
-	Preference( QWidget * parent = 0 );
+	Preference( QWidget * parent );
 };
 
 } } // end of namespace
