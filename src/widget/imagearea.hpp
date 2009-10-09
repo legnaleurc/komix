@@ -73,11 +73,11 @@ public slots:
 	 */
 	void setImage( const QPixmap & image );
 
-	void next();
-	void prev();
-
 	void showScalePanel();
 	void showNavigator();
+
+	void next();
+	void prev();
 
 	/**
 	 * @brief scale image

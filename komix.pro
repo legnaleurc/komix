@@ -18,13 +18,14 @@ DEPENDPATH += . \
     src/model/single
 INCLUDEPATH += $${DEPENDPATH}
 HEADERS += src/utility/filecontroller.hpp \
-    src/model/filemodel.hpp \
     src/utility/global.hpp \
     src/utility/error.hpp \
     src/widget/imagearea.hpp \
     src/widget/mainwindow.hpp \
     src/widget/navigator.hpp \
+    src/widget/preference.hpp \
     src/widget/scalepanel.hpp \
+    src/model/filemodel.hpp \
     src/model/archive/archivemodel.hpp \
     src/model/directory/directorymodel.hpp \
     src/model/single/singlemodel.hpp \
@@ -33,14 +34,15 @@ HEADERS += src/utility/filecontroller.hpp \
     src/model/single/singlehook.hpp \
     src/model/localfilemodel.hpp
 SOURCES += src/utility/filecontroller.cpp \
-    src/model/filemodel.cpp \
     src/utility/global.cpp \
     src/utility/error.cpp \
     src/main.cpp \
     src/widget/imagearea.cpp \
     src/widget/mainwindow.cpp \
     src/widget/navigator.cpp \
+    src/widget/preference.cpp \
     src/widget/scalepanel.cpp \
+    src/model/filemodel.cpp \
     src/model/archive/archivemodel.cpp \
     src/model/directory/directorymodel.cpp \
     src/model/single/singlemodel.cpp \

@@ -30,6 +30,7 @@
 namespace KomiX { namespace widget {
 
 class ImageArea;
+class Preference;
 
 /**
  * @brief Main window
@@ -69,6 +70,7 @@ private:
 	void initAbout_();
 
 	ImageArea * imageArea_;
+	Preference * preference_;
 	QSystemTrayIcon * trayIcon_;
 	QWidget * about_;
 	Qt::WindowStates dumpState_;

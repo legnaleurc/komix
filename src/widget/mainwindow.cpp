@@ -20,6 +20,7 @@
  */
 #include "mainwindow.hpp"
 #include "imagearea.hpp"
+#include "preference.hpp"
 #include "global.hpp"
 
 #include <QMenuBar>
@@ -37,6 +38,7 @@ namespace KomiX { namespace widget {
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 imageArea_( new ImageArea( this ) ),
+preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new QWidget( this, Qt::Dialog ) ),
 dumpState_( Qt::WindowNoState ) {
@@ -60,6 +62,15 @@ void MainWindow::initMenuBar_() {
 	}
 
 	menuBar->addMenu( fileMenu );
+
+	QMenu * edit = new QMenu( tr( "&Edit" ), menuBar );
+
+	QAction * pref = new QAction(  tr( "&Preference" ), this );
+	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( show() ) );
+	edit->addAction( pref );
+	addAction( pref );
+
+	menuBar->addMenu( edit );
 
 	QMenu * view = new QMenu( tr( "&View" ), menuBar );
 
