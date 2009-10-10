@@ -21,11 +21,11 @@
 #ifndef KOMIX_WIDGET_PREFERENCE_HPP
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
-#include <QWidget>
+#include <QDialog>
 
 namespace KomiX { namespace widget {
 
-class Preference : public QWidget {
+class Preference : public QDialog {
 public:
 	Preference( QWidget * parent );
 };
