@@ -130,7 +130,7 @@ void MainWindow::initEditMenu_( QMenuBar * menuBar ) {
 	QMenu * edit = new QMenu( tr( "&Edit" ), menuBar );
 
 	QAction * pref = new QAction(  tr( "&Preference" ), this );
-	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( show() ) );
+	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
 	edit->addAction( pref );
 	addAction( pref );
 

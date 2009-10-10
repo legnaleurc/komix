@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSpinBox>
+#include <QDialogButtonBox>
 
 namespace KomiX { namespace widget {
 
@@ -52,6 +53,10 @@ Preference::Preference( QWidget * parent ) : QDialog( parent ) {
 	speedLayout->addWidget( interval );
 	QLabel * t3 = new QLabel( tr( "millisecond(s)" ), speed );
 	speedLayout->addWidget( t3 );
+
+	QDialogButtonBox * buttonGroup = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+	mainLayout->addWidget( buttonGroup );
+	connect( buttonGroup, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
 
 } } // end of namespace
