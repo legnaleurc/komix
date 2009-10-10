@@ -43,7 +43,7 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	ScalePanel( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	ScalePanel( QWidget * parent);
 
 public slots:
 	void scale( int ratio );

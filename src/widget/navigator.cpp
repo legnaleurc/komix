@@ -29,8 +29,8 @@
 
 namespace KomiX { namespace widget {
 
-Navigator::Navigator( QWidget * parent, Qt::WindowFlags f ) :
-QDialog( parent, f ),
+Navigator::Navigator( QWidget * parent ) :
+QDialog( parent ),
 model_( NULL ),
 view_( NULL ),
 selection_( NULL ),

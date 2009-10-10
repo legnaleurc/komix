@@ -39,8 +39,8 @@ enum ScaleMode {
 
 namespace KomiX { namespace widget {
 
-ScalePanel::ScalePanel( QWidget * parent, Qt::WindowFlags f ):
-QWidget( parent, f ),
+ScalePanel::ScalePanel( QWidget * parent ):
+QWidget( parent, Qt::Dialog ),
 fitness_( new QButtonGroup( this ) ),
 scaleSlider_( new QSlider( Qt::Horizontal, this ) ) {
 	setWindowTitle( tr( "Scale Image" ) );

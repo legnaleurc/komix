@@ -35,7 +35,7 @@ namespace KomiX { namespace widget {
 
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
-scale_( new ScalePanel( this, Qt::Dialog ) ),
+scale_( new ScalePanel( this ) ),
 navi_( new Navigator( this ) ),
 ctrl_( new FileController( this ) ),
 image_( new QLabel( this ) ),

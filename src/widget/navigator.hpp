@@ -45,7 +45,7 @@ public:
 	 * @param parent parent widget
 	 * @param f window flags
 	 */
-	Navigator( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	Navigator( QWidget * parent );
 
 	void setModel( model::FileModelSP model );
 	void setCurrentIndex( const QModelIndex & index );
