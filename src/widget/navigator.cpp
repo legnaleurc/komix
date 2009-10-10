@@ -54,6 +54,7 @@ image_( this ) {
 	QVBoxLayout * mainFrame = new QVBoxLayout( this );
 	mainFrame->addLayout( topFrame );
 	mainFrame->addWidget( buttonBox );
+	mainFrame->setSizeConstraint( QLayout::SetFixedSize );
 }
 
 void Navigator::setModel( model::FileModelSP model ) {
