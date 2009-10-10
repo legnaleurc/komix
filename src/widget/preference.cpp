@@ -30,6 +30,7 @@
 namespace KomiX { namespace widget {
 
 Preference::Preference( QWidget * parent ) : QWidget( parent, Qt::Dialog ) {
+	this->setWindowModality( Qt::WindowModal );
 	this->setWindowTitle( tr( "Preference" ) );
 	QVBoxLayout * mainLayout = new QVBoxLayout( this );
 	this->setLayout( mainLayout );
