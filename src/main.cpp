@@ -21,6 +21,7 @@
 #include "mainwindow.hpp"
 
 #include <QApplication>
+#include <QSettings>
 #include <QUrl>
 
 #ifdef KOMIX_STATIC
@@ -34,6 +35,9 @@ Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
 
+#define X(x) XX(x)
+#define XX(x) #x
+
 /**
  * @brief Main entry point
  * @param argc arguments count
@@ -44,9 +48,13 @@ Q_IMPORT_PLUGIN(qtiff)
 int main( int argc, char * argv[] ) {
 	QApplication app( argc, argv );
 	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
+	QApplication::setOrganizationName( "FoolproofProject" );
+	QApplication::setApplicationName( "KomiX" );
+	QApplication::setApplicationVersion( X(KOMIX_VERSION) );
+	QSettings::setDefaultFormat( QSettings::IniFormat );
 	
 	KomiX::widget::MainWindow mainWindow;
-	mainWindow.setWindowTitle( QObject::tr( "KomiX" ) );
+	mainWindow.setWindowTitle( QApplication::applicationName() );
 	mainWindow.resize( 800, 600 );
 	
 	if( argc > 1 ) {
