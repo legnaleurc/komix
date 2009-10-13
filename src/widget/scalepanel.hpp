@@ -29,7 +29,6 @@ namespace KomiX { namespace widget {
 
 /**
  * @brief Widget to scale image
- * @todo "upgrade" its functionality
  *
  * This widget is simple ... too simple. Maybe I'll
  * change this widget to option widget.
