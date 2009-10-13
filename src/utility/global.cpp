@@ -47,14 +47,14 @@ namespace {
 		return result;
 	}
 
+	std::list< KomiX::FileMenuHook > & fileMenuHooks() {
+		static std::list< KomiX::FileMenuHook > hooks;
+		return hooks;
+	}
+
 }
 
 namespace KomiX {
-
-	std::list< FileMenuHook > & fileMenuHooks() {
-		static std::list< FileMenuHook > hooks;
-		return hooks;
-	}
 
 	const std::list< FileMenuHook > & getFileMenuHooks() {
 		return fileMenuHooks();
