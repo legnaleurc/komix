@@ -43,17 +43,18 @@ public:
 	/**
 	 * @brief default constructor
 	 * @param parent parent widget
-	 * @param f window flags
 	 */
 	Navigator( QWidget * parent );
 
+	/// set current using model
 	void setModel( model::FileModelSP model );
+	/// set current model index
 	void setCurrentIndex( const QModelIndex & index );
 
 signals:
 	/**
-	 * @brief open file
-	 * @param filePath file path
+	 * @brief required open a item
+	 * @param item index in the model
 	 */
 	void required( const QModelIndex & item );
 

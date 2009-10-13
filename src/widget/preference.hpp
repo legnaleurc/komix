@@ -34,11 +34,14 @@ class Preference : public QDialog {
 	Q_OBJECT
 
 public:
+	/// constructor
 	Preference( QWidget * parent );
 
 
 public slots:
+	/// Override from QDialog, won't hide dialog
 	virtual void accept();
+	/// Override from QDialog
 	virtual void reject();
 
 private slots:

@@ -50,8 +50,8 @@ public:
 
 public slots:
 	/**
-	 * @brief open file
-	 * @param filePath file path
+	 * @brief open url
+	 * @param url file url
 	 */
 	void open( const QUrl & url );
 	/// toggle full-screen mode

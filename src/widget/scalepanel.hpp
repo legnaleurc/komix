@@ -41,11 +41,11 @@ public:
 	/**
 	 * @brief default constructor
 	 * @param parent parent widget
-	 * @param f window flags
 	 */
 	ScalePanel( QWidget * parent);
 
 public slots:
+	/// to move slider
 	void scale( int ratio );
 
 signals:

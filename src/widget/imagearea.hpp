@@ -77,12 +77,17 @@ public slots:
 	 */
 	void setImage( const QPixmap & image );
 
+	/// load settings from configure file
 	void loadSettings();
 
+	/// show scale panel
 	void showScalePanel();
+	/// show navigator
 	void showNavigator();
 
+	/// turn to next page
 	void next();
+	/// turn to previous page
 	void prev();
 
 	/**
@@ -117,7 +122,7 @@ public slots:
 	
 	/**
 	 * @brief smooth move navigation
-	 * @sa stepTop(), stepBottom(), stepLeft(), stepRight()
+	 * @sa stepTop(), stepBottom(), stepLeft(), stepRight(), reverseSmoothMove()
 	 *
 	 * The initial state is top-right,
 	 * then move to bottom-right,
@@ -125,22 +130,30 @@ public slots:
 	 * open next page finally.
 	 */
 	void smoothMove();
+	/**
+	 * @brief reverse smooth move
+	 * @sa smoothMove()
+	 */
 	void reverseSmoothMove();
 
+	/// move to top-right side
 	void home();
+	/// move to bottom-left side
 	void end();
 
 signals:
+	/// scaled to @p delta rate
 	void scaled( int delta );
 	/**
 	 * @brief acceptable file dropped event
-	 * @param filePath the droped file path
+	 * @param url the droped url
 	 *
 	 * Invalid file will not emit this signal.
 	 */
 	void fileDroped( const QUrl & url );
-	/// middle click event
+	/// require toogle screen
 	void requireToogleScreen();
+	/// send error message
 	void errorOccured( const QString & errmsg );
 
 protected:
