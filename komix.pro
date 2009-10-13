@@ -58,7 +58,7 @@ RCC_DIR = tmp/rcc
 DESTDIR = bin
 
 # Special
-KOMIX_VERSION = 0.0.85
+KOMIX_VERSION = 0.1.0
 DEFINES += KOMIX_VERSION=$${KOMIX_VERSION}
 CONFIG( debug, debug|release ):OBJECTS_DIR = tmp/obj/debug
 else { 
