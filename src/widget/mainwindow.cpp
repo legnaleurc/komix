@@ -269,17 +269,11 @@ void MainWindow::popupError_( const QString & errMsg ) {
 }
 
 void MainWindow::toggleFullScreen() {
-		qDebug( "<MainWindow::toggleFullScreen()>" );
-		qDebug() << "before: " << windowState();
 	menuBar()->setVisible( !menuBar()->isVisible() );
 	setWindowState( windowState() ^ Qt::WindowFullScreen );
-		qDebug() << "after: " << windowState();
-		qDebug( "</MainWindow::toggleFullScreen()>" );
 }
 
 void MainWindow::toggleSystemTray() {
-		qDebug( "<MainWindow::toggleSystemTray()>" );
-		qDebug() << "before: " << windowState();
 	if( isVisible() ) {
 		dumpState_ = windowState();
 		hide();
@@ -287,8 +281,6 @@ void MainWindow::toggleSystemTray() {
 		show();
 		setWindowState( dumpState_ );
 	}
-		qDebug() << "after: " << windowState();
-		qDebug( "</MainWindow::toggleSystemTray()>" );
 }
 
 } } // end namespace
