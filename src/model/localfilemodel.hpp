@@ -33,17 +33,27 @@ namespace KomiX { namespace model {
  */
 class LocalFileModel : public FileModel {
 public:
+	/**
+	 * @brief Default constructor, open @p root as top-level directory
+	 */
 	LocalFileModel( const QDir & root = QDir() );
 
+	/// @brief Overrides from FileModel
 	virtual QModelIndex index( const QUrl & url ) const;
 
+	/// Overrides from FileModel
 	virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+	/// Overrides from FileModel
 	virtual QModelIndex parent( const QModelIndex & child ) const;
+	/// Overrides from FileModel
 	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+	/// Overrides from FileModel
 	virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const;
+	/// Overrides from FileModel
 	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 protected:
+	/// Set top-level directory
 	void setRoot( const QDir & root );
 
 private:

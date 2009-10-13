@@ -64,6 +64,10 @@ public:
 	 */
 	ImageArea( QWidget * parent = 0 );
 
+	/**
+	 * @brief open @p url
+	 * @return if succeed
+	 */
 	bool open( const QUrl & url );
 
 public slots:

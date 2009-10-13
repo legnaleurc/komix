@@ -30,6 +30,7 @@ namespace KomiX { namespace model { namespace directory {
  */
 class DirectoryModel : public LocalFileModel {
 public:
+	/// Constructor open @p root as top-level directory
 	DirectoryModel( const QFileInfo & root );
 };
 

@@ -29,9 +29,11 @@ namespace KomiX { namespace model { namespace archive {
 class ArchiveHook : public QAction {
 	Q_OBJECT
 public:
+	/// Constructor
 	ArchiveHook( QWidget * parent );
 
 signals:
+	/// emitted when user opened a url
 	void opened( const QUrl & name );
 
 private slots:

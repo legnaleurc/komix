@@ -79,7 +79,8 @@ public slots:
 	void prev();
 	/**
 	 * @brief open @p index
-	 * @emit imageLoaded
+	 *
+	 * If successful, signal imageLoaded is emitted.
 	 */
 	void open( const QModelIndex & index );
 

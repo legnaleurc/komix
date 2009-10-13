@@ -30,6 +30,7 @@ namespace KomiX { namespace model { namespace single {
  */
 class SingleModel : public LocalFileModel {
 public:
+	/// Constructor open @p root as image
 	SingleModel( const QFileInfo & root );
 };
 
