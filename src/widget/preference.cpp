@@ -41,6 +41,9 @@ buttons_( new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply |
 	QVBoxLayout * mainLayout = new QVBoxLayout( this );
 	this->setLayout( mainLayout );
 
+	this->step_->setRange( 1, 1000 );
+	this->interval_->setRange( 1, 1000 );
+
 	QGroupBox * speed = new QGroupBox( tr( "Scroll speed" ), this );
 	mainLayout->addWidget( speed );
 	QHBoxLayout * speedLayout = new QHBoxLayout( speed );
