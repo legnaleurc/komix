@@ -29,6 +29,7 @@
 #include <QList>
 #include <QUrl>
 #include <QScrollBar>
+#include <QSettings>
 #include <QtDebug>
 
 namespace KomiX { namespace widget {
@@ -74,6 +75,15 @@ interval_( 1 ) {
 	connect( bottomTimer_, SIGNAL( timeout() ), this, SLOT( stepBottom() ) );
 	connect( leftTimer_, SIGNAL( timeout() ), this, SLOT( stepLeft() ) );
 	connect( rightTimer_, SIGNAL( timeout() ), this, SLOT( stepRight() ) );
+
+	this->loadSettings();
+}
+
+void ImageArea::loadSettings() {
+	QSettings ini;
+
+	this->step_ = ini.value( "step", 1 ).toInt();
+	this->interval_ = ini.value( "interval", 1 ).toInt();
 }
 
 bool ImageArea::open( const QUrl & url ) {

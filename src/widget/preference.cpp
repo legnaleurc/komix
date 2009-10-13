@@ -25,12 +25,17 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSpinBox>
-#include <QDialogButtonBox>
+#include <QSettings>
+#include <QtDebug>
+#include <QPushButton>
 
 namespace KomiX { namespace widget {
 
-Preference::Preference( QWidget * parent ) : QDialog( parent ) {
+Preference::Preference( QWidget * parent ):
+QDialog( parent ),
+step_( new QSpinBox( this ) ),
+interval_( new QSpinBox( this ) ),
+buttons_( new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel, Qt::Horizontal, this ) ) {
 	this->setWindowModality( Qt::WindowModal );
 	this->setWindowTitle( tr( "Preference" ) );
 	QVBoxLayout * mainLayout = new QVBoxLayout( this );
@@ -43,20 +48,60 @@ Preference::Preference( QWidget * parent ) : QDialog( parent ) {
 
 	QLabel * t1 = new QLabel( tr( "Move" ), speed );
 	speedLayout->addWidget( t1 );
-	QSpinBox * step = new QSpinBox( this );
-	step->setValue( 1 );
-	speedLayout->addWidget( step );
+	speedLayout->addWidget( this->step_ );
 	QLabel * t2 = new QLabel( tr( "pixels per" ), speed );
 	speedLayout->addWidget( t2 );
-	QSpinBox * interval = new QSpinBox( this );
-	interval->setValue( 1 );
-	speedLayout->addWidget( interval );
+	speedLayout->addWidget( this->interval_ );
 	QLabel * t3 = new QLabel( tr( "millisecond(s)" ), speed );
 	speedLayout->addWidget( t3 );
 
-	QDialogButtonBox * buttonGroup = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-	mainLayout->addWidget( buttonGroup );
-	connect( buttonGroup, SIGNAL( rejected() ), this, SLOT( reject() ) );
+	mainLayout->addWidget( this->buttons_ );
+	connect( this->buttons_, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
+
+	this->loadSettings_();
+}
+
+void Preference::dispatch_( QAbstractButton * button ) {
+	switch( this->buttons_->buttonRole( button ) ) {
+	case QDialogButtonBox::RejectRole:
+		this->reject();
+		break;
+	case QDialogButtonBox::ApplyRole:
+		this->accept();
+		break;
+	case QDialogButtonBox::AcceptRole:
+		this->accept();
+		this->hide();
+		break;
+	default:
+		;
+	}
+}
+
+void Preference::loadSettings_() {
+	QSettings ini;
+
+	this->step_->setValue( ini.value( "step", 1 ).toInt() );
+	this->interval_->setValue( ini.value( "interval", 1 ).toInt() );
+}
+
+void Preference::saveSettings_() {
+	QSettings ini;
+
+	ini.setValue( "step", this->step_->value() );
+	ini.setValue( "interval", this->interval_->value() );
+}
+
+void Preference::accept() {
+	this->saveSettings_();
+
+	emit accepted();
+}
+
+void Preference::reject() {
+	this->loadSettings_();
+
+	QDialog::reject();
 }
 
 } } // end of namespace

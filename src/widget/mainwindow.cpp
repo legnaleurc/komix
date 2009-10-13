@@ -131,6 +131,7 @@ void MainWindow::initEditMenu_( QMenuBar * menuBar ) {
 
 	QAction * pref = new QAction(  tr( "&Preference" ), this );
 	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
+	connect( this->preference_, SIGNAL( accepted() ), this->imageArea_, SLOT( loadSettings() ) );
 	edit->addAction( pref );
 	addAction( pref );
 

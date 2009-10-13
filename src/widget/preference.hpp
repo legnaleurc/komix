@@ -22,12 +22,32 @@
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
 #include <QDialog>
+#include <QSpinBox>
+#include <QDialogButtonBox>
 
 namespace KomiX { namespace widget {
 
 class Preference : public QDialog {
+	Q_OBJECT
+
 public:
 	Preference( QWidget * parent );
+
+
+public slots:
+	virtual void accept();
+	virtual void reject();
+
+private slots:
+	void dispatch_( QAbstractButton * );
+
+private:
+	void loadSettings_();
+	void saveSettings_();
+
+	QSpinBox * step_;
+	QSpinBox * interval_;
+	QDialogButtonBox * buttons_;
 };
 
 } } // end of namespace
