@@ -28,6 +28,7 @@
 
 namespace {
 
+/// native enum
 enum ScaleMode {
 	Origin,
 	Width,
