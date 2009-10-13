@@ -1,8 +1,11 @@
+0.1.0:
 [Project]
 Change file model to make it easier extend.
 [Feature]
 Archive support: 7z, zip, rar, tar.gz, tar.bz2, tar.lzma
 Add reverse navigation.
+Add scale shortcut: Ctrl+Wheel.
+Add scroll speed configuration.
 [BugFix]
 Fix reverse navigation error.
 0.0.2:
