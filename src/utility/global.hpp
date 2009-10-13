@@ -57,6 +57,9 @@ namespace KomiX {
 	 */
 	const QStringList & SupportedFormatsFilter();
 
+	/**
+	 * @brief make @p exts to name filter
+	 */
 	QStringList toNameFilter( const QStringList & exts );
 
 }

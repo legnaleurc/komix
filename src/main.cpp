@@ -35,7 +35,9 @@ Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
 
+/// literal to string
 #define X(x) XX(x)
+/// symbol to literal
 #define XX(x) #x
 
 /**

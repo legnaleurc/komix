@@ -27,6 +27,9 @@
 
 namespace KomiX { namespace widget {
 
+/**
+ * @brief preference widget
+ */
 class Preference : public QDialog {
 	Q_OBJECT
 

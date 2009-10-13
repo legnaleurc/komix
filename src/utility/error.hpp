@@ -32,10 +32,27 @@ namespace KomiX { namespace error {
  */
 class BasicError : public std::exception {
 public:
+	/**
+	 * @brief Constructor which accept a C-Style string
+	 * @note please encode to UTF-8
+	 */
 	explicit BasicError( const char * msg );
+	/**
+	 * @brief Constructor which accept a QString
+	 */
 	explicit BasicError( const QString & msg );
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~BasicError() throw();
+	/**
+	 * @brief Get message for STL
+	 * @note encode as UTF-8
+	 */
 	virtual const char * what() const throw();
+	/**
+	 * @brief Get message for Qt
+	 */
 	const QString & getMessage() const;
 private:
 	QString msg_;
@@ -48,7 +65,9 @@ private:
 template< typename Type >
 class Error : public BasicError, public Type {
 public:
+	/// Chain load to base class
 	Error( const char * msg ) : BasicError( msg ) {}
+	/// Chain load to base class
 	Error( const QString & msg ) : BasicError( msg ) {}
 };
 
