@@ -50,3 +50,6 @@ else()
     add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
     target_link_libraries(komix ${QT_LIBRARIES})
 endif()
+
+install(TARGETS komix
+    RUNTIME DESTINATION bin)
