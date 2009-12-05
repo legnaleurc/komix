@@ -20,24 +20,7 @@ set(KOMIX_MOC_HEADERS
     src/widget/navigator.hpp
     src/widget/preference.hpp
     src/widget/scalepanel.hpp)
-set(KOMIX_SOURCES
-    src/model/archive/archivehook.cpp
-    src/model/archive/archivemodel.cpp
-    src/model/directory/directoryhook.cpp
-    src/model/directory/directorymodel.cpp
-    src/model/single/singlehook.cpp
-    src/model/single/singlemodel.cpp
-    src/model/filemodel.cpp
-    src/model/localfilemodel.cpp
-    src/utility/error.cpp
-    src/utility/filecontroller.cpp
-    src/utility/global.cpp
-    src/widget/imagearea.cpp
-    src/widget/mainwindow.cpp
-    src/widget/navigator.cpp
-    src/widget/preference.cpp
-    src/widget/scalepanel.cpp
-    src/main.cpp)
+file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
 set(KOMIX_RESOURCES komix.qrc)
 
 qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
