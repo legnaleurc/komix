@@ -6,7 +6,6 @@ set(QT_USE_QTSVG TRUE)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 
-option(KOMIX_STATIC "Build static version of KomiX" OFF)
 set(KOMIX_VERSION 0.1.0)
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION})
 
