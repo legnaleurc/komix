@@ -44,7 +44,7 @@ qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
 qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
 
 if(WIN32)
-    add_executable(komix WIN32 ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
+    add_executable(komix WIN32 komix.rc ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
     target_link_libraries(komix ${QT_QTMAIN_LIBRARY} ${QT_LIBRARIES})
 else()
     add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
