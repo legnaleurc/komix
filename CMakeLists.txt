@@ -21,6 +21,7 @@ set(KOMIX_MOC_HEADERS
     src/widget/preference.hpp
     src/widget/scalepanel.hpp)
 file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
+file(GLOB_RECURSE KOMIX_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} src/*.hpp)
 set(KOMIX_RESOURCES komix.qrc)
 
 qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
@@ -47,7 +48,7 @@ if(QT_STATIC)
 endif()
 
 if(WIN32)
-    add_executable(komix WIN32 komix.rc ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
+    add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 else()
     add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
