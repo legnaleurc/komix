@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(KomiX)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
+
 set(QT_USE_QTSVG TRUE)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
+find_package(QtSingleApplication REQUIRED)
 
 set(KOMIX_VERSION 0.1.0)
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION})
