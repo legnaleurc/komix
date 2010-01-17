@@ -67,12 +67,12 @@ namespace KomiX {
 			void popupError_( const QString & errMsg );
 
 		private:
-			void initMenuBar_();
-			void initFileMenu_( QMenuBar * );
-			void initEditMenu_( QMenuBar * );
-			void initViewMenu_( QMenuBar * );
-			void initGoMenu_( QMenuBar * );
-			void initHelpMenu_( QMenuBar * );
+			void setupMenuBar_();
+			void setupFileMenu_();
+			void setupEditMenu_();
+			void setupViewMenu_();
+			void setupGoMenu_();
+			void setupHelpMenu_();
 			void initCentralWidget_();
 			void initTrayIcon_();
 			void initAbout_();
