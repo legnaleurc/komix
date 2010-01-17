@@ -18,22 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "mainwindow.hpp"
-#include "imagearea.hpp"
-#include "preference.hpp"
 #include "global.hpp"
+#include "imagearea.hpp"
+#include "mainwindow.hpp"
+#include "preference.hpp"
 
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QFileDialog>
-#include <QTabWidget>
-#include <QMessageBox>
-#include <QApplication>
+#include <QtCore/QUrl>
 #include <QtDebug>
-#include <QVBoxLayout>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <QtGui/QFileDialog>
+#include <QtGui/QLabel>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
+#include <QtGui/QTabWidget>
+#include <QtGui/QVBoxLayout>
 
-namespace KomiX { namespace widget {
+using namespace KomiX::widget;
 
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
@@ -289,5 +291,3 @@ void MainWindow::toggleSystemTray() {
 		setWindowState( dumpState_ );
 	}
 }
-
-} } // end namespace

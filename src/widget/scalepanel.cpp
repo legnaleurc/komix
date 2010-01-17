@@ -20,25 +20,27 @@
  */
 #include "scalepanel.hpp"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSpinBox>
-#include <QGroupBox>
-#include <QRadioButton>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QGroupBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QRadioButton>
+#include <QtGui/QSlider>
+#include <QtGui/QSpinBox>
+#include <QtGui/QVBoxLayout>
 
 namespace {
 
-/// native enum
-enum ScaleMode {
-	Origin,
-	Width,
-	Height,
-	Window
-};
+	/// native enum
+	enum ScaleMode {
+		Origin,
+		Width,
+		Height,
+		Window
+	};
 
 } // end of namespace
 
-namespace KomiX { namespace widget {
+using namespace KomiX::widget;
 
 ScalePanel::ScalePanel( QWidget * parent ):
 QWidget( parent, Qt::Dialog ),
@@ -127,5 +129,3 @@ void ScalePanel::valueHelper_( int ) {
 		;
 	}
 }
-
-} } // end namespace

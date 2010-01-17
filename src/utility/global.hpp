@@ -21,8 +21,11 @@
 #ifndef KOMIX_GLOBAL_HPP
 #define KOMIX_GLOBAL_HPP
 
-#include <QStringList>
-#include <QAction>
+#include <list>
+
+class QAction;
+class QStringList;
+class QWidget;
 
 /**
  * @namespace KomiX

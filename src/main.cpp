@@ -20,9 +20,9 @@
  */
 #include "mainwindow.hpp"
 
+#include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtSingleApplication>
-#include <QSettings>
 
 #ifdef KOMIX_STATIC
 # include <QtPlugin>

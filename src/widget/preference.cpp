@@ -21,13 +21,15 @@
 
 #include "preference.hpp"
 
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QSettings>
+#include <QtCore/QSettings>
 #include <QtDebug>
-#include <QPushButton>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QGroupBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QSpinBox>
+#include <QtGui/QVBoxLayout>
 
 namespace KomiX { namespace widget {
 

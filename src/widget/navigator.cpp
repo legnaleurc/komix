@@ -18,16 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "navigator.hpp"
 #include "global.hpp"
+#include "navigator.hpp"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <QMessageBox>
 #include <QtDebug>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QListView>
+#include <QtGui/QMessageBox>
+#include <QtGui/QVBoxLayout>
 
-namespace KomiX { namespace widget {
+using namespace KomiX::widget;
+using KomiX::model::FileModelSP;
 
 Navigator::Navigator( QWidget * parent ) :
 QDialog( parent ),
@@ -57,7 +59,7 @@ image_( this ) {
 	mainFrame->setSizeConstraint( QLayout::SetFixedSize );
 }
 
-void Navigator::setModel( model::FileModelSP model ) {
+void Navigator::setModel( FileModelSP model ) {
 	if( selection_ ) {
 		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 	}
@@ -82,5 +84,3 @@ void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* 
 	qDebug() << current;
 	image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );
 }
-
-} } // end namespace

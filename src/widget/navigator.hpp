@@ -23,52 +23,55 @@
 
 #include "filemodel.hpp"
 
-#include <QDialog>
-#include <QListView>
-#include <QItemSelectionModel>
-#include <QLabel>
+#include <QtGui/QDialog>
+#include <QtGui/QLabel>
 
-namespace KomiX { namespace widget {
+class QListView;
+class QItemSelectionModel;
 
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
-	Q_OBJECT
+namespace KomiX {
+	namespace widget {
 
-public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( QWidget * parent );
+		/**
+		 * @brief Preview and goto widget
+		 *
+		 * This widget can preview other images in same dicrectory, and
+		 * open which you want.
+		 */
+		class Navigator : public QDialog {
+			Q_OBJECT
 
-	/// set current using model
-	void setModel( model::FileModelSP model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+		public:
+			/**
+			 * @brief default constructor
+			 * @param parent parent widget
+			 */
+			Navigator( QWidget * parent );
 
-signals:
-	/**
-	 * @brief required open a item
-	 * @param item index in the model
-	 */
-	void required( const QModelIndex & item );
+			/// set current using model
+			void setModel( model::FileModelSP model );
+			/// set current model index
+			void setCurrentIndex( const QModelIndex & index );
 
-private:
-	model::FileModelSP model_;
-	QListView * view_;
-	QItemSelectionModel * selection_;
-	QLabel image_;
+		signals:
+			/**
+			 * @brief required open a item
+			 * @param item index in the model
+			 */
+			void required( const QModelIndex & item );
 
-private slots:
-	void openHelper_();
-	void viewImage_( const QModelIndex &, const QModelIndex & );
-};
+		private:
+			model::FileModelSP model_;
+			QListView * view_;
+			QItemSelectionModel * selection_;
+			QLabel image_;
 
-} } // end namespace
+		private slots:
+			void openHelper_();
+			void viewImage_( const QModelIndex &, const QModelIndex & );
+		};
+
+	}
+} // end namespace
 
 #endif

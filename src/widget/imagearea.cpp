@@ -18,21 +18,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "imagearea.hpp"
-#include "scalepanel.hpp"
-#include "navigator.hpp"
 #include "filecontroller.hpp"
+#include "imagearea.hpp"
+#include "navigator.hpp"
+#include "scalepanel.hpp"
 
-#include <QTimer>
-#include <QAction>
-#include <QMouseEvent>
-#include <QList>
-#include <QUrl>
-#include <QScrollBar>
-#include <QSettings>
+#include <QtCore/QList>
+#include <QtCore/QSettings>
+#include <QtCore/QTimer>
+#include <QtCore/QUrl>
 #include <QtDebug>
+#include <QtGui/QAction>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QScrollBar>
 
-namespace KomiX { namespace widget {
+using namespace KomiX::widget;
 
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
@@ -416,5 +416,3 @@ inline bool ImageArea::canMoveLeft_() const {
 inline bool ImageArea::canMoveRight_() const {
 	return horizontalScrollBar()->value() < horizontalScrollBar()->maximum();
 }
-
-} } // end namespace

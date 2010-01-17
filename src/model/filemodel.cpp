@@ -20,8 +20,8 @@
  */
 #include "filemodel.hpp"
 
-#include <QMutex>
-#include <QMutexLocker>
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
 
 #include <algorithm>
 
@@ -34,7 +34,7 @@ static inline QMutex * lock() {
 
 } // end of namespace
 
-namespace KomiX { namespace model {
+using namespace KomiX::model;
 
 FileModel::FunctorList & FileModel::getFunctorList_() {
 	static FileModel::FunctorList fl;
@@ -63,5 +63,3 @@ FileModel::Matcher::Matcher( const QUrl & url ) : url_( url ) {
 bool FileModel::Matcher::operator ()( const FileModel::FunctorPair & that ) const {
 	return that.first( url_ );
 }
-
-} } // end of namespace
