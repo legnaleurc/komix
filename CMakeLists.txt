@@ -8,6 +8,7 @@ set(QT_USE_QTSVG TRUE)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 find_package(QtSingleApplication REQUIRED)
+include_directories(${QTSINGLEAPPLICATION_INCLUDE_DIR})
 
 set(KOMIX_VERSION 0.1.0)
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION})
@@ -51,13 +52,17 @@ if(QT_STATIC)
 endif()
 
 if(WIN32)
+    set(KOMIX_EXTRA_SOURCES)
+endif()
+
+if(WIN32)
     add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 else()
     add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
 endif()
 
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES})
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEAPPLICATION_LIBRARY})
 
 install(TARGETS komix
     RUNTIME DESTINATION bin)
