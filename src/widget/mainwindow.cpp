@@ -79,26 +79,28 @@ void MainWindow::setupEditMenu_() {
 }
 
 void MainWindow::setupViewMenu_() {
+	this->addAction( this->ui_.actionSmooth_Next );
 	connect( this->ui_.actionSmooth_Next, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
-
+	this->addAction( this->ui_.actionSmooth_Previous );
 	connect( this->ui_.actionSmooth_Previous, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
-
+	this->addAction( this->ui_.actionPage_Head );
 	connect( this->ui_.actionPage_Head, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
-
+	this->addAction( this->ui_.actionPage_Tail );
 	connect( this->ui_.actionPage_Tail, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
-
+	this->addAction( this->ui_.action_Fullscreen );
 	connect( this->ui_.action_Fullscreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
-
+	this->addAction( this->ui_.action_Hide_Window );
 	connect( this->ui_.action_Hide_Window, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
-
+	this->addAction( this->ui_.action_Scale_Image );
 	connect( this->ui_.action_Scale_Image, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
 }
 
 void MainWindow::setupGoMenu_() {
+	this->addAction( this->ui_.action_Go_To );
 	connect( this->ui_.action_Go_To, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
-
+	this->addAction( this->ui_.action_Previous_Image );
 	connect( this->ui_.action_Previous_Image, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
-
+	this->addAction( this->ui_.action_Next_Image );
 	connect( this->ui_.action_Next_Image, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
 }
 
