@@ -264,6 +264,13 @@ void MainWindow::open( const QUrl & url ) {
 	}
 }
 
+void MainWindow::open( const QString & localFile ) {
+	if( localFile.isEmpty() ) {
+		return;
+	}
+	this->open( QUrl::fromLocalFile( localFile ) );
+}
+
 void MainWindow::popupError_( const QString & errMsg ) {
 	QMessageBox::critical( this, tr( "Oops!" ), errMsg );
 }

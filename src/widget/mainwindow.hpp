@@ -54,6 +54,7 @@ public slots:
 	 * @param url file url
 	 */
 	void open( const QUrl & url );
+	void open( const QString & localFile );
 	/// toggle full-screen mode
 	void toggleFullScreen();
 	/// toggle minimize system tray
