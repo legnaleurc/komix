@@ -18,10 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "localfilemodel.hpp"
 #include "global.hpp"
+#include "localfilemodel.hpp"
 
-namespace KomiX { namespace model {
+#include <QtGui/QPixmap>
+
+using namespace KomiX::model;
 
 LocalFileModel::LocalFileModel( const QDir & root ):
 root_( root ),
@@ -102,5 +104,3 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 		return QVariant();
 	}
 }
-
-} } // end of namespace

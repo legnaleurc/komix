@@ -20,7 +20,7 @@
  */
 #include "error.hpp"
 
-namespace KomiX { namespace error {
+using namespace KomiX::error;
 
 BasicError::BasicError( const char * msg ) : msg_( QString::fromUtf8( msg ) ) {}
 
@@ -35,5 +35,3 @@ const char * BasicError::what() const throw() {
 const QString & BasicError::getMessage() const {
 	return msg_;
 }
-
-} } // end of namespace

@@ -21,7 +21,8 @@
 #include "directoryhook.hpp"
 #include "global.hpp"
 
-#include <QFileDialog>
+#include <QtCore/QUrl>
+#include <QtGui/QFileDialog>
 
 namespace {
 
@@ -33,7 +34,7 @@ const bool registered = KomiX::registerFileMenuHook( hookHelper );
 
 } // end of namespace
 
-namespace KomiX { namespace model { namespace directory {
+using namespace KomiX::model::directory;
 
 DirectoryHook::DirectoryHook( QWidget * parent ) : QAction( parent ) {
 	setText( tr( "Open D&irectory" ) );
@@ -49,5 +50,3 @@ void DirectoryHook::helper_() {
 		emit opened( QUrl::fromLocalFile( path ) );
 	}
 }
-
-} } } // end of namespace

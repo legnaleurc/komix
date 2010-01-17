@@ -38,8 +38,6 @@ static const bool registered = KomiX::model::FileModel::registerModel( check, cr
 
 } // end of namespace
 
-namespace KomiX { namespace model { namespace directory {
+using namespace KomiX::model::directory;
 
 DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {}
-
-} } } // end of namespace

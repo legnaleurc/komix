@@ -21,66 +21,68 @@
 #ifndef KOMIX_WIDGET_MAINWINDOW_HPP
 #define KOMIX_WIDGET_MAINWINDOW_HPP
 
-#include <QMainWindow>
-#include <QDir>
-#include <QStringList>
-#include <QSystemTrayIcon>
-#include <QModelIndex>
+#include <QtGui/QMainWindow>
+#include <QtGui/QSystemTrayIcon>
 
-namespace KomiX { namespace widget {
+class QUrl;
 
-class ImageArea;
-class Preference;
+namespace KomiX {
+	namespace widget {
 
-/**
- * @brief Main window
- *
- * The main window widget, all GUI components are managed by this.
- */
-class MainWindow : public QMainWindow {
-	Q_OBJECT
+		class ImageArea;
+		class Preference;
 
-public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 * @param f window flags
-	 */
-	MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+		/**
+		 * @brief Main window
+		 *
+		 * The main window widget, all GUI components are managed by this.
+		 */
+		class MainWindow : public QMainWindow {
+			Q_OBJECT
 
-public slots:
-	/**
-	 * @brief open url
-	 * @param url file url
-	 */
-	void open( const QUrl & url );
-	/// toggle full-screen mode
-	void toggleFullScreen();
-	/// toggle minimize system tray
-	void toggleSystemTray();
+		public:
+			/**
+			 * @brief default constructor
+			 * @param parent parent widget
+			 * @param f window flags
+			 */
+			MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-private slots:
-	void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
-	void popupError_( const QString & errMsg );
+		public slots:
+			/**
+			 * @brief open url
+			 * @param url file url
+			 */
+			void open( const QUrl & url );
+			void open( const QString & localFile );
+			/// toggle full-screen mode
+			void toggleFullScreen();
+			/// toggle minimize system tray
+			void toggleSystemTray();
 
-private:
-	void initMenuBar_();
-	void initFileMenu_( QMenuBar * );
-	void initEditMenu_( QMenuBar * );
-	void initViewMenu_( QMenuBar * );
-	void initGoMenu_( QMenuBar * );
-	void initHelpMenu_( QMenuBar * );
-	void initCentralWidget_();
-	void initTrayIcon_();
-	void initAbout_();
+		private slots:
+			void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
+			void popupError_( const QString & errMsg );
 
-	ImageArea * imageArea_;
-	Preference * preference_;
-	QSystemTrayIcon * trayIcon_;
-	QWidget * about_;
-	Qt::WindowStates dumpState_;
-};
+		private:
+			void initMenuBar_();
+			void initFileMenu_( QMenuBar * );
+			void initEditMenu_( QMenuBar * );
+			void initViewMenu_( QMenuBar * );
+			void initGoMenu_( QMenuBar * );
+			void initHelpMenu_( QMenuBar * );
+			void initCentralWidget_();
+			void initTrayIcon_();
+			void initAbout_();
+
+			ImageArea * imageArea_;
+			Preference * preference_;
+			QSystemTrayIcon * trayIcon_;
+			QWidget * about_;
+			Qt::WindowStates dumpState_;
+		};
 	
-} } // end namespace
+	}
+} // end namespace
 
 #endif

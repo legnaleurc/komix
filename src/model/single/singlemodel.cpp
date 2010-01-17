@@ -18,36 +18,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "singlemodel.hpp"
 #include "global.hpp"
+#include "singlemodel.hpp"
 
 namespace {
 
-bool check( const QUrl & url ) {
-	if( url.scheme() == "file" ) {
-		QFileInfo fi( url.toLocalFile() );
-		if( !fi.isDir() ) {
-			QString suffix = fi.suffix().toLower();
-			foreach( QString ext, KomiX::SupportedFormats() ) {
-				if( suffix == ext ) {
-					return true;
+	bool check( const QUrl & url ) {
+		if( url.scheme() == "file" ) {
+			QFileInfo fi( url.toLocalFile() );
+			if( !fi.isDir() ) {
+				QString suffix = fi.suffix().toLower();
+				foreach( QString ext, KomiX::SupportedFormats() ) {
+					if( suffix == ext ) {
+						return true;
+					}
 				}
 			}
 		}
+		return false;
 	}
-	return false;
-}
 
-KomiX::model::FileModelSP create( const QUrl & url ) {
-	return KomiX::model::FileModelSP( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
-}
+	KomiX::model::FileModelSP create( const QUrl & url ) {
+		return KomiX::model::FileModelSP( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
+	}
 
-static const bool registered = KomiX::model::FileModel::registerModel( check, create );
+	static const bool registered = KomiX::model::FileModel::registerModel( check, create );
 
 } // end of namespace
 
-namespace KomiX { namespace model { namespace single {
+using namespace KomiX::model::single;
 
 SingleModel::SingleModel( const QFileInfo & root ) : LocalFileModel( root.dir() ) {}
-
-} } } // end of namespace

@@ -21,9 +21,11 @@
 #ifndef KOMIX_WIDGET_PREFERENCE_HPP
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
-#include <QDialog>
-#include <QSpinBox>
-#include <QDialogButtonBox>
+#include <QtGui/QDialog>
+
+class QAbstractButton;
+class QSpinBox;
+class QDialogButtonBox;
 
 namespace KomiX { namespace widget {
 

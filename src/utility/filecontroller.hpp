@@ -23,8 +23,8 @@
 
 #include "filemodel.hpp"
 
-#include <QPixmap>
-#include <QModelIndex>
+class QPixmap;
+class QModelIndex;
 
 namespace KomiX {
 

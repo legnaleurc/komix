@@ -20,9 +20,9 @@
  */
 #include "mainwindow.hpp"
 
-#include <QApplication>
-#include <QSettings>
-#include <QUrl>
+#include <QtCore/QSettings>
+#include <QtCore/QStringList>
+#include <QtSingleApplication>
 
 #ifdef KOMIX_STATIC
 # include <QtPlugin>
@@ -48,22 +48,34 @@ Q_IMPORT_PLUGIN(qtiff)
  * Accept all arguments as url.
  */
 int main( int argc, char * argv[] ) {
-	QApplication app( argc, argv );
-	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
-	QApplication::setOrganizationName( "FoolproofProject" );
-	QApplication::setApplicationName( "KomiX" );
-	QApplication::setApplicationVersion( X(KOMIX_VERSION) );
-	QSettings::setDefaultFormat( QSettings::IniFormat );
-	
-	KomiX::widget::MainWindow mainWindow;
-	mainWindow.setWindowTitle( QApplication::applicationName() );
-	mainWindow.resize( 800, 600 );
-	
-	if( argc > 1 ) {
-		mainWindow.open( QUrl::fromLocalFile( QApplication::arguments().at( 1 ) ) );
+	QtSingleApplication app( argc, argv );
+	QtSingleApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
+	QtSingleApplication::setOrganizationName( "FoolproofProject" );
+	QtSingleApplication::setApplicationName( "KomiX" );
+	QtSingleApplication::setApplicationVersion( X(KOMIX_VERSION) );
+
+	QStringList args( QtSingleApplication::arguments() );
+
+	if( app.sendMessage( "" ) ) {
+		if( args.length() > 1 ) {
+			app.sendMessage( args.at( 1 ) );
+		}
+		return 0;
 	}
-	
+
+	QSettings::setDefaultFormat( QSettings::IniFormat );
+
+	KomiX::widget::MainWindow mainWindow;
+	mainWindow.setWindowTitle( QtSingleApplication::applicationName() );
+	mainWindow.resize( 800, 600 );
+
+	if( args.length() > 1 ) {
+		mainWindow.open( args.at( 1 ) );
+	}
+
 	mainWindow.show();
+
+	QObject::connect( &app, SIGNAL( messageReceived( const QString & ) ), &mainWindow, SLOT( open( const QString & ) ) );
 	
 	return app.exec();
 }

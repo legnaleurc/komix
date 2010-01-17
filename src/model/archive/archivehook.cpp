@@ -22,31 +22,31 @@
 #include "archivemodel.hpp"
 #include "global.hpp"
 
-#include <QFileDialog>
-#include <QApplication>
+#include <QtGui/QApplication>
+#include <QtGui/QFileDialog>
 
 namespace {
 
-inline QString archiveList() {
-	QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::model::archive::ArchiveFormatsFilter().join( " " ) ) );
-	tmp << KomiX::model::archive::ArchiveFormatsFilter();
-	return tmp.join( ";;" );
-}
+	inline QString archiveList() {
+		QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::model::archive::ArchiveFormatsFilter().join( " " ) ) );
+		tmp << KomiX::model::archive::ArchiveFormatsFilter();
+		return tmp.join( ";;" );
+	}
 
-QAction * hookHelper( QWidget * parent ) {
-	return new KomiX::model::archive::ArchiveHook( parent );
-}
+	QAction * hookHelper( QWidget * parent ) {
+		return new KomiX::model::archive::ArchiveHook( parent );
+	}
 
-static const bool registered = KomiX::registerFileMenuHook( hookHelper );
+	static const bool registered = KomiX::registerFileMenuHook( hookHelper );
 
-inline const QString & archiveFilter() {
-	static QString af = archiveList();
-	return af;
-}
+	inline const QString & archiveFilter() {
+		static QString af = archiveList();
+		return af;
+	}
 
 } // end of namespace
 
-namespace KomiX { namespace model { namespace archive {
+using namespace KomiX::model::archive;
 
 ArchiveHook::ArchiveHook( QWidget * parent ) : QAction( parent ) {
 	setText( tr( "Open A&rchive" ) );
@@ -68,5 +68,3 @@ void ArchiveHook::helper_() {
 void ArchiveHook::cleanup_() {
 	delTree( ArchiveModel::TmpDir_() );
 }
-
-} } } // end of namespace

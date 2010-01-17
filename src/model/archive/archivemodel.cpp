@@ -18,91 +18,93 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "archivemodel.hpp"
-#include "global.hpp"
 #include "archivehook.hpp"
+#include "archivemodel.hpp"
 #include "error.hpp"
+#include "global.hpp"
 
-#include <QProcess>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QDir>
+#include <QtCore/QProcess>
 #include <QtDebug>
-#include <QDir>
-#include <QApplication>
-#include <QPixmap>
-#include <QCryptographicHash>
+#include <QtGui/QApplication>
+#include <QtGui/QPixmap>
 
-namespace KomiX { namespace error {
+namespace KomiX {
+	namespace error {
 
-/// Private archive error class
-class Archive {};
-/// Convenient typedef
-typedef Error< Archive > ArchiveError;
+		/// Private archive error class
+		class Archive {};
+		/// Convenient typedef
+		typedef Error< Archive > ArchiveError;
 
-} } // end of namespace
+	}
+} // end of namespace
 
 namespace {
 
-bool check( const QUrl & url ) {
-	if( url.scheme() == "file" ) {
-		QFileInfo fi( url.toLocalFile() );
-		if( !fi.isDir() ) {
-			return KomiX::model::archive::isArchiveSupported( fi.fileName().toLower() );
+	bool check( const QUrl & url ) {
+		if( url.scheme() == "file" ) {
+			QFileInfo fi( url.toLocalFile() );
+			if( !fi.isDir() ) {
+				return KomiX::model::archive::isArchiveSupported( fi.fileName().toLower() );
+			}
 		}
+		return false;
 	}
-	return false;
-}
 
-KomiX::model::FileModelSP create( const QUrl & url ) {
-	if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
-		throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
-	} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
-		throw KomiX::error::ArchiveError( "I could not create temporary directory." );
-	}
-	return KomiX::model::FileModelSP( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
-}
-
-static const bool registered = KomiX::model::FileModel::registerModel( check, create );
-
-// one-shot action
-QDir createTmpDir() {
-	qsrand( qApp->applicationPid() );
-	QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
-	qDebug() << tmpPath;
-	QDir tmpDir( QDir::temp() );
-	if( !tmpDir.mkdir( tmpPath ) ) {
-		qWarning( "can not make temp dir" );
-		// tmpDir will remain to tmp dir
-	} else {
-		tmpDir.cd( tmpPath );
-	}
-	return tmpDir;
-}
-
-inline const QStringList & archiveList2() {
-	static QStringList a2 = QStringList() << "tar.gz" << "tgz" << "tar.bz2" << "tbz2" << "tar.lzma";
-	return a2;
-}
-
-inline bool isTwo( const QString & name ) {
-	foreach( QString ext, archiveList2() ) {
-		if( name.endsWith( ext ) ) {
-			return true;
+	KomiX::model::FileModelSP create( const QUrl & url ) {
+		if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
+			throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
+		} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
+			throw KomiX::error::ArchiveError( "I could not create temporary directory." );
 		}
+		return KomiX::model::FileModelSP( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 	}
-	return false;
-}
 
-inline QStringList archiveList() {
-	QStringList a( archiveList2() );
-	a << "7z";
-	a << "rar";
-	a << "zip";
-	a << "tar";
-	return a;
-}
+	static const bool registered = KomiX::model::FileModel::registerModel( check, create );
+
+	// one-shot action
+	QDir createTmpDir() {
+		qsrand( qApp->applicationPid() );
+		QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
+		qDebug() << tmpPath;
+		QDir tmpDir( QDir::temp() );
+		if( !tmpDir.mkdir( tmpPath ) ) {
+			qWarning( "can not make temp dir" );
+			// tmpDir will remain to tmp dir
+		} else {
+			tmpDir.cd( tmpPath );
+		}
+		return tmpDir;
+	}
+
+	inline const QStringList & archiveList2() {
+		static QStringList a2 = QStringList() << "tar.gz" << "tgz" << "tar.bz2" << "tbz2" << "tar.lzma";
+		return a2;
+	}
+
+	inline bool isTwo( const QString & name ) {
+		foreach( QString ext, archiveList2() ) {
+			if( name.endsWith( ext ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	inline QStringList archiveList() {
+		QStringList a( archiveList2() );
+		a << "7z";
+		a << "rar";
+		a << "zip";
+		a << "tar";
+		return a;
+	}
 
 } // end of namespace
 
-namespace KomiX { namespace model { namespace archive {
+using namespace KomiX::model::archive;
 
 const QDir & ArchiveModel::TmpDir_() {
 	static QDir tmp = createTmpDir();
@@ -172,41 +174,47 @@ ArchiveModel::ArchiveModel( const QFileInfo & root ) {
 	setRoot( ArchiveDir_( hash ) );
 }
 
-const QStringList & ArchiveFormats() {
-	static QStringList af = archiveList();
-	return af;
-}
+namespace KomiX {
+	namespace model {
+		namespace archive {
 
-const QStringList & ArchiveFormatsFilter() {
-	static QStringList sff = toNameFilter( ArchiveFormats() );
-	return sff;
-}
-
-bool isArchiveSupported( const QString & name ) {
-	foreach( QString ext, ArchiveFormats() ) {
-		if( name.endsWith( ext ) ) {
-			return true;
-		}
-	}
-	return false;
-}
-
-int delTree( QDir dir ) {
-	int sum = 0;
-	QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
-	foreach( QFileInfo e, entry ) {
-		if( e.isDir() ) {
-			sum += delTree( e.absoluteFilePath() );
-		} else {
-			if( QFile::remove( e.absoluteFilePath() ) ) {
-				qDebug() << e.absoluteFilePath();
-				++sum;
+			const QStringList & ArchiveFormats() {
+				static QStringList af = archiveList();
+				return af;
 			}
+
+			const QStringList & ArchiveFormatsFilter() {
+				static QStringList sff = toNameFilter( ArchiveFormats() );
+				return sff;
+			}
+
+			bool isArchiveSupported( const QString & name ) {
+				foreach( QString ext, ArchiveFormats() ) {
+					if( name.endsWith( ext ) ) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			int delTree( QDir dir ) {
+				int sum = 0;
+				QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
+				foreach( QFileInfo e, entry ) {
+					if( e.isDir() ) {
+						sum += delTree( e.absoluteFilePath() );
+					} else {
+						if( QFile::remove( e.absoluteFilePath() ) ) {
+							qDebug() << e.absoluteFilePath();
+							++sum;
+						}
+					}
+				}
+				dir.rmdir( dir.absolutePath() );
+				qDebug() << dir.absolutePath();
+				return sum + 1;
+			}
+
 		}
 	}
-	dir.rmdir( dir.absolutePath() );
-	qDebug() << dir.absolutePath();
-	return sum + 1;
 }
-
-} } } // end of namespace

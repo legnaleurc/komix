@@ -21,49 +21,52 @@
 #ifndef KOMIX_WIDGET_SCALEPANEL_HPP
 #define KOMIX_WIDGET_SCALEPANEL_HPP
 
-#include <QWidget>
-#include <QButtonGroup>
-#include <QSlider>
+#include <QtGui/QWidget>
 
-namespace KomiX { namespace widget {
+class QButtonGroup;
+class QSlider;
 
-/**
- * @brief Widget to scale image
- *
- * This widget is simple ... too simple. Maybe I'll
- * change this widget to option widget.
- */
-class ScalePanel : public QWidget {
-	Q_OBJECT
+namespace KomiX {
+	namespace widget {
 
-public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	ScalePanel( QWidget * parent);
+		/**
+		 * @brief Widget to scale image
+		 *
+		 * This widget is simple ... too simple. Maybe I'll
+		 * change this widget to option widget.
+		 */
+		class ScalePanel : public QWidget {
+			Q_OBJECT
 
-public slots:
-	/// to move slider
-	void scale( int ratio );
+		public:
+			/**
+			 * @brief default constructor
+			 * @param parent parent widget
+			 */
+			ScalePanel( QWidget * parent);
 
-signals:
-	/**
-	 * @brief scale event
-	 * @param ratio scalar ratio
-	 *
-	 * The ratio means percents, so 100 actually means 100%.
-	 */
-	void scaled( int ratio );
+		public slots:
+			/// to move slider
+			void scale( int ratio );
 
-private slots:
-	void valueHelper_( int = -4 );
+		signals:
+			/**
+			 * @brief scale event
+			 * @param ratio scalar ratio
+			 *
+			 * The ratio means percents, so 100 actually means 100%.
+			 */
+			void scaled( int ratio );
 
-private:
-	QButtonGroup * fitness_;
-	QSlider * scaleSlider_;
-};
-	
-} } // end namespace
+		private slots:
+			void valueHelper_( int = -4 );
+
+		private:
+			QButtonGroup * fitness_;
+			QSlider * scaleSlider_;
+		};
+
+	}
+} // end namespace
 
 #endif
