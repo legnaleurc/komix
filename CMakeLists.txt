@@ -14,6 +14,7 @@ set(KOMIX_VERSION 0.1.0)
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION})
 
 include_directories(. src/model src/utility src/widget)
+include_directories(${CMAKE_BINARY_DIR})
 set(KOMIX_MOC_HEADERS
     src/model/archive/archivehook.hpp
     src/model/directory/directoryhook.hpp
@@ -31,7 +32,7 @@ set(KOMIX_RESOURCES komix.qrc)
 
 qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
 qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
-qt4_wrap_ui(KOMIX_UIC_RESOURCES ${KOMIX_FORMS})
+qt4_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
 
 if(QT_STATIC)
     find_library(QT_GIF_PLUGIN qgif PATHS ${QT_PLUGINS_DIR} PATH_SUFFIXES imageformats)

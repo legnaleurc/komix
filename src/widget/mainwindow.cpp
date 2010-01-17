@@ -39,12 +39,15 @@ using namespace KomiX::widget;
 
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
+ui_(),
 imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new QWidget( this, Qt::Dialog ) ),
 dumpState_( Qt::WindowNoState ) {
-	initMenuBar_();
+	ui_.setupUi( this );
+
+// 	initMenuBar_();
 	initCentralWidget_();
 	initTrayIcon_();
 	initAbout_();

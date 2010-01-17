@@ -21,6 +21,8 @@
 #ifndef KOMIX_WIDGET_MAINWINDOW_HPP
 #define KOMIX_WIDGET_MAINWINDOW_HPP
 
+#include "ui_mainwindow.h"
+
 #include <QtGui/QMainWindow>
 #include <QtGui/QSystemTrayIcon>
 
@@ -75,6 +77,7 @@ namespace KomiX {
 			void initTrayIcon_();
 			void initAbout_();
 
+			Ui::MainWindow ui_;
 			ImageArea * imageArea_;
 			Preference * preference_;
 			QSystemTrayIcon * trayIcon_;
