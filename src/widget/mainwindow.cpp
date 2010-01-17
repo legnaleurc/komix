@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "about.hpp"
 #include "global.hpp"
 #include "imagearea.hpp"
 #include "mainwindow.hpp"
@@ -43,14 +44,14 @@ ui_(),
 imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
-about_( new QWidget( this, Qt::Dialog ) ),
+about_( new About( this ) ),
 dumpState_( Qt::WindowNoState ) {
 	this->ui_.setupUi( this );
 
 	this->setupMenuBar_();
 	initCentralWidget_();
 	initTrayIcon_();
-	initAbout_();
+// 	initAbout_();
 
 	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
