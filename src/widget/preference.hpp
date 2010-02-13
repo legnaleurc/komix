@@ -23,10 +23,6 @@
 
 #include "ui_preference.h"
 
-class QAbstractButton;
-class QSpinBox;
-class QDialogButtonBox;
-
 namespace KomiX {
 	namespace widget {
 
