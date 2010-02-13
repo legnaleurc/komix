@@ -31,6 +31,9 @@ set(KOMIX_RESOURCES komix.qrc)
 qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
 qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
 
+source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
+source_group("Resources" REGULAR_EXPRESSION .*\\.rc)
+
 if(QT_STATIC)
     find_library(QT_GIF_PLUGIN qgif PATHS ${QT_PLUGINS_DIR} PATH_SUFFIXES imageformats)
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_GIF_PLUGIN})
