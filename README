@@ -1,23 +1,28 @@
-Build Dependancy:
-	Qt toolkit >= 4.5:
-		http://trolltech.com/products
+License:
+	GPLv3 or later
 
-Build toolchain:
+Building Dependency:
+	CMake >= 2.6:
+		http://www.cmake.org/
+	Qt toolkit >= 4.5:
+		http://qt.nokia.com/
+	Single Application (Qt Solutions):
+		http://qt.nokia.com/products/appdev/add-on-products/catalog/4/Utilities/qtsingleapplication/
+
+Toolchain:
 	Unix-like:
 		g++ >= 4
-	Windows (XP or Vista):
+	Windows (XP or Vista or 7):
 		Visual C++ >= Express 2005
 
 How to Build:
 	Unix-like:
-		$ qmake
-		$ make -j2
+		$ mkdir build
+		$ cd build
+		$ cmake .. -DCMAKE_BUILD_TYPE=Release
+		$ make -j3
 	Windows:
-		> qmake -tp vc
-		Open komix.vcproj with Visual C++ and build
+		Please use cmake-gui to configure and generate VC solution file
 
-Run-time spec @ Windows:
-	dll provide by MSVC:
-		You may just install Redistributable Package for your machine.
-		http://www.microsoft.com/downloads/details.aspx?familyid=A5C84275-3B97-4AB7-A40D-3802B2AF5FC2&displaylang=en
-	dll provide by Qt toolkit
+Author:
+	legnaleurc@gmail.com (legnaleurc)
