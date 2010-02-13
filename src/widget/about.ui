@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>429</height>
+    <width>224</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@ p, li { white-space: pre-wrap; }
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -130,6 +130,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
+  <include location="../../komix.qrc"/>
   <include location="../../komix.qrc"/>
  </resources>
  <connections/>
