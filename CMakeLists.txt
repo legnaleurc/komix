@@ -24,7 +24,7 @@ set(KOMIX_MOC_HEADERS
     src/widget/mainwindow.hpp
     src/widget/navigator.hpp
     src/widget/preference.hpp
-    src/widget/scalepanel.hpp)
+    src/widget/scalewidget.hpp)
 file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
 file(GLOB_RECURSE KOMIX_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} src/*.hpp)
 file(GLOB_RECURSE KOMIX_FORMS RELATIVE ${CMAKE_SOURCE_DIR} src/*.ui)

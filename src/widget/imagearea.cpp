@@ -21,7 +21,7 @@
 #include "filecontroller.hpp"
 #include "imagearea.hpp"
 #include "navigator.hpp"
-#include "scalepanel.hpp"
+#include "scalewidget.hpp"
 
 #include <QtCore/QList>
 #include <QtCore/QSettings>
@@ -36,7 +36,7 @@ using namespace KomiX::widget;
 
 ImageArea::ImageArea( QWidget * parent ) :
 QScrollArea( parent ),
-scale_( new ScalePanel( this ) ),
+scale_( new ScaleWidget( this ) ),
 navi_( new Navigator( this ) ),
 ctrl_( new FileController( this ) ),
 image_( new QLabel( this ) ),

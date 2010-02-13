@@ -1,5 +1,5 @@
 /**
- * @file scalepanel.hpp
+ * @file scalewidget.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,13 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_SCALEPANEL_HPP
-#define KOMIX_WIDGET_SCALEPANEL_HPP
+#ifndef KOMIX_WIDGET_SCALEWIDGET_HPP
+#define KOMIX_WIDGET_SCALEWIDGET_HPP
 
-#include <QtGui/QWidget>
+#include "ui_scalewidget.h"
 
 class QButtonGroup;
-class QSlider;
 
 namespace KomiX {
 	namespace widget {
@@ -35,7 +34,7 @@ namespace KomiX {
 		 * This widget is simple ... too simple. Maybe I'll
 		 * change this widget to option widget.
 		 */
-		class ScalePanel : public QWidget {
+		class ScaleWidget : public QWidget {
 			Q_OBJECT
 
 		public:
@@ -43,7 +42,7 @@ namespace KomiX {
 			 * @brief default constructor
 			 * @param parent parent widget
 			 */
-			ScalePanel( QWidget * parent);
+			ScaleWidget( QWidget * parent);
 
 		public slots:
 			/// to move slider
@@ -62,8 +61,8 @@ namespace KomiX {
 			void valueHelper_( int = -4 );
 
 		private:
-			QButtonGroup * fitness_;
-			QSlider * scaleSlider_;
+			Ui::ScaleWidget ui_;
+			QButtonGroup * modes_;
 		};
 
 	}
