@@ -22,52 +22,20 @@
 #include "preference.hpp"
 
 #include <QtCore/QSettings>
-#include <QtDebug>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpinBox>
-#include <QtGui/QVBoxLayout>
 
-namespace KomiX { namespace widget {
+using namespace KomiX::widget;
 
 Preference::Preference( QWidget * parent ):
 QDialog( parent ),
-step_( new QSpinBox( this ) ),
-interval_( new QSpinBox( this ) ),
-buttons_( new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel, Qt::Horizontal, this ) ) {
-	this->setWindowModality( Qt::WindowModal );
-	this->setWindowTitle( tr( "Preference" ) );
-	QVBoxLayout * mainLayout = new QVBoxLayout( this );
-	this->setLayout( mainLayout );
-
-	this->step_->setRange( 1, 1000 );
-	this->interval_->setRange( 1, 1000 );
-
-	QGroupBox * speed = new QGroupBox( tr( "Scroll speed" ), this );
-	mainLayout->addWidget( speed );
-	QHBoxLayout * speedLayout = new QHBoxLayout( speed );
-	speed->setLayout( speedLayout );
-
-	QLabel * t1 = new QLabel( tr( "Move" ), speed );
-	speedLayout->addWidget( t1 );
-	speedLayout->addWidget( this->step_ );
-	QLabel * t2 = new QLabel( tr( "pixels per" ), speed );
-	speedLayout->addWidget( t2 );
-	speedLayout->addWidget( this->interval_ );
-	QLabel * t3 = new QLabel( tr( "millisecond(s)" ), speed );
-	speedLayout->addWidget( t3 );
-
-	mainLayout->addWidget( this->buttons_ );
-	connect( this->buttons_, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
+ui_() {
+	this->ui_.setupUi( this );
+	connect( this->ui_.buttons, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
 
 	this->loadSettings_();
 }
 
 void Preference::dispatch_( QAbstractButton * button ) {
-	switch( this->buttons_->buttonRole( button ) ) {
+	switch( this->ui_.buttons->buttonRole( button ) ) {
 	case QDialogButtonBox::RejectRole:
 		this->reject();
 		break;
@@ -86,15 +54,15 @@ void Preference::dispatch_( QAbstractButton * button ) {
 void Preference::loadSettings_() {
 	QSettings ini;
 
-	this->step_->setValue( ini.value( "step", 1 ).toInt() );
-	this->interval_->setValue( ini.value( "interval", 1 ).toInt() );
+	this->ui_.pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
+	this->ui_.timeInterval->setValue( ini.value( "time_interval", 1 ).toInt() );
 }
 
 void Preference::saveSettings_() {
 	QSettings ini;
 
-	ini.setValue( "step", this->step_->value() );
-	ini.setValue( "interval", this->interval_->value() );
+	ini.setValue( "pixel_interval", this->ui_.pixelInterval->value() );
+	ini.setValue( "time_interval", this->ui_.timeInterval->value() );
 }
 
 void Preference::accept() {
@@ -108,5 +76,3 @@ void Preference::reject() {
 
 	QDialog::reject();
 }
-
-} } // end of namespace

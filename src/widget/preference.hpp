@@ -21,43 +21,43 @@
 #ifndef KOMIX_WIDGET_PREFERENCE_HPP
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
-#include <QtGui/QDialog>
+#include "ui_preference.h"
 
 class QAbstractButton;
 class QSpinBox;
 class QDialogButtonBox;
 
-namespace KomiX { namespace widget {
+namespace KomiX {
+	namespace widget {
 
-/**
- * @brief preference widget
- */
-class Preference : public QDialog {
-	Q_OBJECT
+		/**
+		 * @brief preference widget
+		 */
+		class Preference : public QDialog {
+			Q_OBJECT
 
-public:
-	/// constructor
-	Preference( QWidget * parent );
+		public:
+			/// constructor
+			Preference( QWidget * parent );
 
 
-public slots:
-	/// Override from QDialog, won't hide dialog
-	virtual void accept();
-	/// Override from QDialog
-	virtual void reject();
+		public slots:
+			/// Override from QDialog, won't hide dialog
+			virtual void accept();
+			/// Override from QDialog
+			virtual void reject();
 
-private slots:
-	void dispatch_( QAbstractButton * );
+		private slots:
+			void dispatch_( QAbstractButton * );
 
-private:
-	void loadSettings_();
-	void saveSettings_();
+		private:
+			void loadSettings_();
+			void saveSettings_();
 
-	QSpinBox * step_;
-	QSpinBox * interval_;
-	QDialogButtonBox * buttons_;
-};
+			Ui::Preference ui_;
+		};
 
-} } // end of namespace
+	}
+} // end of namespace
 
 #endif
