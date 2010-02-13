@@ -31,6 +31,7 @@ class QUrl;
 namespace KomiX {
 	namespace widget {
 
+		class AboutWidget;
 		class ImageArea;
 		class Preference;
 
@@ -75,13 +76,12 @@ namespace KomiX {
 			void setupHelpMenu_();
 			void initCentralWidget_();
 			void initTrayIcon_();
-			void initAbout_();
 
 			Ui::MainWindow ui_;
 			ImageArea * imageArea_;
 			Preference * preference_;
 			QSystemTrayIcon * trayIcon_;
-			QWidget * about_;
+			AboutWidget * about_;
 			Qt::WindowStates dumpState_;
 		};
 	

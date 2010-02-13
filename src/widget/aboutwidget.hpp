@@ -1,5 +1,5 @@
 /**
- * @file about.hpp
+ * @file aboutwidget.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,20 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_ABOUT_HPP
-#define KOMIX_WIDGET_ABOUT_HPP
+#ifndef KOMIX_WIDGET_ABOUTWIDGET_HPP
+#define KOMIX_WIDGET_ABOUTWIDGET_HPP
 
-#include "ui_about.h"
+#include "ui_aboutwidget.h"
 
 namespace KomiX {
 	namespace widget {
 
-		class About : public QWidget {
+		class AboutWidget : public QWidget {
 		public:
-			About( QWidget * parent );
+			AboutWidget( QWidget * parent );
 
 		private:
-			Ui::About ui_;
+			Ui::AboutWidget ui_;
 		};
 
 	}

@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "about.hpp"
+#include "aboutwidget.hpp"
 #include "global.hpp"
 #include "imagearea.hpp"
 #include "mainwindow.hpp"
@@ -44,14 +44,13 @@ ui_(),
 imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
-about_( new About( this ) ),
+about_( new AboutWidget( this ) ),
 dumpState_( Qt::WindowNoState ) {
 	this->ui_.setupUi( this );
 
 	this->setupMenuBar_();
 	initCentralWidget_();
 	initTrayIcon_();
-// 	initAbout_();
 
 	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
@@ -129,54 +128,6 @@ void MainWindow::initTrayIcon_() {
 	connect( trayIcon_, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), this, SLOT( systemTrayHelper_( QSystemTrayIcon::ActivationReason ) ) );
 
 	trayIcon_->show();
-}
-
-void MainWindow::initAbout_() {
-	about_->setWindowTitle( tr( "About KomiX" ) );
-
-	QVBoxLayout * outer = new QVBoxLayout( about_ );
-	about_->setLayout( outer );
-
-	QHBoxLayout * head = new QHBoxLayout();
-	outer->addLayout( head );
-
-	QLabel * logo = new QLabel( about_ );
-	logo->setPixmap( QPixmap( ":/image/logo.svg" ).scaled( 60, 60 ) );
-	head->addWidget( logo );
-
-	QLabel * version = new QLabel( about_ );
-	version->setText( tr(
-		"<h1>%1</h1>"
-		"Version: %2<br/>"
-		"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
-	).arg( QApplication::applicationName() ).arg( QApplication::applicationVersion() ) );
-	version->setTextFormat( Qt::RichText );
-	head->addWidget( version );
-
-	QTabWidget * tabPages = new QTabWidget( about_ );
-	outer->addWidget( tabPages );
-
-	QLabel * about__ = new QLabel( about_ );
-	about__->setText( tr(
-		"KomiX - A comics viewer\n"
-		"\n"
-		"(c) 2008-2009 FoolproofProject\n"
-		"License: GPLv3\n"
-	) );
-	tabPages->addTab( about__, tr( "&About" ) );
-
-	QLabel * authors = new QLabel( about_ );
-	authors->setText( tr(
-		"<h6>Wei-Cheng Pan (FoolproofProject)</h6><br/>"
-		"Site: <a href=\"http://legnaleurc.blogspot.com/\">legnaleurc.blogspot.com</a><br/>"
-		"E-Mail: <a href=\"mailto:legnaleurc@gmail.com\">legnaleurc@gmail.com</a><br/>"
-	) );
-	authors->setTextFormat( Qt::RichText );
-	tabPages->addTab( authors, tr( "A&uthors" ) );
-
-	QLabel * aboutContent = new QLabel( about_ );
-	aboutContent->setPixmap( QPixmap( ":/image/womm.png" ) );
-	tabPages->addTab( aboutContent, tr( "&Certification" ) );
 }
 
 void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
