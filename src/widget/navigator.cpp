@@ -33,54 +33,40 @@ using KomiX::model::FileModelSP;
 
 Navigator::Navigator( QWidget * parent ) :
 QDialog( parent ),
+ui_(),
 model_( NULL ),
-view_( NULL ),
-selection_( NULL ),
-image_( this ) {
-	setModal( true );
+selection_( NULL ) {
+	this->ui_.setupUi( this );
+	this->ui_.list->setFixedSize( 160, 480 );
+	this->ui_.preview->setFixedSize( 480, 480 );
+	this->ui_.preview->setAlignment( Qt::AlignCenter );
 
-	view_ = new QListView( this );
-	view_->setFixedSize( 160, 480 );
-
-	image_.setFixedSize( 480, 480 );
-	image_.setAlignment( Qt::AlignCenter );
-
-	QDialogButtonBox * buttonBox = new QDialogButtonBox( QDialogButtonBox::Open | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-	connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-	connect( buttonBox, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
-
-	QHBoxLayout * topFrame = new QHBoxLayout;
-	topFrame->addWidget( view_ );
-	topFrame->addWidget( &image_ );
-
-	QVBoxLayout * mainFrame = new QVBoxLayout( this );
-	mainFrame->addLayout( topFrame );
-	mainFrame->addWidget( buttonBox );
-	mainFrame->setSizeConstraint( QLayout::SetFixedSize );
+	connect( this->ui_.buttons, SIGNAL( rejected() ), this, SLOT( reject() ) );
+	connect( this->ui_.buttons, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
 }
 
 void Navigator::setModel( FileModelSP model ) {
-	if( selection_ ) {
-		disconnect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+	if( this->selection_ ) {
+		disconnect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 	}
-	model_ = model;
-	view_->setModel( model_.data() );
-	selection_ = view_->selectionModel();
-	connect( selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+	this->model_ = model;
+	this->ui_.list->setModel( this->model_.data() );
+	this->selection_ = this->ui_.list->selectionModel();
+	connect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
 }
 
 void Navigator::setCurrentIndex( const QModelIndex & index ) {
-	view_->setCurrentIndex( index );
+	this->ui_.list->setCurrentIndex( index );
 }
 
 void Navigator::openHelper_() {
-	qDebug() << "Send: " << view_->currentIndex();
-	emit required( view_->currentIndex() );
+	qDebug() << "Send: " << this->ui_.list->currentIndex();
+	emit required( this->ui_.list->currentIndex() );
 	accept();
 }
 
 void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	qDebug( "Preview::viewImage_()" );
 	qDebug() << current;
-	image_.setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( image_.size(), Qt::KeepAspectRatio ) );
+	this->ui_.preview->setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( this->ui_.preview->size(), Qt::KeepAspectRatio ) );
 }

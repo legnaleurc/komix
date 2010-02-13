@@ -23,10 +23,8 @@
 
 #include "filemodel.hpp"
 
-#include <QtGui/QDialog>
-#include <QtGui/QLabel>
+#include "ui_navigator.h"
 
-class QListView;
 class QItemSelectionModel;
 
 namespace KomiX {
@@ -60,15 +58,14 @@ namespace KomiX {
 			 */
 			void required( const QModelIndex & item );
 
-		private:
-			model::FileModelSP model_;
-			QListView * view_;
-			QItemSelectionModel * selection_;
-			QLabel image_;
-
 		private slots:
 			void openHelper_();
 			void viewImage_( const QModelIndex &, const QModelIndex & );
+
+		private:
+			Ui::Navigator ui_;
+			model::FileModelSP model_;
+			QItemSelectionModel * selection_;
 		};
 
 	}
