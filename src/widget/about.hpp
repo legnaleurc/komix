@@ -31,7 +31,7 @@ namespace KomiX {
 			About( QWidget * parent );
 
 		private:
-			Ui::Form ui_;
+			Ui::About ui_;
 		};
 
 	}
