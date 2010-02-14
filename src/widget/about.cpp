@@ -27,5 +27,15 @@ QWidget( parent, Qt::Dialog ),
 ui_() {
 	this->ui_.setupUi( this );
 
-	this->ui_.info->setText( this->ui_.info->text().arg( QApplication::applicationName() ).arg( QApplication::applicationVersion() ) );
+	this->ui_.info->setText( tr(
+		"<h1>%1</h1>"
+		"Version: %2<br/>"
+		"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
+	).arg( QApplication::applicationName() ).arg( QApplication::applicationVersion() ) );
+
+	this->ui_.aboutMessage->setText( tr(
+		"<h4>%1 - A comics viewer</h4>"
+		"(c) 2008-2010 %2<br/>"
+		"License: GPLv3 or later<br/>"
+	).arg( QApplication::applicationName() ).arg( QApplication::organizationName() ) );
 }
