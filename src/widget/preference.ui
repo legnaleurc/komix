@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>289</width>
-    <height>100</height>
+    <width>340</width>
+    <height>108</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Move</string>
+         <string>Scroll</string>
         </property>
        </widget>
       </item>

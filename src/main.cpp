@@ -22,6 +22,8 @@
 
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
+#include <QtCore/QTextCodec>
+
 #include <QtSingleApplication>
 
 #ifdef KOMIX_STATIC
@@ -62,6 +64,8 @@ int main( int argc, char * argv[] ) {
 		}
 		return 0;
 	}
+
+	QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
 
 	QSettings::setDefaultFormat( QSettings::IniFormat );
 
