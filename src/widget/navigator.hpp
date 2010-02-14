@@ -18,15 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_PREVIEW_HPP
-#define KOMIX_WIDGET_PREVIEW_HPP
+#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
+#define KOMIX_WIDGET_NAVIGATOR_HPP
 
 #include "filemodel.hpp"
 
-#include <QtGui/QDialog>
-#include <QtGui/QLabel>
+#include "ui_navigator.h"
 
-class QListView;
 class QItemSelectionModel;
 
 namespace KomiX {
@@ -60,15 +58,14 @@ namespace KomiX {
 			 */
 			void required( const QModelIndex & item );
 
-		private:
-			model::FileModelSP model_;
-			QListView * view_;
-			QItemSelectionModel * selection_;
-			QLabel image_;
-
 		private slots:
 			void openHelper_();
 			void viewImage_( const QModelIndex &, const QModelIndex & );
+
+		private:
+			Ui::Navigator ui_;
+			model::FileModelSP model_;
+			QItemSelectionModel * selection_;
 		};
 
 	}

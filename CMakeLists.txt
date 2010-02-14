@@ -14,6 +14,7 @@ set(KOMIX_VERSION 0.1.0)
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION})
 
 include_directories(. src/model src/utility src/widget)
+include_directories(${CMAKE_BINARY_DIR})
 set(KOMIX_MOC_HEADERS
     src/model/archive/archivehook.hpp
     src/model/directory/directoryhook.hpp
@@ -23,13 +24,15 @@ set(KOMIX_MOC_HEADERS
     src/widget/mainwindow.hpp
     src/widget/navigator.hpp
     src/widget/preference.hpp
-    src/widget/scalepanel.hpp)
+    src/widget/scalewidget.hpp)
 file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
 file(GLOB_RECURSE KOMIX_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} src/*.hpp)
+file(GLOB_RECURSE KOMIX_FORMS RELATIVE ${CMAKE_SOURCE_DIR} src/*.ui)
 set(KOMIX_RESOURCES komix.qrc)
 
 qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
 qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
+qt4_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
 
 source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
 source_group("Resources" REGULAR_EXPRESSION .*\\.rc)
@@ -59,10 +62,10 @@ if(WIN32)
 endif()
 
 if(WIN32)
-    add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
+    add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_UIC_HEADERS} ${KOMIX_RCC_RESOURCES})
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 else()
-    add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
+    add_executable(komix ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_UIC_HEADERS} ${KOMIX_RCC_RESOURCES})
 endif()
 
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEAPPLICATION_LIBRARY})

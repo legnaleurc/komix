@@ -34,7 +34,7 @@ namespace KomiX {
 
 	namespace widget {
 
-		class ScalePanel;
+		class ScaleWidget;
 		class Navigator;
 
 		/**
@@ -63,7 +63,7 @@ namespace KomiX {
 			 * @brief default constructor
 			 * @param parent parent widget
 			 */
-			ImageArea( QWidget * parent = 0 );
+			ImageArea( QWidget * parent );
 
 			/**
 			 * @brief open @p url
@@ -182,7 +182,7 @@ namespace KomiX {
 			bool canMoveRight_() const;
 			void updateImageSize_();
 
-			ScalePanel * scale_;
+			ScaleWidget * scale_;
 			Navigator * navi_;
 			FileController * ctrl_;
 			QLabel * image_;

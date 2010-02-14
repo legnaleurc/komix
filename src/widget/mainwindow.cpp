@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "about.hpp"
 #include "global.hpp"
 #include "imagearea.hpp"
 #include "mainwindow.hpp"
@@ -39,147 +40,75 @@ using namespace KomiX::widget;
 
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
+ui_(),
 imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
-about_( new QWidget( this, Qt::Dialog ) ),
+about_( new About( this ) ),
 dumpState_( Qt::WindowNoState ) {
-	initMenuBar_();
+	this->ui_.setupUi( this );
+
+	this->setupMenuBar_();
 	initCentralWidget_();
 	initTrayIcon_();
-	initAbout_();
+// 	initAbout_();
 
 	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
 
-void MainWindow::initMenuBar_() {
-	QMenuBar * menuBar = new QMenuBar( this );
-
-	initFileMenu_( menuBar );
-	initEditMenu_( menuBar );
-	initViewMenu_( menuBar );
-	initGoMenu_( menuBar );
-	initHelpMenu_( menuBar );
-
-	setMenuBar( menuBar );
+void MainWindow::setupMenuBar_() {
+	this->setupFileMenu_();
+	this->setupEditMenu_();
+	this->setupViewMenu_();
+	this->setupGoMenu_();
+	this->setupHelpMenu_();
 }
 
-void MainWindow::initFileMenu_( QMenuBar * menuBar ) {
-	QMenu * fileMenu = new QMenu( tr( "&File" ), menuBar );
+void MainWindow::setupFileMenu_() {
+	QMenu * fileMenu = this->ui_.menu_File;
 
 	foreach( FileMenuHook hook, getFileMenuHooks() ) {
 		QAction * action = hook( this );
 		fileMenu->addAction( action );
 		addAction( action );
 	}
-
-	menuBar->addMenu( fileMenu );
 }
 
-void MainWindow::initViewMenu_( QMenuBar * menuBar ) {
-	QMenu * view = new QMenu( tr( "&View" ), menuBar );
-
-	QAction * smoothNext = new QAction( tr( "Smooth &Next" ), this );
-	smoothNext->setShortcut( Qt::Key_Space );
-	connect( smoothNext, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
-	view->addAction( smoothNext );
-	addAction( smoothNext );
-
-	QAction * smoothPrev = new QAction( tr( "Smooth &Prev" ), this );
-	smoothPrev->setShortcut( Qt::Key_Return );
-	connect( smoothPrev, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
-	view->addAction( smoothPrev );
-	addAction( smoothPrev );
-
-	QAction * home = new QAction( tr( "Page &Head" ), this );
-	home->setShortcut( Qt::Key_Home );
-	connect( home, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
-	view->addAction( home );
-	addAction( home );
-
-	QAction * end = new QAction( tr( "Page &Tail" ), this );
-	end->setShortcut( Qt::Key_End );
-	connect( end, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
-	view->addAction( end );
-	addAction( end );
-
-	view->addSeparator();
-
-	QAction * fullScreen = new QAction( tr( "&Full Screen" ), this );
-	fullScreen->setShortcut( Qt::Key_F11 );
-	connect( fullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
-	view->addAction( fullScreen );
-	addAction( fullScreen );
-
-	QAction * hide = new QAction( tr( "&Hide window" ), this );
-	hide->setShortcut( tr( "Esc" ) );
-	connect( hide, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
-	view->addAction( hide );
-	addAction( hide );
-
-	view->addSeparator();
-
-	QAction * scale = new QAction( tr( "&Scale image" ), this );
-	scale->setShortcut( tr( "Ctrl+S" ) );
-	connect( scale, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
-	view->addAction( scale );
-	addAction( scale );
-
-	menuBar->addMenu( view );
-}
-
-void MainWindow::initEditMenu_( QMenuBar * menuBar ) {
-	QMenu * edit = new QMenu( tr( "&Edit" ), menuBar );
-
-	QAction * pref = new QAction(  tr( "&Preference" ), this );
-	connect( pref, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
+void MainWindow::setupEditMenu_() {
+	connect( this->ui_.action_Preference, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
 	connect( this->preference_, SIGNAL( accepted() ), this->imageArea_, SLOT( loadSettings() ) );
-	edit->addAction( pref );
-	addAction( pref );
-
-	menuBar->addMenu( edit );
 }
 
-void MainWindow::initGoMenu_( QMenuBar * menuBar ) {
-	QMenu * go = new QMenu( tr( "&Go" ), menuBar );
-
-	QAction * jump = new QAction( tr( "&Go To..." ), this );
-	jump->setShortcut( tr( "Ctrl+G" ) );
-	connect( jump, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
-	go->addAction( jump );
-	addAction( jump );
-
-	go->addSeparator();
-
-	QAction * prev = new QAction( tr( "&Preverse image" ), this );
-	prev->setShortcut( Qt::Key_PageUp );
-	connect( prev, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
-	go->addAction( prev );
-	addAction( prev );
-
-	QAction * next = new QAction( tr( "&Next image" ), this );
-	next->setShortcut( Qt::Key_PageDown );
-	connect( next, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
-	go->addAction( next );
-	addAction( next );
-
-	menuBar->addMenu( go );
+void MainWindow::setupViewMenu_() {
+	this->addAction( this->ui_.actionSmooth_Next );
+	connect( this->ui_.actionSmooth_Next, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
+	this->addAction( this->ui_.actionSmooth_Previous );
+	connect( this->ui_.actionSmooth_Previous, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
+	this->addAction( this->ui_.actionPage_Head );
+	connect( this->ui_.actionPage_Head, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
+	this->addAction( this->ui_.actionPage_Tail );
+	connect( this->ui_.actionPage_Tail, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
+	this->addAction( this->ui_.action_Fullscreen );
+	connect( this->ui_.action_Fullscreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
+	this->addAction( this->ui_.action_Hide_Window );
+	connect( this->ui_.action_Hide_Window, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
+	this->addAction( this->ui_.action_Scale_Image );
+	connect( this->ui_.action_Scale_Image, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
 }
 
-void MainWindow::initHelpMenu_( QMenuBar * menuBar ) {
-	QMenu * help = new QMenu( tr( "&Help" ), menuBar );
+void MainWindow::setupGoMenu_() {
+	this->addAction( this->ui_.action_Go_To );
+	connect( this->ui_.action_Go_To, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
+	this->addAction( this->ui_.action_Previous_Image );
+	connect( this->ui_.action_Previous_Image, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
+	this->addAction( this->ui_.action_Next_Image );
+	connect( this->ui_.action_Next_Image, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
+}
 
-	QAction * about__ = new QAction( tr( "&About" ), this );
-	connect( about__, SIGNAL( triggered() ), about_, SLOT( show() ) );
+void MainWindow::setupHelpMenu_() {
+	connect( this->ui_.action_About, SIGNAL( triggered() ), about_, SLOT( show() ) );
 
-	help->addAction( about__ );
-
-	QAction * aboutQt_ = new QAction( tr( "About &Qt" ), this );
-	connect( aboutQt_, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
-
-	help->addAction( aboutQt_ );
-
-	menuBar->addMenu( help );
+	connect( this->ui_.actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
 void MainWindow::initCentralWidget_() {
