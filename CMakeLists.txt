@@ -34,8 +34,9 @@ qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
 qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
 qt4_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
 
-source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES})
-source_group("Resources" REGULAR_EXPRESSION .*\\.rc)
+source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_UIC_HEADERS})
+source_group("Resource Files" REGULAR_EXPRESSION .*\\.rc)
+source_group("Form Files" REGULAR_EXPRESSION .*\\.ui)
 
 if(QT_STATIC)
     find_library(QT_GIF_PLUGIN qgif PATHS ${QT_PLUGINS_DIR} PATH_SUFFIXES imageformats)
