@@ -36,7 +36,7 @@ qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
 qt4_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
 qt4_add_translation(KOMIX_QM_FILES ${KOMIX_TRANSLATIONS})
 
-source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_UIC_HEADERS})
+source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_UIC_HEADERS} ${KOMIX_QM_FILES})
 source_group("Resource Files" REGULAR_EXPRESSION .*\\.rc)
 source_group("Form Files" REGULAR_EXPRESSION .*\\.ui)
 
