@@ -94,7 +94,7 @@ namespace {
 using namespace KomiX::model::single;
 
 SingleHook::SingleHook( QWidget * parent ) : QAction( parent ) {
-	setText( tr( "O&pen Image" ) );
+	setText( tr( "&Open Image" ) );
 	setShortcut( tr( "Ctrl+O" ) );
 
 	connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
