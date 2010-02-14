@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_PREVIEW_HPP
-#define KOMIX_WIDGET_PREVIEW_HPP
+#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
+#define KOMIX_WIDGET_NAVIGATOR_HPP
 
 #include "filemodel.hpp"
 

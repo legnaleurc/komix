@@ -22,11 +22,6 @@
 #include "navigator.hpp"
 
 #include <QtDebug>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QListView>
-#include <QtGui/QMessageBox>
-#include <QtGui/QVBoxLayout>
 
 using namespace KomiX::widget;
 using KomiX::model::FileModelSP;
