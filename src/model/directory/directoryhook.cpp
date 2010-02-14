@@ -37,7 +37,7 @@ const bool registered = KomiX::registerFileMenuHook( hookHelper );
 using namespace KomiX::model::directory;
 
 DirectoryHook::DirectoryHook( QWidget * parent ) : QAction( parent ) {
-	setText( tr( "Open D&irectory" ) );
+	setText( tr( "Open &Directory" ) );
 	setShortcut( tr( "Ctrl+D" ) );
 
 	connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
