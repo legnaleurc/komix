@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="14"/>
         <source>About KomiX</source>
-        <translation type="unfinished"></translation>
+        <translation>KomiX について</translation>
     </message>
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="50"/>
@@ -17,12 +17,12 @@
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="66"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>KomiX について(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="80"/>
         <source>A&amp;uthors</source>
-        <translation type="unfinished"></translation>
+        <translation>作成者(&amp;U)</translation>
     </message>
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="86"/>
@@ -37,61 +37,61 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/aboutwidget.ui" line="102"/>
         <source>&amp;Certification</source>
-        <translation type="unfinished"></translation>
+        <translation>認証(&amp;C)</translation>
     </message>
 </context>
 <context>
     <name>KomiX::model::archive::ArchiveHook</name>
     <message>
         <location filename="../src/model/archive/archivehook.cpp" line="52"/>
-        <source>Open A&amp;rchive</source>
-        <translation type="unfinished"></translation>
+        <source>Open &amp;Archive</source>
+        <translation>アーカイブファイルを開く(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/model/archive/archivehook.cpp" line="53"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/model/archive/archivehook.cpp" line="62"/>
         <source>Open archive</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブファイルを開く</translation>
     </message>
 </context>
 <context>
     <name>KomiX::model::directory::DirectoryHook</name>
     <message>
         <location filename="../src/model/directory/directoryhook.cpp" line="40"/>
-        <source>Open D&amp;irectory</source>
-        <translation type="unfinished"></translation>
+        <source>Open &amp;Directory</source>
+        <translation>フォルダーを開く(&amp;D)</translation>
     </message>
     <message>
         <location filename="../src/model/directory/directoryhook.cpp" line="41"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/model/directory/directoryhook.cpp" line="48"/>
         <source>Open dicrectory</source>
-        <translation type="unfinished"></translation>
+        <translation>フォルダーを開く</translation>
     </message>
 </context>
 <context>
     <name>KomiX::model::single::SingleHook</name>
     <message>
         <location filename="../src/model/single/singlehook.cpp" line="97"/>
-        <source>O&amp;pen Image</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Open Image</source>
+        <translation>画像を開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/model/single/singlehook.cpp" line="98"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/model/single/singlehook.cpp" line="105"/>
         <source>Open image file</source>
-        <translation type="unfinished"></translation>
+        <translation>画像を開く</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/imagearea.cpp" line="107"/>
         <source>No openable file.</source>
-        <translation type="unfinished"></translation>
+        <translation>開きできるファイルがありません。</translation>
     </message>
 </context>
 <context>
@@ -120,27 +120,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.cpp" line="122"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>終了(&amp;Q)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.cpp" line="125"/>
         <source>KomiX</source>
-        <translation type="unfinished"></translation>
+        <translation>KomiX</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.cpp" line="145"/>
         <source>No file to open</source>
-        <translation type="unfinished"></translation>
+        <translation>開きできるファイルがありません</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.cpp" line="145"/>
         <source>No openable file in this directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>このフォルダーに開きできるファイルがありません。</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.cpp" line="157"/>
         <source>Oops!</source>
-        <translation type="unfinished"></translation>
+        <translation>げっ!</translation>
     </message>
 </context>
 <context>
@@ -148,22 +148,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="14"/>
         <source>KomiX</source>
-        <translation type="unfinished"></translation>
+        <translation>KomiX</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="28"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="33"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>表示(&amp;V)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="47"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>編集(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="53"/>
@@ -173,27 +173,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="62"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="75"/>
         <source>Smooth &amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>スムーズスクロールする(&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="78"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Space</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="83"/>
         <source>Smooth &amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>スムーズ逆スクロールする(&amp;P)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="86"/>
         <source>Return</source>
-        <translation type="unfinished"></translation>
+        <translation>Return</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="91"/>
@@ -203,7 +203,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="94"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="99"/>
@@ -213,7 +213,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="102"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="107"/>
@@ -223,7 +223,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="110"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="115"/>
@@ -233,7 +233,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="118"/>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="123"/>
@@ -243,7 +243,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="126"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="131"/>
@@ -258,7 +258,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="139"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="144"/>
@@ -278,17 +278,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/widget/mainwindow.ui" line="155"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="160"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>... について(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/widget/mainwindow.ui" line="165"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt について(&amp;Q)</translation>
     </message>
 </context>
 <context>

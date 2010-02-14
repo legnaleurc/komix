@@ -44,7 +44,7 @@ p, li { white-space: pre-wrap; }
     <name>KomiX::model::archive::ArchiveHook</name>
     <message>
         <location filename="../src/model/archive/archivehook.cpp" line="52"/>
-        <source>Open A&amp;rchive</source>
+        <source>Open &amp;Archive</source>
         <translation>開啟壓縮檔(&amp;A)</translation>
     </message>
     <message>
@@ -62,7 +62,7 @@ p, li { white-space: pre-wrap; }
     <name>KomiX::model::directory::DirectoryHook</name>
     <message>
         <location filename="../src/model/directory/directoryhook.cpp" line="40"/>
-        <source>Open D&amp;irectory</source>
+        <source>Open &amp;Directory</source>
         <translation>開啟資料夾(&amp;D)</translation>
     </message>
     <message>
@@ -80,8 +80,8 @@ p, li { white-space: pre-wrap; }
     <name>KomiX::model::single::SingleHook</name>
     <message>
         <location filename="../src/model/single/singlehook.cpp" line="97"/>
-        <source>O&amp;pen Image</source>
-        <translation>開啟影像(&amp;O)</translation>
+        <source>&amp;Open Image</source>
+        <translation>開啟影像檔案(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/model/single/singlehook.cpp" line="98"/>
