@@ -21,8 +21,11 @@
 #ifndef KOMIX_WIDGET_SCALEWIDGET_HPP
 #define KOMIX_WIDGET_SCALEWIDGET_HPP
 
-#include "ui_scalewidget.h"
+#include <QtGui/QWidget>
 
+namespace Ui {
+	class ScaleWidget;
+}
 class QButtonGroup;
 
 namespace KomiX {
@@ -43,6 +46,7 @@ namespace KomiX {
 			 * @param parent parent widget
 			 */
 			ScaleWidget( QWidget * parent);
+			virtual ~ScaleWidget();
 
 		public slots:
 			/// to move slider
@@ -61,7 +65,7 @@ namespace KomiX {
 			void valueHelper_( int = -4 );
 
 		private:
-			Ui::ScaleWidget ui_;
+			Ui::ScaleWidget * ui_;
 			QButtonGroup * modes_;
 		};
 

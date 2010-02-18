@@ -29,6 +29,7 @@
 #include <QtCore/QUrl>
 #include <QtDebug>
 #include <QtGui/QAction>
+#include <QtGui/QLabel>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QScrollBar>
 

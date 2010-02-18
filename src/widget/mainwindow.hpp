@@ -21,11 +21,13 @@
 #ifndef KOMIX_WIDGET_MAINWINDOW_HPP
 #define KOMIX_WIDGET_MAINWINDOW_HPP
 
-#include "ui_mainwindow.h"
-
 #include <QtGui/QMainWindow>
 #include <QtGui/QSystemTrayIcon>
 
+namespace Ui {
+	class MainWindow;
+}
+class QSystemTrayIcon;
 class QUrl;
 
 namespace KomiX {
@@ -50,6 +52,7 @@ namespace KomiX {
 			 * @param f window flags
 			 */
 			MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+			virtual ~MainWindow();
 
 		public slots:
 			/**
@@ -77,7 +80,7 @@ namespace KomiX {
 			void initCentralWidget_();
 			void initTrayIcon_();
 
-			Ui::MainWindow ui_;
+			Ui::MainWindow * ui_;
 			ImageArea * imageArea_;
 			Preference * preference_;
 			QSystemTrayIcon * trayIcon_;

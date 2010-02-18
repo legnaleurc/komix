@@ -19,23 +19,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "aboutwidget.hpp"
+#include "ui_aboutwidget.h"
 
 using namespace KomiX::widget;
 
 AboutWidget::AboutWidget( QWidget * parent ):
 QWidget( parent, Qt::Dialog ),
-ui_() {
-	this->ui_.setupUi( this );
+ui_( new Ui::AboutWidget ) {
+	this->ui_->setupUi( this );
 
-	this->ui_.info->setText( tr(
+	this->ui_->info->setText( tr(
 		"<h1>%1</h1>"
 		"Version: %2<br/>"
 		"<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
 	).arg( QApplication::applicationName() ).arg( QApplication::applicationVersion() ) );
 
-	this->ui_.aboutMessage->setText( tr(
+	this->ui_->aboutMessage->setText( tr(
 		"<h4>%1 - A comics viewer</h4>"
 		"(c) 2008-2010 %2<br/>"
 		"License: GPLv3 or later<br/>"
 	).arg( QApplication::applicationName() ).arg( QApplication::organizationName() ) );
+}
+
+AboutWidget::~AboutWidget() {
+	delete this->ui_;
 }

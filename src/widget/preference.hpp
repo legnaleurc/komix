@@ -21,7 +21,12 @@
 #ifndef KOMIX_WIDGET_PREFERENCE_HPP
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
-#include "ui_preference.h"
+#include <QtGui/QDialog>
+
+namespace Ui {
+	class Preference;
+}
+class QAbstractButton;
 
 namespace KomiX {
 	namespace widget {
@@ -35,6 +40,7 @@ namespace KomiX {
 		public:
 			/// constructor
 			Preference( QWidget * parent );
+			virtual ~Preference();
 
 
 		public slots:
@@ -50,7 +56,7 @@ namespace KomiX {
 			void loadSettings_();
 			void saveSettings_();
 
-			Ui::Preference ui_;
+			Ui::Preference * ui_;
 		};
 
 	}

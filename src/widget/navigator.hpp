@@ -23,8 +23,11 @@
 
 #include "filemodel.hpp"
 
-#include "ui_navigator.h"
+#include <QtGui/QDialog>
 
+namespace Ui {
+	class Navigator;
+}
 class QItemSelectionModel;
 
 namespace KomiX {
@@ -45,6 +48,7 @@ namespace KomiX {
 			 * @param parent parent widget
 			 */
 			Navigator( QWidget * parent );
+			virtual ~Navigator();
 
 			/// set current using model
 			void setModel( model::FileModelSP model );
@@ -63,7 +67,7 @@ namespace KomiX {
 			void viewImage_( const QModelIndex &, const QModelIndex & );
 
 		private:
-			Ui::Navigator ui_;
+			Ui::Navigator * ui_;
 			model::FileModelSP model_;
 			QItemSelectionModel * selection_;
 		};

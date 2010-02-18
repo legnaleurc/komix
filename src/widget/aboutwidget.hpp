@@ -21,7 +21,11 @@
 #ifndef KOMIX_WIDGET_ABOUTWIDGET_HPP
 #define KOMIX_WIDGET_ABOUTWIDGET_HPP
 
-#include "ui_aboutwidget.h"
+#include <QtGui/QWidget>
+
+namespace Ui {
+	class AboutWidget;
+}
 
 namespace KomiX {
 	namespace widget {
@@ -29,9 +33,10 @@ namespace KomiX {
 		class AboutWidget : public QWidget {
 		public:
 			AboutWidget( QWidget * parent );
+			virtual ~AboutWidget();
 
 		private:
-			Ui::AboutWidget ui_;
+			Ui::AboutWidget * ui_;
 		};
 
 	}

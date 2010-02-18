@@ -23,6 +23,7 @@
 #include "imagearea.hpp"
 #include "mainwindow.hpp"
 #include "preference.hpp"
+#include "ui_mainwindow.h"
 
 #include <QtCore/QUrl>
 #include <QtDebug>
@@ -40,19 +41,23 @@ using namespace KomiX::widget;
 
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
-ui_(),
+ui_( new Ui::MainWindow ),
 imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new AboutWidget( this ) ),
 dumpState_( Qt::WindowNoState ) {
-	this->ui_.setupUi( this );
+	this->ui_->setupUi( this );
 
 	this->setupMenuBar_();
 	initCentralWidget_();
 	initTrayIcon_();
 
 	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
+}
+
+MainWindow::~MainWindow() {
+	delete this->ui_;
 }
 
 void MainWindow::setupMenuBar_() {
@@ -64,7 +69,7 @@ void MainWindow::setupMenuBar_() {
 }
 
 void MainWindow::setupFileMenu_() {
-	QMenu * fileMenu = this->ui_.menu_File;
+	QMenu * fileMenu = this->ui_->menu_File;
 
 	foreach( FileMenuHook hook, getFileMenuHooks() ) {
 		QAction * action = hook( this );
@@ -74,40 +79,40 @@ void MainWindow::setupFileMenu_() {
 }
 
 void MainWindow::setupEditMenu_() {
-	connect( this->ui_.action_Preference, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
+	connect( this->ui_->action_Preference, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
 	connect( this->preference_, SIGNAL( accepted() ), this->imageArea_, SLOT( loadSettings() ) );
 }
 
 void MainWindow::setupViewMenu_() {
-	this->addAction( this->ui_.actionSmooth_Next );
-	connect( this->ui_.actionSmooth_Next, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
-	this->addAction( this->ui_.actionSmooth_Previous );
-	connect( this->ui_.actionSmooth_Previous, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
-	this->addAction( this->ui_.actionPage_Head );
-	connect( this->ui_.actionPage_Head, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
-	this->addAction( this->ui_.actionPage_Tail );
-	connect( this->ui_.actionPage_Tail, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
-	this->addAction( this->ui_.action_Fullscreen );
-	connect( this->ui_.action_Fullscreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
-	this->addAction( this->ui_.action_Hide_Window );
-	connect( this->ui_.action_Hide_Window, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
-	this->addAction( this->ui_.action_Scale_Image );
-	connect( this->ui_.action_Scale_Image, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
+	this->addAction( this->ui_->actionSmooth_Next );
+	connect( this->ui_->actionSmooth_Next, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
+	this->addAction( this->ui_->actionSmooth_Previous );
+	connect( this->ui_->actionSmooth_Previous, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
+	this->addAction( this->ui_->actionPage_Head );
+	connect( this->ui_->actionPage_Head, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
+	this->addAction( this->ui_->actionPage_Tail );
+	connect( this->ui_->actionPage_Tail, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
+	this->addAction( this->ui_->action_Fullscreen );
+	connect( this->ui_->action_Fullscreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
+	this->addAction( this->ui_->action_Hide_Window );
+	connect( this->ui_->action_Hide_Window, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
+	this->addAction( this->ui_->action_Scale_Image );
+	connect( this->ui_->action_Scale_Image, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
 }
 
 void MainWindow::setupGoMenu_() {
-	this->addAction( this->ui_.action_Go_To );
-	connect( this->ui_.action_Go_To, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
-	this->addAction( this->ui_.action_Previous_Image );
-	connect( this->ui_.action_Previous_Image, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
-	this->addAction( this->ui_.action_Next_Image );
-	connect( this->ui_.action_Next_Image, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
+	this->addAction( this->ui_->action_Go_To );
+	connect( this->ui_->action_Go_To, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
+	this->addAction( this->ui_->action_Previous_Image );
+	connect( this->ui_->action_Previous_Image, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
+	this->addAction( this->ui_->action_Next_Image );
+	connect( this->ui_->action_Next_Image, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
 }
 
 void MainWindow::setupHelpMenu_() {
-	connect( this->ui_.action_About, SIGNAL( triggered() ), about_, SLOT( show() ) );
+	connect( this->ui_->action_About, SIGNAL( triggered() ), about_, SLOT( show() ) );
 
-	connect( this->ui_.actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
+	connect( this->ui_->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
 void MainWindow::initCentralWidget_() {

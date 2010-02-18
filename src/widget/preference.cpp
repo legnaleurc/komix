@@ -20,6 +20,7 @@
  */
 
 #include "preference.hpp"
+#include "ui_preference.h"
 
 #include <QtCore/QSettings>
 
@@ -27,15 +28,19 @@ using namespace KomiX::widget;
 
 Preference::Preference( QWidget * parent ):
 QDialog( parent ),
-ui_() {
-	this->ui_.setupUi( this );
-	connect( this->ui_.buttons, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
+ui_( new Ui::Preference ) {
+	this->ui_->setupUi( this );
+	connect( this->ui_->buttons, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
 
 	this->loadSettings_();
 }
 
+Preference::~Preference() {
+	delete this->ui_;
+}
+
 void Preference::dispatch_( QAbstractButton * button ) {
-	switch( this->ui_.buttons->buttonRole( button ) ) {
+	switch( this->ui_->buttons->buttonRole( button ) ) {
 	case QDialogButtonBox::RejectRole:
 		this->reject();
 		break;
@@ -54,15 +59,15 @@ void Preference::dispatch_( QAbstractButton * button ) {
 void Preference::loadSettings_() {
 	QSettings ini;
 
-	this->ui_.pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
-	this->ui_.timeInterval->setValue( ini.value( "time_interval", 1 ).toInt() );
+	this->ui_->pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
+	this->ui_->timeInterval->setValue( ini.value( "time_interval", 1 ).toInt() );
 }
 
 void Preference::saveSettings_() {
 	QSettings ini;
 
-	ini.setValue( "pixel_interval", this->ui_.pixelInterval->value() );
-	ini.setValue( "time_interval", this->ui_.timeInterval->value() );
+	ini.setValue( "pixel_interval", this->ui_->pixelInterval->value() );
+	ini.setValue( "time_interval", this->ui_->timeInterval->value() );
 }
 
 void Preference::accept() {
