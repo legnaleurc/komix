@@ -83,8 +83,8 @@ interval_( 1 ) {
 void ImageArea::loadSettings() {
 	QSettings ini;
 
-	this->step_ = ini.value( "step", 1 ).toInt();
-	this->interval_ = ini.value( "interval", 1 ).toInt();
+	this->step_ = ini.value( "pixel_interval", 1 ).toInt();
+	this->interval_ = ini.value( "ms_interval", 1 ).toInt();
 }
 
 bool ImageArea::open( const QUrl & url ) {

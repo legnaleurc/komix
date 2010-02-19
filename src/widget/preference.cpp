@@ -60,14 +60,14 @@ void Preference::loadSettings_() {
 	QSettings ini;
 
 	this->ui_->pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
-	this->ui_->timeInterval->setValue( ini.value( "time_interval", 1 ).toInt() );
+	this->ui_->msInterval->setValue( ini.value( "ms_interval", 1 ).toInt() );
 }
 
 void Preference::saveSettings_() {
 	QSettings ini;
 
 	ini.setValue( "pixel_interval", this->ui_->pixelInterval->value() );
-	ini.setValue( "time_interval", this->ui_->timeInterval->value() );
+	ini.setValue( "ms_interval", this->ui_->msInterval->value() );
 }
 
 void Preference::accept() {

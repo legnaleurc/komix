@@ -48,7 +48,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="timeInterval">
+       <widget class="QSpinBox" name="msInterval">
         <property name="minimum">
          <number>1</number>
         </property>
