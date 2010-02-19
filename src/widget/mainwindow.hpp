@@ -27,14 +27,12 @@
 namespace Ui {
 	class MainWindow;
 }
-class QSystemTrayIcon;
 class QUrl;
 
 namespace KomiX {
 	namespace widget {
 
 		class AboutWidget;
-		class ImageArea;
 		class Preference;
 
 		/**
@@ -71,17 +69,16 @@ namespace KomiX {
 			void popupError_( const QString & errMsg );
 
 		private:
-			void setupMenuBar_();
-			void setupFileMenu_();
+			void initTrayIcon_();
+			void setupCentralWidget_();
 			void setupEditMenu_();
-			void setupViewMenu_();
+			void setupFileMenu_();
 			void setupGoMenu_();
 			void setupHelpMenu_();
-			void initCentralWidget_();
-			void initTrayIcon_();
+			void setupMenuBar_();
+			void setupViewMenu_();
 
 			Ui::MainWindow * ui_;
-			ImageArea * imageArea_;
 			Preference * preference_;
 			QSystemTrayIcon * trayIcon_;
 			AboutWidget * about_;

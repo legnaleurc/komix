@@ -21,6 +21,7 @@ set(KOMIX_MOC_HEADERS
     src/model/single/singlehook.hpp
     src/utility/filecontroller.hpp
     src/widget/imagearea.hpp
+    src/widget/imageview.hpp
     src/widget/mainwindow.hpp
     src/widget/navigator.hpp
     src/widget/preference.hpp
