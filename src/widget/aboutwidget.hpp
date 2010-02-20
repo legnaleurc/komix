@@ -32,7 +32,7 @@ namespace KomiX {
 
 		class AboutWidget : public QWidget {
 		public:
-			AboutWidget( QWidget * parent );
+			explicit AboutWidget( QWidget * parent );
 			virtual ~AboutWidget();
 
 		private:

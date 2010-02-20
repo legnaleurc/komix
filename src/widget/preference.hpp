@@ -39,7 +39,7 @@ namespace KomiX {
 
 		public:
 			/// constructor
-			Preference( QWidget * parent );
+			explicit Preference( QWidget * parent );
 			virtual ~Preference();
 
 
