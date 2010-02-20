@@ -74,5 +74,10 @@ endif()
 
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEAPPLICATION_LIBRARY})
 
-install(TARGETS komix
-    RUNTIME DESTINATION bin)
+if(WIN32)
+    install(TARGETS komix
+        RUNTIME DESTINATION .)
+else()
+    install(TARGETS komix
+        RUNTIME DESTINATION bin)
+endif()
