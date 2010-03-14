@@ -194,7 +194,20 @@ void ImageView::resizeEvent( QResizeEvent * event ) {
 }
 
 void ImageView::wheelEvent( QWheelEvent * event ) {
-	// TODO
+	int delta = event->delta();
+	if( event->modifiers() & Qt::ControlModifier ) {
+		if( delta < 0 ) {
+			emit this->scaled( -10 );
+		} else if( delta > 0 ) {
+			emit this->scaled( 10 );
+		}
+	} else {
+		if( delta < 0 ) {
+			this->controller_->next();
+		} else if( delta > 0 ) {
+			this->controller_->prev();
+		}
+	}
 }
 
 void ImageView::moveItems_( QPoint delta ) {
