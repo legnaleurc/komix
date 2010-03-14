@@ -10,6 +10,12 @@
     <height>324</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>About KomiX</string>
   </property>
@@ -119,6 +125,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
+  <include location="../../komix.qrc"/>
   <include location="../../komix.qrc"/>
   <include location="../../komix.qrc"/>
   <include location="../../komix.qrc"/>
