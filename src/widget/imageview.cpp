@@ -57,7 +57,8 @@ void ImageView::end() {
 }
 
 void ImageView::begin() {
-	// TODO
+	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->moveItems_( ( vpRect.topRight() - this->itemsRect_.topRight() ).toPoint() );
 }
 
 void ImageView::loadSettings() {
@@ -82,6 +83,7 @@ void ImageView::setImage( const QPixmap & pixmap ) {
 
 	this->itemsRect_ = item->sceneBoundingRect();
 	this->center_( item );
+	this->begin();
 }
 
 void ImageView::showControlPanel() {
