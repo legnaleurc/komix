@@ -33,12 +33,13 @@ using namespace KomiX::widget;
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 controller_( new FileController( this ) ),
+itemsRect_(),
+msInterval_( 1 ),
 navigator_( new Navigator( this ) ),
 panel_( new ScaleWidget( this ) ),
 pixelInterval_( 1 ),
 pressEndPosition_(),
 pressStartPosition_(),
-msInterval_( 1 ),
 scene_( new QGraphicsScene( this ) ) {
 	this->setScene( this->scene_ );
 
@@ -78,7 +79,9 @@ void ImageView::previousPage() {
 void ImageView::setImage( const QPixmap & pixmap ) {
 	// FIXME: stop all movement
 	this->scene_->clear();
-	this->scene_->addPixmap( pixmap );
+	QGraphicsItem * item = this->scene_->addPixmap( pixmap );
+
+	this->itemsRect_ = item->sceneBoundingRect();
 }
 
 void ImageView::showControlPanel() {
@@ -135,7 +138,7 @@ void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 			}
 		}
 
-		QPoint delta = this->pressEndPosition_ - event->pos();
+		QPoint delta = event->pos() - this->pressEndPosition_;
 		this->moveItems_( delta );
 		this->pressEndPosition_ = event->pos();	// update end point
 	} else {
@@ -195,8 +198,25 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 	// TODO
 }
 
-void ImageView::moveItems_( const QPoint & delta ) {
-	foreach( QGraphicsItem * item, this->scene()->items() ) {
-		item->setPos( item->pos() - delta );
+void ImageView::moveItems_( QPoint delta ) {
+	QRectF reqRect = this->itemsRect_.translated( delta );
+	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	if( !reqRect.contains( vpRect ) ) {
+		if( reqRect.right() < vpRect.right() ) {	// moving left
+			delta.setX( vpRect.right() - this->itemsRect_.right() );
+		} else if( reqRect.left() > vpRect.left() ) {	// moving right
+			delta.setX( vpRect.left() - this->itemsRect_.left() );
+		}
+
+		if( reqRect.bottom() < vpRect.bottom() ) {	// moving top
+			delta.setY( vpRect.bottom() - this->itemsRect_.bottom() );
+		} else if( reqRect.top() > vpRect.top() ) {	// moving bottom
+			delta.setY( vpRect.top() - this->itemsRect_.top() );
+		}
 	}
+
+	foreach( QGraphicsItem * item, this->scene()->items() ) {
+		item->setPos( item->pos() + delta );
+	}
+	this->itemsRect_.translate( delta );
 }
