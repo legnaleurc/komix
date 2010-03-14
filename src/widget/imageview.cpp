@@ -198,19 +198,30 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 }
 
 void ImageView::moveItems_( QPoint delta ) {
-	QRectF reqRect = this->itemsRect_.translated( delta );
 	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	if( vpRect.width() >= this->itemsRect_.width() ) {
+		delta.setY( 0 );
+	}
+	if( vpRect.height() >= this->itemsRect_.height() ) {
+		delta.setX( 0 );
+	}
+
+	QRectF reqRect = this->itemsRect_.translated( delta );
 	if( !reqRect.contains( vpRect ) ) {
-		if( reqRect.right() < vpRect.right() ) {	// moving left
-			delta.setX( vpRect.right() - this->itemsRect_.right() );
-		} else if( reqRect.left() > vpRect.left() ) {	// moving right
-			delta.setX( vpRect.left() - this->itemsRect_.left() );
+		if( delta.x() != 0 ) {
+			if( reqRect.right() < vpRect.right() ) {	// moving left
+				delta.setX( vpRect.right() - this->itemsRect_.right() );
+			} else if( reqRect.left() > vpRect.left() ) {	// moving right
+				delta.setX( vpRect.left() - this->itemsRect_.left() );
+			}
 		}
 
-		if( reqRect.bottom() < vpRect.bottom() ) {	// moving top
-			delta.setY( vpRect.bottom() - this->itemsRect_.bottom() );
-		} else if( reqRect.top() > vpRect.top() ) {	// moving bottom
-			delta.setY( vpRect.top() - this->itemsRect_.top() );
+		if( delta.y() != 0 ) {
+			if( reqRect.bottom() < vpRect.bottom() ) {	// moving top
+				delta.setY( vpRect.bottom() - this->itemsRect_.bottom() );
+			} else if( reqRect.top() > vpRect.top() ) {	// moving bottom
+				delta.setY( vpRect.top() - this->itemsRect_.top() );
+			}
 		}
 	}
 
