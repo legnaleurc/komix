@@ -79,6 +79,7 @@ namespace KomiX {
 
 		private:
 			void moveItems_( QPoint );
+			void center_( QGraphicsItem * );
 
 			FileController * controller_;
 			QRectF itemsRect_;

@@ -81,6 +81,7 @@ void ImageView::setImage( const QPixmap & pixmap ) {
 	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
 
 	this->itemsRect_ = item->sceneBoundingRect();
+	this->center_( item );
 }
 
 void ImageView::showControlPanel() {
@@ -242,4 +243,10 @@ void ImageView::moveItems_( QPoint delta ) {
 		item->setPos( item->pos() + delta );
 	}
 	this->itemsRect_.translate( delta );
+}
+
+void ImageView::center_( QGraphicsItem * item ) {
+	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	item->setPos( item->pos() + vpRect.center() - this->itemsRect_.center() );
+	this->itemsRect_ = item->sceneBoundingRect();
 }
