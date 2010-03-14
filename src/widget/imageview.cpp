@@ -26,6 +26,7 @@
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+#include <QtGui/QGraphicsItem>
 
 using namespace KomiX::widget;
 
@@ -35,6 +36,7 @@ controller_( new FileController( this ) ),
 navigator_( new Navigator( this ) ),
 panel_( new ScaleWidget( this ) ),
 pixelInterval_( 1 ),
+pressEndPosition_(),
 pressStartPosition_(),
 msInterval_( 1 ),
 scene_( new QGraphicsScene( this ) ) {
@@ -125,15 +127,50 @@ void ImageView::dropEvent( QDropEvent * event ) {
 }
 
 void ImageView::mouseMoveEvent( QMouseEvent * event ) {
-	// TODO
+	if( event->buttons() & Qt::LeftButton ) {	// left drag event
+		// change cursor icon
+		foreach( QGraphicsItem * item, this->scene()->items() ) {
+			if( item->cursor().shape() == Qt::BlankCursor ) {
+				item->setCursor( Qt::ClosedHandCursor );
+			}
+		}
+
+		QPoint delta = this->pressEndPosition_ - event->pos();
+		this->moveItems_( delta );
+		this->pressEndPosition_ = event->pos();	// update end point
+	} else {
+		foreach( QGraphicsItem * item, this->scene()->items() ) {
+			if( item->cursor().shape() == Qt::BlankCursor ) {
+				item->setCursor( Qt::OpenHandCursor );
+			}
+		}
+	}
 }
 
 void ImageView::mousePressEvent( QMouseEvent * event ) {
 	this->pressStartPosition_ = event->pos();
+	this->pressEndPosition_ = event->pos();
+
+	if( event->button() == Qt::LeftButton ) {
+		foreach( QGraphicsItem * item, this->scene()->items() ) {
+			item->setCursor( Qt::ClosedHandCursor );
+		}
+	}
 }
 
 void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
-	if( event->button() == Qt::MidButton ) {
+	if( event->button() == Qt::LeftButton ) {
+		if( this->pressStartPosition_ == event->pos() ) {
+			// TODO: start smooth move
+		}
+
+		// update cursor icon
+		foreach( QGraphicsItem * item, this->scene()->items() ) {
+			if( item->cursor().shape() == Qt::ClosedHandCursor ) {
+				item->setCursor( Qt::OpenHandCursor );
+			}
+		}
+	} else if( event->button() == Qt::MidButton ) {
 		if( this->pressStartPosition_ == event->pos() ) {
 			if( event->modifiers() & Qt::ControlModifier ) {
 				emit this->scaled( 0 );
@@ -141,6 +178,12 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 				emit this->middleClicked();
 			}
 		}
+	} else if( event->button() == Qt::RightButton ) {
+		if( this->pressStartPosition_ == event->pos() ) {
+			// TODO: start reversing smooth move
+		}
+	} else {
+		// no button?
 	}
 }
 
@@ -150,4 +193,10 @@ void ImageView::resizeEvent( QResizeEvent * event ) {
 
 void ImageView::wheelEvent( QWheelEvent * event ) {
 	// TODO
+}
+
+void ImageView::moveItems_( const QPoint & delta ) {
+	foreach( QGraphicsItem * item, this->scene()->items() ) {
+		item->setPos( item->pos() - delta );
+	}
 }

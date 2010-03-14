@@ -78,10 +78,13 @@ namespace KomiX {
 			virtual void wheelEvent( QWheelEvent * );
 
 		private:
+			void moveItems_( const QPoint & );
+
 			FileController * controller_;
 			Navigator * navigator_;
 			ScaleWidget * panel_;
 			int pixelInterval_;
+			QPoint pressEndPosition_;
 			QPoint pressStartPosition_;
 			int msInterval_;
 			QGraphicsScene * scene_;
