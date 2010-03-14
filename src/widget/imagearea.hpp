@@ -63,7 +63,7 @@ namespace KomiX {
 			 * @brief default constructor
 			 * @param parent parent widget
 			 */
-			ImageArea( QWidget * parent );
+			explicit ImageArea( QWidget * parent );
 
 			/**
 			 * @brief open @p url

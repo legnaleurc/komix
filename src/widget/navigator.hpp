@@ -47,7 +47,7 @@ namespace KomiX {
 			 * @brief default constructor
 			 * @param parent parent widget
 			 */
-			Navigator( QWidget * parent );
+			explicit Navigator( QWidget * parent );
 			virtual ~Navigator();
 
 			/// set current using model

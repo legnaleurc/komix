@@ -49,7 +49,7 @@ namespace KomiX {
 			 * @param parent parent widget
 			 * @param f window flags
 			 */
-			MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+			explicit MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 			virtual ~MainWindow();
 
 		public slots:

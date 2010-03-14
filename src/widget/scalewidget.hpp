@@ -45,7 +45,7 @@ namespace KomiX {
 			 * @brief default constructor
 			 * @param parent parent widget
 			 */
-			ScaleWidget( QWidget * parent);
+			explicit ScaleWidget( QWidget * parent );
 			virtual ~ScaleWidget();
 
 		public slots:
