@@ -39,9 +39,8 @@ navigator_( new Navigator( this ) ),
 panel_( new ScaleWidget( this ) ),
 pixelInterval_( 1 ),
 pressEndPosition_(),
-pressStartPosition_(),
-scene_( new QGraphicsScene( this ) ) {
-	this->setScene( this->scene_ );
+pressStartPosition_() {
+	this->setScene( new QGraphicsScene( this ) );
 
 	QObject::connect( this->controller_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
 	QObject::connect( this->controller_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
@@ -78,8 +77,8 @@ void ImageView::previousPage() {
 
 void ImageView::setImage( const QPixmap & pixmap ) {
 	// FIXME: stop all movement
-	this->scene_->clear();
-	QGraphicsItem * item = this->scene_->addPixmap( pixmap );
+	this->scene()->clear();
+	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
 
 	this->itemsRect_ = item->sceneBoundingRect();
 }

@@ -88,7 +88,6 @@ namespace KomiX {
 			int pixelInterval_;
 			QPoint pressEndPosition_;
 			QPoint pressStartPosition_;
-			QGraphicsScene * scene_;
 		};
 
 	}
