@@ -131,6 +131,20 @@ void ImageView::dropEvent( QDropEvent * event ) {
 	event->acceptProposedAction();
 }
 
+void ImageView::keyPressEvent( QKeyEvent * event ) {
+	if( event->key() == Qt::Key_Up ) {
+		this->moveItems_( QPoint( 0, 10 ) );
+	} else if( event->key() == Qt::Key_Down ) {
+		this->moveItems_( QPoint( 0, -10 ) );
+	} else if( event->key() == Qt::Key_Left ) {
+		this->moveItems_( QPoint( 10, 0 ) );
+	} else if( event->key() == Qt::Key_Right ) {
+		this->moveItems_( QPoint( -10, 0 ) );
+	} else {
+		// nothing
+	}
+}
+
 void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 	if( event->buttons() & Qt::LeftButton ) {	// left drag event
 		// change cursor icon

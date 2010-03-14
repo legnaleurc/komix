@@ -67,6 +67,8 @@ namespace KomiX {
 			/// overrided method
 			virtual void dropEvent( QDropEvent * );
 			/// overrided method
+			virtual void keyPressEvent( QKeyEvent * );
+			/// overrided method
 			virtual void mouseMoveEvent( QMouseEvent * );
 			/// overrided method
 			virtual void mousePressEvent( QMouseEvent * );
