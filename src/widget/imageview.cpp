@@ -210,6 +210,7 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 
 void ImageView::resizeEvent( QResizeEvent * event ) {
 	this->QGraphicsView::resizeEvent( event );
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 }
 
 void ImageView::wheelEvent( QWheelEvent * event ) {
