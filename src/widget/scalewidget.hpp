@@ -53,6 +53,9 @@ namespace KomiX {
 			void scale( int ratio );
 
 		signals:
+			void fitHeight();
+			void fitWidth();
+			void fitWindow();
 			/**
 			 * @brief scale event
 			 * @param ratio scalar ratio
@@ -62,7 +65,7 @@ namespace KomiX {
 			void scaled( int ratio );
 
 		private slots:
-			void valueHelper_( int = -4 );
+			void valueHelper_();
 
 		private:
 			Ui::ScaleWidget * ui_;
