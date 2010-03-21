@@ -33,14 +33,16 @@ using namespace KomiX::widget;
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 controller_( new FileController( this ) ),
-itemsRect_(),
+imgRect_(),
 msInterval_( 1 ),
 navigator_( new Navigator( this ) ),
 panel_( new ScaleWidget( this ) ),
 pixelInterval_( 1 ),
 pressEndPosition_(),
-pressStartPosition_() {
+pressStartPosition_(),
+vpRect_() {
 	this->setScene( new QGraphicsScene( this ) );
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 
 	QObject::connect( this->controller_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
 	QObject::connect( this->controller_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
@@ -57,8 +59,7 @@ void ImageView::end() {
 }
 
 void ImageView::begin() {
-	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	this->moveItems_( ( vpRect.topRight() - this->itemsRect_.topRight() ).toPoint() );
+	this->moveItems_( ( this->vpRect_.topRight() - this->imgRect_.topRight() ).toPoint() );
 }
 
 void ImageView::loadSettings() {
@@ -81,7 +82,8 @@ void ImageView::setImage( const QPixmap & pixmap ) {
 	this->scene()->clear();
 	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
 
-	this->itemsRect_ = item->sceneBoundingRect();
+	this->imgRect_ = item->sceneBoundingRect();
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	this->center_( item );
 	this->begin();
 }
@@ -228,29 +230,29 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 }
 
 void ImageView::moveItems_( QPoint delta ) {
-	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	if( vpRect.width() >= this->itemsRect_.width() ) {
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	if( this->vpRect_.width() >= this->imgRect_.width() ) {
 		delta.setY( 0 );
 	}
-	if( vpRect.height() >= this->itemsRect_.height() ) {
+	if( this->vpRect_.height() >= this->imgRect_.height() ) {
 		delta.setX( 0 );
 	}
 
-	QRectF reqRect = this->itemsRect_.translated( delta );
-	if( !reqRect.contains( vpRect ) ) {
+	QRectF reqRect = this->imgRect_.translated( delta );
+	if( !reqRect.contains( this->vpRect_ ) ) {
 		if( delta.x() != 0 ) {
-			if( reqRect.right() < vpRect.right() ) {	// moving left
-				delta.setX( vpRect.right() - this->itemsRect_.right() );
-			} else if( reqRect.left() > vpRect.left() ) {	// moving right
-				delta.setX( vpRect.left() - this->itemsRect_.left() );
+			if( reqRect.right() < this->vpRect_.right() ) {	// moving left
+				delta.setX( this->vpRect_.right() - this->imgRect_.right() );
+			} else if( reqRect.left() > this->vpRect_.left() ) {	// moving right
+				delta.setX( this->vpRect_.left() - this->imgRect_.left() );
 			}
 		}
 
 		if( delta.y() != 0 ) {
-			if( reqRect.bottom() < vpRect.bottom() ) {	// moving top
-				delta.setY( vpRect.bottom() - this->itemsRect_.bottom() );
-			} else if( reqRect.top() > vpRect.top() ) {	// moving bottom
-				delta.setY( vpRect.top() - this->itemsRect_.top() );
+			if( reqRect.bottom() < this->vpRect_.bottom() ) {	// moving top
+				delta.setY( this->vpRect_.bottom() - this->imgRect_.bottom() );
+			} else if( reqRect.top() > this->vpRect_.top() ) {	// moving bottom
+				delta.setY( this->vpRect_.top() - this->imgRect_.top() );
 			}
 		}
 	}
@@ -258,11 +260,10 @@ void ImageView::moveItems_( QPoint delta ) {
 	foreach( QGraphicsItem * item, this->scene()->items() ) {
 		item->setPos( item->pos() + delta );
 	}
-	this->itemsRect_.translate( delta );
+	this->imgRect_.translate( delta );
 }
 
 void ImageView::center_( QGraphicsItem * item ) {
-	QRectF vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	item->setPos( item->pos() + vpRect.center() - this->itemsRect_.center() );
-	this->itemsRect_ = item->sceneBoundingRect();
+	item->setPos( item->pos() + this->vpRect_.center() - this->imgRect_.center() );
+	this->imgRect_ = item->sceneBoundingRect();
 }

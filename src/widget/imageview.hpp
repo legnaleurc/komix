@@ -84,13 +84,14 @@ namespace KomiX {
 			void center_( QGraphicsItem * );
 
 			FileController * controller_;
-			QRectF itemsRect_;
+			QRectF imgRect_;
 			int msInterval_;
 			Navigator * navigator_;
 			ScaleWidget * panel_;
 			int pixelInterval_;
 			QPoint pressEndPosition_;
 			QPoint pressStartPosition_;
+			QRectF vpRect_;
 		};
 
 	}
