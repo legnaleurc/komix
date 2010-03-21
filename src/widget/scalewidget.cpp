@@ -81,6 +81,7 @@ void ScaleWidget::valueHelper_( int ) {
 	qDebug( "ScaleImage::valueHelper_" );
 	switch( this->modes_->checkedId() ) {
 	case Custom:
+		qDebug( "%d", this->ui_->scaleSlider->value() );
 		emit scaled( this->ui_->scaleSlider->value() );
 		break;
 	case Width:

@@ -33,6 +33,7 @@ using namespace KomiX::widget;
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 controller_( new FileController( this ) ),
+imgRatio_(),
 imgRect_(),
 msInterval_( 1 ),
 navigator_( new Navigator( this ) ),
@@ -48,6 +49,9 @@ vpRect_() {
 	QObject::connect( this->controller_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
 
 	QObject::connect( this->navigator_, SIGNAL( required( const QModelIndex & ) ), this->controller_, SLOT( open( const QModelIndex & ) ) );
+
+	QObject::connect( this, SIGNAL( scaled( int ) ), this->panel_, SLOT( scale( int ) ) );
+	QObject::connect( this->panel_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -77,12 +81,24 @@ void ImageView::previousPage() {
 	this->controller_->prev();
 }
 
+void ImageView::scale( int ratio ) {
+	if( ratio <= 0 || this->items().empty() ) {
+		return;
+	}
+
+	double r = ( ratio / 100.0 ) / this->imgRatio_;
+	qDebug( "IV: %d, %lf", ratio, r );
+	this->scale( r, r );
+	this->imgRatio_ = ratio / 100.0;
+}
+
 void ImageView::setImage( const QPixmap & pixmap ) {
 	// FIXME: stop all movement
 	this->scene()->clear();
 	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
 
 	this->imgRect_ = item->sceneBoundingRect();
+	this->imgRatio_ = 1.0;
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	this->center_( item );
 	this->begin();

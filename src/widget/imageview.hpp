@@ -35,6 +35,7 @@ namespace KomiX {
 
 		class ImageView : public QGraphicsView {
 			Q_OBJECT
+			using QGraphicsView::scale;
 
 		public:
 			explicit ImageView( QWidget * parent );
@@ -47,6 +48,7 @@ namespace KomiX {
 			void loadSettings();
 			void nextPage();
 			void previousPage();
+			void scale( int );
 			void setImage( const QPixmap & pixmap );
 			void showControlPanel();
 			void showNavigator();
@@ -84,6 +86,7 @@ namespace KomiX {
 			void center_( QGraphicsItem * );
 
 			FileController * controller_;
+			double imgRatio_;
 			QRectF imgRect_;
 			int msInterval_;
 			Navigator * navigator_;
