@@ -33,7 +33,7 @@ using namespace KomiX::widget;
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 controller_( new FileController( this ) ),
-imgRatio_(),
+imgRatio_( 1.0 ),
 imgRect_(),
 msInterval_( 1 ),
 navigator_( new Navigator( this ) ),
@@ -52,6 +52,9 @@ vpRect_() {
 
 	QObject::connect( this, SIGNAL( scaled( int ) ), this->panel_, SLOT( scale( int ) ) );
 	QObject::connect( this->panel_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
+	QObject::connect( this->panel_, SIGNAL( fitHeight() ), this, SLOT( fitHeight() ) );
+	QObject::connect( this->panel_, SIGNAL( fitWidth() ), this, SLOT( fitWidth() ) );
+	QObject::connect( this->panel_, SIGNAL( fitWindow() ), this, SLOT( fitWindow() ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -60,6 +63,28 @@ bool ImageView::open( const QUrl & uri ) {
 
 void ImageView::end() {
 	// TODO
+}
+
+void ImageView::fitHeight() {
+	double r = this->vpRect_.height() / this->imgRect_.height();
+	this->scale( r, r );
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->imgRatio_ *= r;
+}
+
+void ImageView::fitWidth() {
+	double r = this->vpRect_.width() / this->imgRect_.width();
+	this->scale( r, r );
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->imgRatio_ *= r;
+}
+
+void ImageView::fitWindow() {
+	if( this->imgRect_.width() > this->imgRect_.height() ) {
+		this->fitWidth();
+	} else {
+		this->fitHeight();
+	}
 }
 
 void ImageView::begin() {
@@ -87,9 +112,9 @@ void ImageView::scale( int ratio ) {
 	}
 
 	double r = ( ratio / 100.0 ) / this->imgRatio_;
-	qDebug( "IV: %d, %lf", ratio, r );
 	this->scale( r, r );
-	this->imgRatio_ = ratio / 100.0;
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->imgRatio_ *= r;
 }
 
 void ImageView::setImage( const QPixmap & pixmap ) {

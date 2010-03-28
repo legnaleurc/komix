@@ -49,15 +49,15 @@ modes_( new QButtonGroup( this ) ) {
 
 	this->modes_->addButton( this->ui_->width );
 	this->modes_->setId( this->ui_->width, Width );
-	connect( this->ui_->width, SIGNAL( clicked() ), this, SLOT( fitWidth() ) );
+	connect( this->ui_->width, SIGNAL( clicked() ), this, SIGNAL( fitWidth() ) );
 
 	this->modes_->addButton( this->ui_->height );
 	this->modes_->setId( this->ui_->height, Height );
-	connect( this->ui_->height, SIGNAL( clicked() ), this, SLOT( fitHeight() ) );
+	connect( this->ui_->height, SIGNAL( clicked() ), this, SIGNAL( fitHeight() ) );
 
 	this->modes_->addButton( this->ui_->window );
 	this->modes_->setId( this->ui_->window, Window );
-	connect( this->ui_->window, SIGNAL( clicked() ), this, SLOT( fitWindow() ) );
+	connect( this->ui_->window, SIGNAL( clicked() ), this, SIGNAL( fitWindow() ) );
 
 	connect( this->ui_->scaleSlider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
 	connect( this->ui_->scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );

@@ -44,11 +44,14 @@ namespace KomiX {
 
 		public slots:
 			void end();
+			void fitHeight();
+			void fitWidth();
+			void fitWindow();
 			void begin();
 			void loadSettings();
 			void nextPage();
 			void previousPage();
-			void scale( int );
+			void scale( int pcRatio );
 			void setImage( const QPixmap & pixmap );
 			void showControlPanel();
 			void showNavigator();
