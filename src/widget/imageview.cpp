@@ -278,6 +278,7 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 }
 
 void ImageView::moveItems_( QPoint delta ) {
+	// update viewport rectangle
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	if( this->vpRect_.width() >= this->imgRect_.width() ) {
 		delta.setY( 0 );
