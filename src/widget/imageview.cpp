@@ -128,8 +128,8 @@ void ImageView::setImage( const QPixmap & pixmap ) {
 	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
 
 	this->imgRect_ = item->sceneBoundingRect();
-	this->imgRatio_ = 1.0;
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->updateScaling_();
 	this->center_( item );
 	this->begin();
 }
