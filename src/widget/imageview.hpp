@@ -85,8 +85,16 @@ namespace KomiX {
 			virtual void wheelEvent( QWheelEvent * );
 
 		private:
+			enum ScaleMode {
+				Custom,
+				Width,
+				Height,
+				Window
+			};
+
 			void moveItems_( QPoint );
 			void center_( QGraphicsItem * );
+			void updateScaling_();
 
 			FileController * controller_;
 			double imgRatio_;
@@ -97,6 +105,7 @@ namespace KomiX {
 			int pixelInterval_;
 			QPoint pressEndPosition_;
 			QPoint pressStartPosition_;
+			ScaleMode scaleMode_;
 			QRectF vpRect_;
 		};
 

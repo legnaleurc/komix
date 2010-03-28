@@ -41,6 +41,7 @@ panel_( new ScaleWidget( this ) ),
 pixelInterval_( 1 ),
 pressEndPosition_(),
 pressStartPosition_(),
+scaleMode_( Custom ),
 vpRect_() {
 	this->setScene( new QGraphicsScene( this ) );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
@@ -70,6 +71,7 @@ void ImageView::fitHeight() {
 	this->scale( r, r );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	this->imgRatio_ *= r;
+	this->scaleMode_ = Height;
 }
 
 void ImageView::fitWidth() {
@@ -77,6 +79,7 @@ void ImageView::fitWidth() {
 	this->scale( r, r );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	this->imgRatio_ *= r;
+	this->scaleMode_ = Width;
 }
 
 void ImageView::fitWindow() {
@@ -85,6 +88,7 @@ void ImageView::fitWindow() {
 	} else {
 		this->fitHeight();
 	}
+	this->scaleMode_ = Window;
 }
 
 void ImageView::begin() {
@@ -107,6 +111,7 @@ void ImageView::previousPage() {
 }
 
 void ImageView::scale( int ratio ) {
+	this->scaleMode_ = Custom;
 	if( ratio <= 0 || this->items().empty() ) {
 		return;
 	}
@@ -252,6 +257,7 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 void ImageView::resizeEvent( QResizeEvent * event ) {
 	this->QGraphicsView::resizeEvent( event );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->updateScaling_();
 }
 
 void ImageView::wheelEvent( QWheelEvent * event ) {
@@ -308,4 +314,22 @@ void ImageView::moveItems_( QPoint delta ) {
 void ImageView::center_( QGraphicsItem * item ) {
 	item->setPos( item->pos() + this->vpRect_.center() - this->imgRect_.center() );
 	this->imgRect_ = item->sceneBoundingRect();
+}
+
+void ImageView::updateScaling_() {
+	switch( this->scaleMode_ ) {
+	case Custom:
+		break;
+	case Width:
+		this->fitWidth();
+		break;
+	case Height:
+		this->fitHeight();
+		break;
+	case Window:
+		this->fitWindow();
+		break;
+	default:
+		;
+	}
 }
