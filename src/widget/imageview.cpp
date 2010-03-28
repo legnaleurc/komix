@@ -277,19 +277,19 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 	}
 }
 
-void ImageView::moveItems_( QPoint delta ) {
+void ImageView::moveItems_( QPointF delta ) {
 	// update viewport rectangle
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 	if( this->vpRect_.width() >= this->imgRect_.width() ) {
-		delta.setY( 0 );
+		delta.setY( 0.0 );
 	}
 	if( this->vpRect_.height() >= this->imgRect_.height() ) {
-		delta.setX( 0 );
+		delta.setX( 0.0 );
 	}
 
 	QRectF reqRect = this->imgRect_.translated( delta );
 	if( !reqRect.contains( this->vpRect_ ) ) {
-		if( delta.x() != 0 ) {
+		if( delta.x() != 0.0 ) {
 			if( reqRect.right() < this->vpRect_.right() ) {	// moving left
 				delta.setX( this->vpRect_.right() - this->imgRect_.right() );
 			} else if( reqRect.left() > this->vpRect_.left() ) {	// moving right
@@ -297,7 +297,7 @@ void ImageView::moveItems_( QPoint delta ) {
 			}
 		}
 
-		if( delta.y() != 0 ) {
+		if( delta.y() != 0.0 ) {
 			if( reqRect.bottom() < this->vpRect_.bottom() ) {	// moving top
 				delta.setY( this->vpRect_.bottom() - this->imgRect_.bottom() );
 			} else if( reqRect.top() > this->vpRect_.top() ) {	// moving bottom
@@ -305,6 +305,7 @@ void ImageView::moveItems_( QPoint delta ) {
 			}
 		}
 	}
+	delta /= this->imgRatio_;
 
 	foreach( QGraphicsItem * item, this->scene()->items() ) {
 		item->setPos( item->pos() + delta );

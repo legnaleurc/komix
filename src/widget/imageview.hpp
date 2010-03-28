@@ -92,7 +92,7 @@ namespace KomiX {
 				Window
 			};
 
-			void moveItems_( QPoint );
+			void moveItems_( QPointF );
 			void center_( QGraphicsItem * );
 			void updateScaling_();
 
