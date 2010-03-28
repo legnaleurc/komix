@@ -62,6 +62,10 @@ bool ImageView::open( const QUrl & uri ) {
 	return this->controller_->open( uri );
 }
 
+void ImageView::begin() {
+	this->moveItems_( ( this->vpRect_.topRight() - this->imgRect_.topRight() ).toPoint() );
+}
+
 void ImageView::end() {
 	// TODO
 }
@@ -89,10 +93,6 @@ void ImageView::fitWindow() {
 		this->fitHeight();
 	}
 	this->scaleMode_ = Window;
-}
-
-void ImageView::begin() {
-	this->moveItems_( ( this->vpRect_.topRight() - this->imgRect_.topRight() ).toPoint() );
 }
 
 void ImageView::loadSettings() {

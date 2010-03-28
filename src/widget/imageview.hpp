@@ -43,11 +43,11 @@ namespace KomiX {
 			bool open( const QUrl & uri );
 
 		public slots:
+			void begin();
 			void end();
 			void fitHeight();
 			void fitWidth();
 			void fitWindow();
-			void begin();
 			void loadSettings();
 			void nextPage();
 			void previousPage();
