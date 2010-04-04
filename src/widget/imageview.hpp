@@ -23,6 +23,9 @@
 #define KOMIX_WIDGET_IMAGEVIEW_HPP
 
 #include <QtGui/QGraphicsView>
+#include <QtCore/QAbstractAnimation>
+
+class QParallelAnimationGroup;
 
 namespace KomiX {
 
@@ -87,6 +90,9 @@ namespace KomiX {
 			/// overrided method
 			virtual void wheelEvent( QWheelEvent * );
 
+		private slots:
+			void animeStateChanged_( QAbstractAnimation::State, QAbstractAnimation::State );
+
 		private:
 			enum ScaleMode {
 				Custom,
@@ -94,11 +100,18 @@ namespace KomiX {
 				Height,
 				Window
 			};
+			enum ViewportState {
+				TopRight,
+				BottomRight,
+				TopLeft,
+				BottomLeft
+			};
 
 			void moveBy_( const QPointF & );
 			void updateScaling_();
 			void updateViewportRectangle_();
 
+			QParallelAnimationGroup * anime_;
 			FileController * controller_;
 			double imgRatio_;
 			QRectF imgRect_;
@@ -110,6 +123,7 @@ namespace KomiX {
 			QPoint pressStartPosition_;
 			ScaleMode scaleMode_;
 			QRectF vpRect_;
+			ViewportState vpState_;
 		};
 
 	}

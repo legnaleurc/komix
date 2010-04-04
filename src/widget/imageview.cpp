@@ -19,19 +19,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "filecontroller.hpp"
+#include "imageitem.hpp"
 #include "imageview.hpp"
 #include "navigator.hpp"
 #include "scalewidget.hpp"
 
+#include <QtCore/QParallelAnimationGroup>
+#include <QtCore/QPropertyAnimation >
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
-#include <QtGui/QGraphicsPixmapItem>
 
 using namespace KomiX::widget;
 
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
+anime_( new QParallelAnimationGroup( this ) ),
 controller_( new FileController( this ) ),
 imgRatio_( 1.0 ),
 imgRect_(),
@@ -42,7 +45,8 @@ pixelInterval_( 1 ),
 pressEndPosition_(),
 pressStartPosition_(),
 scaleMode_( Custom ),
-vpRect_() {
+vpRect_(),
+vpState_() {
 	this->setScene( new QGraphicsScene( this ) );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 
@@ -56,6 +60,8 @@ vpRect_() {
 	QObject::connect( this->panel_, SIGNAL( fitHeight() ), this, SLOT( fitHeight() ) );
 	QObject::connect( this->panel_, SIGNAL( fitWidth() ), this, SLOT( fitWidth() ) );
 	QObject::connect( this->panel_, SIGNAL( fitWindow() ), this, SLOT( fitWindow() ) );
+
+	QObject::connect( this->anime_, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), this, SLOT( animeStateChanged_( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -88,10 +94,12 @@ void ImageView::moveBy( QPointF delta ) {
 
 void ImageView::begin() {
 	this->moveBy( this->vpRect_.topRight() - this->imgRect_.topRight() );
+	this->vpState_ = TopRight;
 }
 
 void ImageView::end() {
 	this->moveBy( this->vpRect_.bottomLeft() - this->imgRect_.bottomLeft() );
+	this->vpState_ = BottomLeft;
 }
 
 void ImageView::fitHeight() {
@@ -154,14 +162,22 @@ void ImageView::setImage( const QList< QPixmap > & images ) {
 	if( images.empty() ) {
 		return;
 	}
-	// FIXME: stop all movement
+	// stop all movement
+	this->anime_->stop();
+
 	this->scene()->clear();
-	QGraphicsPixmapItem * item = this->scene()->addPixmap( images[0] );
+	this->anime_->clear();
+
+	ImageItem * item = new ImageItem( images[0] );
+	this->anime_->addAnimation( new QPropertyAnimation( item, "pos" ) );
+	this->scene()->addItem( item );
 	item->setTransformationMode( Qt::SmoothTransformation );
 	this->imgRect_ = item->sceneBoundingRect();
 
 	for( int i = 1; i < images.size(); ++i ) {
-		item = this->scene()->addPixmap( images[i] );
+		item = new ImageItem( images[i] );
+		this->anime_->addAnimation( new QPropertyAnimation( item, "pos" ) );
+		this->scene()->addItem( item );
 		item->setTransformationMode( Qt::SmoothTransformation );
 		item->setPos( this->imgRect_.topLeft() + QPointF( images[i].width(), 0.0 ) );
 		this->imgRect_ = this->imgRect_.united( item->sceneBoundingRect() );
@@ -187,7 +203,90 @@ void ImageView::showNavigator() {
 }
 
 void ImageView::smoothMove() {
-	// TODO
+	if( this->items().empty() ) {
+		return;
+	}
+	this->anime_->stop();
+	switch( this->vpState_ ) {
+	case TopRight:
+		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
+			QLineF d( this->imgRect_.bottomRight(), this->vpRect_.bottomRight() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+			this->vpState_ = BottomRight;
+		} else if( this->imgRect_.left() < this->vpRect_.left() ) {
+			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+			this->vpState_ = TopLeft;
+		} else {
+			this->controller_->next();
+		}
+		break;
+	case BottomRight:
+		if( this->imgRect_.left() < this->vpRect_.left() ) {
+			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+			this->vpState_ = TopLeft;
+		} else {
+			this->controller_->next();
+		}
+		break;
+	case TopLeft:
+		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
+			QLineF d( this->imgRect_.bottomLeft(), this->vpRect_.bottomLeft() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+			this->vpState_ = BottomLeft;
+		} else {
+			this->controller_->next();
+		}
+		break;
+	case BottomLeft:
+		this->controller_->next();
+		break;
+	}
 }
 
 void ImageView::smoothReversingMove() {
@@ -311,6 +410,15 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 			this->controller_->next();
 		} else if( delta > 0 ) {
 			this->controller_->prev();
+		}
+	}
+}
+
+void ImageView::animeStateChanged_( QAbstractAnimation::State newState, QAbstractAnimation::State /*oldState*/ ) {
+	if( newState == QAbstractAnimation::Stopped ) {
+		this->imgRect_ = QRectF();
+		foreach( QGraphicsItem * item, this->items() ) {
+			this->imgRect_ = this->imgRect_.united( item->sceneBoundingRect() );
 		}
 	}
 }
