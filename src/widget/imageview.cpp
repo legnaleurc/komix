@@ -26,7 +26,7 @@
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
-#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsPixmapItem>
 
 using namespace KomiX::widget;
 
@@ -156,11 +156,13 @@ void ImageView::setImage( const QList< QPixmap > & images ) {
 	}
 	// FIXME: stop all movement
 	this->scene()->clear();
-	QGraphicsItem * item = this->scene()->addPixmap( images[0] );
+	QGraphicsPixmapItem * item = this->scene()->addPixmap( images[0] );
+	item->setTransformationMode( Qt::SmoothTransformation );
 	this->imgRect_ = item->sceneBoundingRect();
 
 	for( int i = 1; i < images.size(); ++i ) {
 		item = this->scene()->addPixmap( images[i] );
+		item->setTransformationMode( Qt::SmoothTransformation );
 		item->setPos( this->imgRect_.topLeft() + QPointF( images[i].width(), 0.0 ) );
 		this->imgRect_ = this->imgRect_.united( item->sceneBoundingRect() );
 	}
