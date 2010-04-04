@@ -91,7 +91,7 @@ void ImageView::begin() {
 }
 
 void ImageView::end() {
-	// TODO
+	this->moveBy( this->vpRect_.bottomLeft() - this->imgRect_.bottomLeft() );
 }
 
 void ImageView::fitHeight() {
