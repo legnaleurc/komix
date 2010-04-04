@@ -62,6 +62,29 @@ bool ImageView::open( const QUrl & uri ) {
 	return this->controller_->open( uri );
 }
 
+void ImageView::moveBy( QPointF delta ) {
+	delta /= this->imgRatio_;
+
+	// fix horizontal motion
+	if( this->imgRect_.width() < this->vpRect_.width() ) {
+		delta.rx() += this->vpRect_.center().x() - this->imgRect_.center().x();
+	} else if( this->imgRect_.left() > this->vpRect_.left() ) {
+		delta.rx() += this->vpRect_.left() - this->imgRect_.left();
+	} else if( this->imgRect_.right() < this->vpRect_.right() ) {
+		delta.rx() += this->vpRect_.right() - this->imgRect_.right();
+	}
+	// fix vertical motion
+	if( this->imgRect_.height() < this->vpRect_.height() ) {
+		delta.ry() += this->vpRect_.center().y() - this->imgRect_.center().y();
+	} else if( this->imgRect_.top() > this->vpRect_.top() ) {
+		delta.ry() += this->vpRect_.top() - this->imgRect_.top();
+	} else if( this->imgRect_.bottom() < this->vpRect_.bottom() ) {
+		delta.ry() += this->vpRect_.bottom() - this->imgRect_.bottom();
+	}
+
+	this->moveBy_( delta );
+}
+
 void ImageView::begin() {
 	this->moveItems_( ( this->vpRect_.topRight() - this->imgRect_.topRight() ).toPoint() );
 }
@@ -71,23 +94,19 @@ void ImageView::end() {
 }
 
 void ImageView::fitHeight() {
-	double r = this->vpRect_.height() / this->imgRect_.height();
-	this->scale( r, r );
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	this->imgRatio_ *= r;
+	this->scale( this->vpRect_.height() / this->imgRect_.height() );
 	this->scaleMode_ = Height;
 }
 
 void ImageView::fitWidth() {
-	double r = this->vpRect_.width() / this->imgRect_.width();
-	this->scale( r, r );
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	this->imgRatio_ *= r;
+	this->scale( this->vpRect_.width() / this->imgRect_.width() );
 	this->scaleMode_ = Width;
 }
 
 void ImageView::fitWindow() {
-	if( this->imgRect_.width() > this->imgRect_.height() ) {
+	double dW = this->imgRect_.width() - this->vpRect_.width();
+	double dH = this->imgRect_.height() - this->vpRect_.height();
+	if( dW > dH ) {
 		this->fitWidth();
 	} else {
 		this->fitHeight();
@@ -110,16 +129,20 @@ void ImageView::previousPage() {
 	this->controller_->prev();
 }
 
-void ImageView::scale( int ratio ) {
-	this->scaleMode_ = Custom;
-	if( ratio <= 0 || this->items().empty() ) {
+void ImageView::scale( int pcRatio ) {
+	if( pcRatio <= 0 || this->items().empty() ) {
 		return;
 	}
 
-	double r = ( ratio / 100.0 ) / this->imgRatio_;
-	this->scale( r, r );
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	this->imgRatio_ *= r;
+	this->scale( pcRatio / 100.0 / this->imgRatio_ );
+	this->scaleMode_ = Custom;
+}
+
+void ImageView::scale( double ratio ) {
+	this->scale( ratio, ratio );
+	this->updateViewportRectangle_();
+	this->moveBy();
+	this->imgRatio_ *= ratio;
 }
 
 void ImageView::setImage( const QPixmap & pixmap ) {
@@ -256,7 +279,7 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 
 void ImageView::resizeEvent( QResizeEvent * event ) {
 	this->QGraphicsView::resizeEvent( event );
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+	this->updateViewportRectangle_();
 	this->updateScaling_();
 }
 
@@ -277,38 +300,9 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 	}
 }
 
-void ImageView::moveItems_( QPointF delta ) {
-	// update viewport rectangle
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
-	if( this->vpRect_.width() >= this->imgRect_.width() ) {
-		delta.setY( 0.0 );
-	}
-	if( this->vpRect_.height() >= this->imgRect_.height() ) {
-		delta.setX( 0.0 );
-	}
-
-	QRectF reqRect = this->imgRect_.translated( delta );
-	if( !reqRect.contains( this->vpRect_ ) ) {
-		if( delta.x() != 0.0 ) {
-			if( reqRect.right() < this->vpRect_.right() ) {	// moving left
-				delta.setX( this->vpRect_.right() - this->imgRect_.right() );
-			} else if( reqRect.left() > this->vpRect_.left() ) {	// moving right
-				delta.setX( this->vpRect_.left() - this->imgRect_.left() );
-			}
-		}
-
-		if( delta.y() != 0.0 ) {
-			if( reqRect.bottom() < this->vpRect_.bottom() ) {	// moving top
-				delta.setY( this->vpRect_.bottom() - this->imgRect_.bottom() );
-			} else if( reqRect.top() > this->vpRect_.top() ) {	// moving bottom
-				delta.setY( this->vpRect_.top() - this->imgRect_.top() );
-			}
-		}
-	}
-	delta /= this->imgRatio_;
-
-	foreach( QGraphicsItem * item, this->scene()->items() ) {
-		item->setPos( item->pos() + delta );
+void ImageView::moveBy_( const QPointF & delta ) {
+	foreach( QGraphicsItem * item, this->items() ) {
+		item->moveBy( delta.x(), delta.y() );
 	}
 	this->imgRect_.translate( delta );
 }
@@ -321,6 +315,7 @@ void ImageView::center_( QGraphicsItem * item ) {
 void ImageView::updateScaling_() {
 	switch( this->scaleMode_ ) {
 	case Custom:
+		this->scale( 1.0 );
 		break;
 	case Width:
 		this->fitWidth();
@@ -334,4 +329,8 @@ void ImageView::updateScaling_() {
 	default:
 		;
 	}
+}
+
+void ImageView::updateViewportRectangle_() {
+	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 }

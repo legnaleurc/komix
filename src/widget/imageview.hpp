@@ -40,7 +40,9 @@ namespace KomiX {
 		public:
 			explicit ImageView( QWidget * parent );
 
+			void moveBy( QPointF delta = QPointF() );
 			bool open( const QUrl & uri );
+			void scale( double ratio );
 
 		public slots:
 			void begin();
@@ -92,9 +94,10 @@ namespace KomiX {
 				Window
 			};
 
-			void moveItems_( QPointF );
+			void moveBy_( const QPointF & );
 			void center_( QGraphicsItem * );
 			void updateScaling_();
+			void updateViewportRectangle_();
 
 			FileController * controller_;
 			double imgRatio_;
