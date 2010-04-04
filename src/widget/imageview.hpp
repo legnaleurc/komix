@@ -96,7 +96,6 @@ namespace KomiX {
 			};
 
 			void moveBy_( const QPointF & );
-			void center_( QGraphicsItem * );
 			void updateScaling_();
 			void updateViewportRectangle_();
 

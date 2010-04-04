@@ -320,11 +320,6 @@ void ImageView::moveBy_( const QPointF & delta ) {
 	this->imgRect_.translate( delta );
 }
 
-void ImageView::center_( QGraphicsItem * item ) {
-	item->setPos( item->pos() + this->vpRect_.center() - this->imgRect_.center() );
-	this->imgRect_ = item->sceneBoundingRect();
-}
-
 void ImageView::updateScaling_() {
 	switch( this->scaleMode_ ) {
 	case Custom:
