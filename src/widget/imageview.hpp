@@ -55,6 +55,7 @@ namespace KomiX {
 			void previousPage();
 			void scale( int pcRatio );
 			void setImage( const QPixmap & pixmap );
+			void setImage( const QList< QPixmap > & images );
 			void showControlPanel();
 			void showNavigator();
 			void smoothMove();

@@ -64,29 +64,30 @@ bool ImageView::open( const QUrl & uri ) {
 
 void ImageView::moveBy( QPointF delta ) {
 	delta /= this->imgRatio_;
+	QRectF reqRect = this->imgRect_.translated( delta );
 
 	// fix horizontal motion
 	if( this->imgRect_.width() < this->vpRect_.width() ) {
 		delta.rx() += this->vpRect_.center().x() - this->imgRect_.center().x();
-	} else if( this->imgRect_.left() > this->vpRect_.left() ) {
-		delta.rx() += this->vpRect_.left() - this->imgRect_.left();
-	} else if( this->imgRect_.right() < this->vpRect_.right() ) {
-		delta.rx() += this->vpRect_.right() - this->imgRect_.right();
+	} else if( reqRect.left() > this->vpRect_.left() ) {
+		delta.rx() += this->vpRect_.left() - reqRect.left();
+	} else if( reqRect.right() < this->vpRect_.right() ) {
+		delta.rx() += this->vpRect_.right() - reqRect.right();
 	}
 	// fix vertical motion
 	if( this->imgRect_.height() < this->vpRect_.height() ) {
 		delta.ry() += this->vpRect_.center().y() - this->imgRect_.center().y();
-	} else if( this->imgRect_.top() > this->vpRect_.top() ) {
-		delta.ry() += this->vpRect_.top() - this->imgRect_.top();
-	} else if( this->imgRect_.bottom() < this->vpRect_.bottom() ) {
-		delta.ry() += this->vpRect_.bottom() - this->imgRect_.bottom();
+	} else if( reqRect.top() > this->vpRect_.top() ) {
+		delta.ry() += this->vpRect_.top() - reqRect.top();
+	} else if( reqRect.bottom() < this->vpRect_.bottom() ) {
+		delta.ry() += this->vpRect_.bottom() - reqRect.bottom();
 	}
 
 	this->moveBy_( delta );
 }
 
 void ImageView::begin() {
-	this->moveItems_( ( this->vpRect_.topRight() - this->imgRect_.topRight() ).toPoint() );
+	this->moveBy( this->vpRect_.topRight() - this->imgRect_.topRight() );
 }
 
 void ImageView::end() {
@@ -146,14 +147,26 @@ void ImageView::scale( double ratio ) {
 }
 
 void ImageView::setImage( const QPixmap & pixmap ) {
+	this->setImage( QList< QPixmap >() << pixmap );
+}
+
+void ImageView::setImage( const QList< QPixmap > & images ) {
+	if( images.empty() ) {
+		return;
+	}
 	// FIXME: stop all movement
 	this->scene()->clear();
-	QGraphicsItem * item = this->scene()->addPixmap( pixmap );
-
+	QGraphicsItem * item = this->scene()->addPixmap( images[0] );
 	this->imgRect_ = item->sceneBoundingRect();
-	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+
+	for( int i = 1; i < images.size(); ++i ) {
+		item = this->scene()->addPixmap( images[i] );
+		item->setPos( this->imgRect_.topLeft() + QPointF( images[i].width(), 0.0 ) );
+		this->imgRect_ = this->imgRect_.united( item->sceneBoundingRect() );
+	}
+
+	this->updateViewportRectangle_();
 	this->updateScaling_();
-	this->center_( item );
 	this->begin();
 }
 
@@ -204,13 +217,13 @@ void ImageView::dropEvent( QDropEvent * event ) {
 
 void ImageView::keyPressEvent( QKeyEvent * event ) {
 	if( event->key() == Qt::Key_Up ) {
-		this->moveItems_( QPoint( 0, 10 ) );
+		this->moveBy( QPoint( 0, 10 ) );
 	} else if( event->key() == Qt::Key_Down ) {
-		this->moveItems_( QPoint( 0, -10 ) );
+		this->moveBy( QPoint( 0, -10 ) );
 	} else if( event->key() == Qt::Key_Left ) {
-		this->moveItems_( QPoint( 10, 0 ) );
+		this->moveBy( QPoint( 10, 0 ) );
 	} else if( event->key() == Qt::Key_Right ) {
-		this->moveItems_( QPoint( -10, 0 ) );
+		this->moveBy( QPoint( -10, 0 ) );
 	} else {
 		// nothing
 	}
@@ -226,7 +239,7 @@ void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 		}
 
 		QPoint delta = event->pos() - this->pressEndPosition_;
-		this->moveItems_( delta );
+		this->moveBy( delta );
 		this->pressEndPosition_ = event->pos();	// update end point
 	} else {
 		foreach( QGraphicsItem * item, this->scene()->items() ) {
