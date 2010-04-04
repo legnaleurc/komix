@@ -209,6 +209,7 @@ void ImageView::smoothMove() {
 	this->anime_->stop();
 	switch( this->vpState_ ) {
 	case TopRight:
+		this->vpState_ = BottomRight;
 		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
 			QLineF d( this->imgRect_.bottomRight(), this->vpRect_.bottomRight() );
 			double t = d.length() / this->pixelInterval_ * this->msInterval_;
@@ -223,27 +224,12 @@ void ImageView::smoothMove() {
 				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
 			}
 			this->anime_->start();
-			this->vpState_ = BottomRight;
-		} else if( this->imgRect_.left() < this->vpRect_.left() ) {
-			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
-			this->vpState_ = TopLeft;
 		} else {
-			this->controller_->next();
+			this->smoothMove();
 		}
 		break;
 	case BottomRight:
+		this->vpState_ = TopLeft;
 		if( this->imgRect_.left() < this->vpRect_.left() ) {
 			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
 			double t = d.length() / this->pixelInterval_ * this->msInterval_;
@@ -258,12 +244,12 @@ void ImageView::smoothMove() {
 				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
 			}
 			this->anime_->start();
-			this->vpState_ = TopLeft;
 		} else {
-			this->controller_->next();
+			this->smoothMove();
 		}
 		break;
 	case TopLeft:
+		this->vpState_ = BottomLeft;
 		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
 			QLineF d( this->imgRect_.bottomLeft(), this->vpRect_.bottomLeft() );
 			double t = d.length() / this->pixelInterval_ * this->msInterval_;
@@ -278,9 +264,8 @@ void ImageView::smoothMove() {
 				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
 			}
 			this->anime_->start();
-			this->vpState_ = BottomLeft;
 		} else {
-			this->controller_->next();
+			this->smoothMove();
 		}
 		break;
 	case BottomLeft:
@@ -290,7 +275,76 @@ void ImageView::smoothMove() {
 }
 
 void ImageView::smoothReversingMove() {
-	// TODO
+	if( this->items().empty() ) {
+		return;
+	}
+	this->anime_->stop();
+	switch( this->vpState_ ) {
+	case BottomLeft:
+		this->vpState_ = TopLeft;
+		if( this->imgRect_.top() < this->vpRect_.top() ) {
+			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+		} else {
+			this->smoothReversingMove();
+		}
+		break;
+	case TopLeft:
+		this->vpState_ = BottomRight;
+		if( this->imgRect_.right() > this->vpRect_.right() ) {
+			QLineF d( this->imgRect_.bottomRight(), this->vpRect_.bottomRight() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+		} else {
+			this->smoothReversingMove();
+		}
+		break;
+	case BottomRight:
+		this->vpState_ = TopRight;
+		if( this->imgRect_.top() < this->vpRect_.top() ) {
+			QLineF d( this->imgRect_.topRight(), this->vpRect_.topRight() );
+			double t = d.length() / this->pixelInterval_ * this->msInterval_;
+			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
+				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
+				if( anime == NULL || item == NULL ) {
+					return;
+				}
+				anime->setDuration( t );
+				anime->setStartValue( item->pos() );
+				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
+			}
+			this->anime_->start();
+		} else {
+			this->smoothReversingMove();
+		}
+		break;
+	case TopRight:
+		this->controller_->prev();
+		this->end();
+		break;
+	}
 }
 
 void ImageView::dragEnterEvent( QDragEnterEvent * event ) {
@@ -365,7 +419,7 @@ void ImageView::mousePressEvent( QMouseEvent * event ) {
 void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 	if( event->button() == Qt::LeftButton ) {
 		if( this->pressStartPosition_ == event->pos() ) {
-			// TODO: start smooth move
+			this->smoothMove();
 		}
 
 		// update cursor icon
@@ -384,7 +438,7 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 		}
 	} else if( event->button() == Qt::RightButton ) {
 		if( this->pressStartPosition_ == event->pos() ) {
-			// TODO: start reversing smooth move
+			this->smoothReversingMove();
 		}
 	} else {
 		// no button?
