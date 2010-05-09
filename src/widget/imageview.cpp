@@ -68,38 +68,35 @@ bool ImageView::open( const QUrl & uri ) {
 	return this->controller_->open( uri );
 }
 
+void ImageView::moveTo( Direction d ) {
+	this->anime_->stop();
+	QLineF v = this->getMotionVector_( d );
+	this->moveBy_( v.p2() );
+}
+
+void ImageView::slideTo( Direction d ) {
+	this->anime_->stop();
+	QLineF v = this->getMotionVector_( d );
+	int t = v.length() / this->pixelInterval_ * this->msInterval_;
+	this->setupAnimation_( t, v.dx(), v.dy() );
+	this->anime_->start();
+}
+
 void ImageView::moveBy( QPointF delta ) {
 	delta /= this->imgRatio_;
-	QRectF reqRect = this->imgRect_.translated( delta );
-
-	// fix horizontal motion
-	if( this->imgRect_.width() < this->vpRect_.width() ) {
-		delta.rx() += this->vpRect_.center().x() - this->imgRect_.center().x();
-	} else if( reqRect.left() > this->vpRect_.left() ) {
-		delta.rx() += this->vpRect_.left() - reqRect.left();
-	} else if( reqRect.right() < this->vpRect_.right() ) {
-		delta.rx() += this->vpRect_.right() - reqRect.right();
-	}
-	// fix vertical motion
-	if( this->imgRect_.height() < this->vpRect_.height() ) {
-		delta.ry() += this->vpRect_.center().y() - this->imgRect_.center().y();
-	} else if( reqRect.top() > this->vpRect_.top() ) {
-		delta.ry() += this->vpRect_.top() - reqRect.top();
-	} else if( reqRect.bottom() < this->vpRect_.bottom() ) {
-		delta.ry() += this->vpRect_.bottom() - reqRect.bottom();
-	}
-
-	this->moveBy_( delta );
+	this->anime_->stop();
+	QLineF v = this->getMotionVector_( delta.x(), delta.y() );
+	this->moveBy_( v.p2() );
 }
 
 void ImageView::begin() {
-	this->moveBy( this->vpRect_.topRight() - this->imgRect_.topRight() );
 	this->vpState_ = TopRight;
+	this->moveTo( this->vpState_ );
 }
 
 void ImageView::end() {
-	this->moveBy( this->vpRect_.bottomLeft() - this->imgRect_.bottomLeft() );
 	this->vpState_ = BottomLeft;
+	this->moveTo( this->vpState_ );
 }
 
 void ImageView::fitHeight() {
@@ -211,19 +208,7 @@ void ImageView::smoothMove() {
 	case TopRight:
 		this->vpState_ = BottomRight;
 		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
-			QLineF d( this->imgRect_.bottomRight(), this->vpRect_.bottomRight() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothMove();
 		}
@@ -231,19 +216,7 @@ void ImageView::smoothMove() {
 	case BottomRight:
 		this->vpState_ = TopLeft;
 		if( this->imgRect_.left() < this->vpRect_.left() ) {
-			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothMove();
 		}
@@ -251,19 +224,7 @@ void ImageView::smoothMove() {
 	case TopLeft:
 		this->vpState_ = BottomLeft;
 		if( this->imgRect_.bottom() > this->vpRect_.bottom() ) {
-			QLineF d( this->imgRect_.bottomLeft(), this->vpRect_.bottomLeft() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothMove();
 		}
@@ -283,19 +244,7 @@ void ImageView::smoothReversingMove() {
 	case BottomLeft:
 		this->vpState_ = TopLeft;
 		if( this->imgRect_.top() < this->vpRect_.top() ) {
-			QLineF d( this->imgRect_.topLeft(), this->vpRect_.topLeft() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothReversingMove();
 		}
@@ -303,19 +252,7 @@ void ImageView::smoothReversingMove() {
 	case TopLeft:
 		this->vpState_ = BottomRight;
 		if( this->imgRect_.right() > this->vpRect_.right() ) {
-			QLineF d( this->imgRect_.bottomRight(), this->vpRect_.bottomRight() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothReversingMove();
 		}
@@ -323,19 +260,7 @@ void ImageView::smoothReversingMove() {
 	case BottomRight:
 		this->vpState_ = TopRight;
 		if( this->imgRect_.top() < this->vpRect_.top() ) {
-			QLineF d( this->imgRect_.topRight(), this->vpRect_.topRight() );
-			double t = d.length() / this->pixelInterval_ * this->msInterval_;
-			for( int i = 0; i < this->anime_->animationCount(); ++i ) {
-				QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
-				ImageItem * item = dynamic_cast< ImageItem * >( this->items().at( i ) );
-				if( anime == NULL || item == NULL ) {
-					return;
-				}
-				anime->setDuration( t );
-				anime->setStartValue( item->pos() );
-				anime->setEndValue( item->pos() + QPointF( d.dx(), d.dy() ) );
-			}
-			this->anime_->start();
+			this->slideTo( this->vpState_ );
 		} else {
 			this->smoothReversingMove();
 		}
@@ -505,4 +430,71 @@ void ImageView::updateScaling_() {
 
 void ImageView::updateViewportRectangle_() {
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
+}
+
+QLineF ImageView::getMotionVector_( Direction d ) {
+	double dx = 0.0, dy = 0.0;
+	switch( d ) {
+		case Top:
+			dy = this->vpRect_.top() - this->imgRect_.top();
+			break;
+		case Bottom:
+			dy = this->vpRect_.bottom() - this->imgRect_.bottom();
+			break;
+		case Left:
+			dx = this->vpRect_.left() - this->imgRect_.left();
+			break;
+		case Right:
+			dx = this->vpRect_.right() - this->imgRect_.right();
+			break;
+		case TopRight:
+			dx = this->vpRect_.right() - this->imgRect_.right();
+			dy = this->vpRect_.top() - this->imgRect_.top();
+			break;
+		case BottomRight:
+			dx = this->vpRect_.right() - this->imgRect_.right();
+			dy = this->vpRect_.bottom() - this->imgRect_.bottom();
+			break;
+		case TopLeft:
+			dx = this->vpRect_.left() - this->imgRect_.left();
+			dy = this->vpRect_.top() - this->imgRect_.top();
+			break;
+		case BottomLeft:
+			dx = this->vpRect_.left() - this->imgRect_.left();
+			dy = this->vpRect_.bottom() - this->imgRect_.bottom();
+			break;
+	}
+	return this->getMotionVector_( dx, dy );
+}
+
+QLineF ImageView::getMotionVector_( double dx, double dy ) {
+	QRectF req = this->imgRect_.translated( dx, dy );
+	// horizontal
+	if( this->imgRect_.width() < this->vpRect_.width() ) {
+		dx += this->vpRect_.center().x() - req.center().x();
+	} else if( req.left() > this->vpRect_.left() ) {
+		dx += this->vpRect_.left() - req.left();
+	} else if( req.right() < this->vpRect_.right() ) {
+		dx += this->vpRect_.right() - req.right();
+	}
+	// vertical
+	if( this->imgRect_.height() < this->vpRect_.height() ) {
+		dy += this->vpRect_.center().y() - req.center().y();
+	} else if( req.top() > this->vpRect_.top() ) {
+		dy += this->vpRect_.top() - req.top();
+	} else if( req.bottom() < this->vpRect_.bottom() ) {
+		dy += this->vpRect_.bottom() - req.bottom();
+	}
+	return QLineF( 0, 0, dx, dy );
+}
+
+void ImageView::setupAnimation_( int msDuration, double dx, double dy ) {
+	QList< QGraphicsItem * > items = this->items();
+	for( int i = 0; i < items.length(); ++i ) {
+		QGraphicsItem * item = items.at( i );
+		QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime_->animationAt( i ) );
+		anime->setDuration( msDuration );
+		anime->setStartValue( item->pos() );
+		anime->setEndValue( item->pos() + QPointF( dx, dy ) );
+	}
 }

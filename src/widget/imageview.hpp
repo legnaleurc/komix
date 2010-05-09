@@ -33,6 +33,17 @@ namespace KomiX {
 
 	namespace widget {
 
+		enum Direction {
+			Top,
+			Bottom,
+			Left,
+			Right,
+			TopRight,
+			BottomRight,
+			TopLeft,
+			BottomLeft
+		};
+
 		class Navigator;
 		class ScaleWidget;
 
@@ -43,6 +54,8 @@ namespace KomiX {
 		public:
 			explicit ImageView( QWidget * parent );
 
+			void moveTo( Direction d );
+			void slideTo( Direction d );
 			void moveBy( QPointF delta = QPointF() );
 			bool open( const QUrl & uri );
 			void scale( double ratio );
@@ -100,16 +113,13 @@ namespace KomiX {
 				Height,
 				Window
 			};
-			enum ViewportState {
-				TopRight,
-				BottomRight,
-				TopLeft,
-				BottomLeft
-			};
 
 			void moveBy_( const QPointF & );
 			void updateScaling_();
 			void updateViewportRectangle_();
+			QLineF getMotionVector_( Direction );
+			QLineF getMotionVector_( double, double );
+			void setupAnimation_( int, double, double );
 
 			QParallelAnimationGroup * anime_;
 			FileController * controller_;
@@ -123,7 +133,7 @@ namespace KomiX {
 			QPoint pressStartPosition_;
 			ScaleMode scaleMode_;
 			QRectF vpRect_;
-			ViewportState vpState_;
+			Direction vpState_;
 		};
 
 	}
