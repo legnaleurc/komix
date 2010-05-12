@@ -5,7 +5,7 @@ project(KomiX)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 set(QT_USE_QTSVG TRUE)
-find_package(Qt4 REQUIRED)
+find_package(Qt4 4.5 REQUIRED)
 include(${QT_USE_FILE})
 find_package(QtSingleApplication REQUIRED)
 include_directories(${QTSINGLEAPPLICATION_INCLUDE_DIR})
