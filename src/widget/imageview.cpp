@@ -25,7 +25,7 @@
 #include "scalewidget.hpp"
 
 #include <QtCore/QParallelAnimationGroup>
-#include <QtCore/QPropertyAnimation >
+#include <QtCore/QPropertyAnimation>
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
