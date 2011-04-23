@@ -53,7 +53,7 @@
      <item>
       <widget class="QLabel" name="info">
        <property name="text">
-        <string>__VOID__</string>
+        <string notr="true">__VOID__</string>
        </property>
        <property name="textFormat">
         <enum>Qt::RichText</enum>
@@ -75,7 +75,7 @@
        <item>
         <widget class="QLabel" name="aboutMessage">
          <property name="text">
-          <string>__VOID__</string>
+          <string notr="true">__VOID__</string>
          </property>
         </widget>
        </item>
