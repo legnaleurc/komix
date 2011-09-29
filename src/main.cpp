@@ -24,7 +24,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QTextCodec>
 
-#include <QtSingleApplication>
+#include <QtGui/QApplication>
 
 #ifdef KOMIX_STATIC
 # include <QtPlugin>
@@ -50,27 +50,20 @@ Q_IMPORT_PLUGIN(qtiff)
  * Accept all arguments as url.
  */
 int main( int argc, char * argv[] ) {
-	QtSingleApplication app( argc, argv );
-	QtSingleApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
-	QtSingleApplication::setOrganizationName( "FoolproofProject" );
-	QtSingleApplication::setApplicationName( "KomiX" );
-	QtSingleApplication::setApplicationVersion( X(KOMIX_VERSION) );
+	QApplication app( argc, argv );
+	QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
+	QApplication::setOrganizationName( "FoolproofProject" );
+	QApplication::setApplicationName( "KomiX" );
+	QApplication::setApplicationVersion( X(KOMIX_VERSION) );
 
-	QStringList args( QtSingleApplication::arguments() );
-
-	if( app.sendMessage( "" ) ) {
-		if( args.length() > 1 ) {
-			app.sendMessage( args.at( 1 ) );
-		}
-		return 0;
-	}
+	QStringList args( QApplication::arguments() );
 
 	QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
 
 	QSettings::setDefaultFormat( QSettings::IniFormat );
 
 	KomiX::widget::MainWindow mainWindow;
-	mainWindow.setWindowTitle( QtSingleApplication::applicationName() );
+	mainWindow.setWindowTitle( QApplication::applicationName() );
 	mainWindow.resize( 800, 600 );
 
 	if( args.length() > 1 ) {
