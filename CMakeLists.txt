@@ -7,8 +7,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 set(QT_USE_QTSVG TRUE)
 find_package(Qt4 4.6 REQUIRED)
 include(${QT_USE_FILE})
-find_package(QtSingleApplication REQUIRED)
-include_directories(${QTSINGLEAPPLICATION_INCLUDE_DIR})
 
 set(KOMIX_VERSION_MAJOR 0)
 set(KOMIX_VERSION_MINOR 1)
