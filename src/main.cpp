@@ -71,8 +71,6 @@ int main( int argc, char * argv[] ) {
 	}
 
 	mainWindow.show();
-
-	QObject::connect( &app, SIGNAL( messageReceived( const QString & ) ), &mainWindow, SLOT( open( const QString & ) ) );
 	
 	return app.exec();
 }
