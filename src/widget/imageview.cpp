@@ -23,6 +23,8 @@
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+#include <QtGui/QGestureEvent>
+#include <QtGui/QPinchGesture>
 
 using KomiX::widget::ImageView;
 using KomiX::FileController;
@@ -310,6 +312,9 @@ void ImageView::Private::setupAnimation( int msDuration, double dx, double dy ) 
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 p_( new Private( this ) ) {
+#ifdef Q_OS_MAC
+	this->viewport()->grabGesture( Qt::PinchGesture );
+#endif
 	this->setScene( new QGraphicsScene( this ) );
 	this->p_->vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
 }
@@ -448,6 +453,39 @@ void ImageView::dropEvent( QDropEvent * event ) {
 	event->acceptProposedAction();
 }
 
+bool ImageView::viewportEvent( QEvent * event ) {
+	if( event->type() == QEvent::TouchBegin ) {
+		return true;
+	} else if( event->type() == QEvent::TouchUpdate ) {
+		return true;
+	} else if( event->type() == QEvent::TouchEnd ) {
+		return true;
+	} else if( event->type() == QEvent::Gesture ) {
+		QGestureEvent * gEvent = static_cast< QGestureEvent * >( event );
+		auto gs = gEvent->gestures();
+		for( auto it = gs.begin(); it != gs.end(); ++it ) {
+			if( ( *it )->gestureType() != Qt::PinchGesture ) {
+				continue;
+			}
+			auto pg = static_cast< QPinchGesture * >( *it );
+			if( pg->state() != Qt::GestureUpdated ) {
+				continue;
+			}
+			auto delta = pg->scaleFactor() - pg->lastScaleFactor();
+			if( qAbs( delta ) < 0.005 ) {
+				continue;
+			}
+			if( delta >= 0 ) {
+				emit this->scaled( 10 );
+			} else {
+				emit this->scaled( -10 );
+			}
+		}
+		return true;
+	}
+	return this->QGraphicsView::viewportEvent( event );
+}
+
 void ImageView::keyPressEvent( QKeyEvent * event ) {
 	if( event->key() == Qt::Key_Up ) {
 		this->p_->fromViewportMoveBy( QPoint( 0, 10 ) );
@@ -535,6 +573,13 @@ void ImageView::resizeEvent( QResizeEvent * event ) {
 
 void ImageView::wheelEvent( QWheelEvent * event ) {
 	int delta = event->delta();
+#ifdef Q_OS_MAC
+	if( event->orientation() == Qt::Horizontal ) {
+		this->p_->fromViewportMoveBy( QPointF( delta, 0 ) );
+	} else {
+		this->p_->fromViewportMoveBy( QPointF( 0, delta ) );
+	}
+#else
 	if( event->modifiers() & Qt::ControlModifier ) {
 		if( delta < 0 ) {
 			emit this->scaled( -10 );
@@ -542,18 +587,11 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 			emit this->scaled( 10 );
 		}
 	} else {
-#ifdef Q_OS_MAC
-		if( event->orientation() == Qt::Horizontal ) {
-			this->p_->fromViewportMoveBy( QPointF( delta, 0 ) );
-		} else {
-			this->p_->fromViewportMoveBy( QPointF( 0, delta ) );
-		}
-#else
 		if( delta < 0 ) {
 			this->p_->controller->next();
 		} else if( delta > 0 ) {
 			this->p_->controller->prev();
 		}
-#endif
 	}
+#endif
 }

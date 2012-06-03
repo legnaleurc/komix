@@ -78,6 +78,8 @@ protected:
 	/// overrided method
 	virtual void resizeEvent( QResizeEvent * );
 	/// overrided method
+	virtual bool viewportEvent( QEvent * );
+	/// overrided method
 	virtual void wheelEvent( QWheelEvent * );
 
 private:
