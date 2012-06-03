@@ -43,6 +43,12 @@ source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES}
 source_group("Resource Files" REGULAR_EXPRESSION .*\\.rc)
 source_group("Form Files" REGULAR_EXPRESSION .*\\.ui)
 
+set_source_files_properties(
+    "image/logo.icns"
+    PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+set(MACOSX_BUNDLE_ICON_FILE "logo.icns")
+
 if(QT_STATIC)
     find_library(QT_GIF_PLUGIN qgif PATHS ${QT_PLUGINS_DIR} PATH_SUFFIXES imageformats)
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_GIF_PLUGIN})
@@ -68,6 +74,8 @@ set(KOMIX_COMPILE_UNITS ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOUR
 if(WIN32)
     add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_COMPILE_UNITS})
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+elseif(APPLE)
+    add_executable(komix MACOSX_BUNDLE "image/logo.icns" ${KOMIX_COMPILE_UNITS})
 else()
     add_executable(komix ${KOMIX_COMPILE_UNITS})
 endif()
@@ -77,6 +85,9 @@ target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEA
 if(WIN32)
     install(TARGETS komix
         RUNTIME DESTINATION .)
+elseif(APPLE)
+    install(TARGETS komix
+        BUNDLE DESTINATION .)
 else()
     install(TARGETS komix
         RUNTIME DESTINATION bin)
