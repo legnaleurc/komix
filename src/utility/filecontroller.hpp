@@ -25,6 +25,7 @@
 
 class QPixmap;
 class QModelIndex;
+class QMovie;
 
 namespace KomiX {
 
@@ -90,6 +91,7 @@ signals:
 	 * @param image image
 	 */
 	void imageLoaded( const QPixmap & image );
+	void imageLoaded( QMovie * anime );
 	/**
 	 * @brief Some error occured
 	 * @param errMsg error message
@@ -97,6 +99,7 @@ signals:
 	void errorOccured( const QString & errMsg );
 
 private:
+	void fromIndex_( const QModelIndex & );
 	int index_;
 
 	model::FileModelSP model_;

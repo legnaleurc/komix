@@ -27,11 +27,13 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTimer>
 #include <QtCore/QUrl>
-#include <QtDebug>
 #include <QtGui/QAction>
 #include <QtGui/QLabel>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QScrollBar>
+#include <QtGui/QMovie>
+
+#include <QtCore/QtDebug>
 
 using namespace KomiX::widget;
 
@@ -68,6 +70,7 @@ interval_( 1 ) {
 	connect( this, SIGNAL( scaled( int ) ), scale_, SLOT( scale( int ) ) );
 	connect( scale_, SIGNAL( scaled( int ) ), this, SLOT( scale( int ) ) );
 	connect( ctrl_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
+	connect( ctrl_, SIGNAL( imageLoaded( QMovie * ) ), this, SLOT( setImage( QMovie * ) ) );
 	connect( ctrl_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
 
 	connect( navi_, SIGNAL( required( const QModelIndex & ) ), ctrl_, SLOT( open( const QModelIndex & ) ) );
@@ -209,15 +212,33 @@ void ImageArea::resizeEvent( QResizeEvent * event ) {
 
 void ImageArea::setImage( const QPixmap & image ) {
 	stopAllStep_();
+	QObject * m = image_->movie();
 	image_->setPixmap( image );
+	if( m ) {
+		m->deleteLater();
+	}
 	imageSize_ = image_->pixmap()->size();
 	updateImageSize_();
 	
 	home();
 }
 
+void ImageArea::setImage( QMovie * anime ) {
+	stopAllStep_();
+	QObject * m = image_->movie();
+	image_->setMovie( anime );
+	anime->start();
+	if( m ) {
+		m->deleteLater();
+	}
+	imageSize_ = image_->movie()->frameRect().size();
+	updateImageSize_();
+
+	home();
+}
+
 void ImageArea::updateImageSize_() {
-	if( image_->pixmap() ) {
+	if( image_->pixmap() || image_->movie() ) {
 		if( ratio_ >= 0.0 ) {
 			image_->resize( imageSize_ * ratio_ );
 		} else if( ratio_ == -1.0 ) {
@@ -278,7 +299,7 @@ void ImageArea::smoothMove() {
 	if( image_->cursor().shape() != Qt::BlankCursor ) {
 		image_->setCursor( Qt::BlankCursor );
 	}
-	if( image_->pixmap() ) {
+	if( image_->pixmap() || image_->movie() ) {
 		stopAllStep_();
 		switch( state_ ) {
 		case TopRight:
@@ -322,7 +343,7 @@ void ImageArea::reverseSmoothMove() {
 	if( image_->cursor().shape() != Qt::BlankCursor ) {
 		image_->setCursor( Qt::BlankCursor );
 	}
-	if( image_->pixmap() ) {
+	if( image_->pixmap() || image_->movie() ) {
 		stopAllStep_();
 		switch( state_ ) {
 		case BottomLeft:

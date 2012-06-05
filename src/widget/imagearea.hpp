@@ -77,6 +77,7 @@ namespace KomiX {
 			 * @param image opened image
 			 */
 			void setImage( const QPixmap & image );
+			void setImage( QMovie * anime );
 
 			/// load settings from configure file
 			void loadSettings();

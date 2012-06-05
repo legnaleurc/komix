@@ -93,7 +93,7 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 			case Qt::DisplayRole:
 				return files_[index.row()];
 			case Qt::UserRole:
-				return QPixmap( root_.filePath( files_[index.row()] ) );
+				return QString( root_.filePath( files_[index.row()] ) );
 			default:
 				return QVariant();
 			}

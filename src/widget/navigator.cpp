@@ -22,7 +22,8 @@
 #include "navigator.hpp"
 #include "ui_navigator.h"
 
-#include <QtDebug>
+#include <QtCore/QtDebug>
+#include <QtGui/QMovie>
 
 using namespace KomiX::widget;
 using KomiX::model::FileModelSP;
@@ -68,5 +69,16 @@ void Navigator::openHelper_() {
 void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	qDebug( "Preview::viewImage_()" );
 	qDebug() << current;
-	this->ui_->preview->setPixmap( current.data( Qt::UserRole ).value< QPixmap >().scaled( this->ui_->preview->size(), Qt::KeepAspectRatio ) );
+	QString path = current.data( Qt::UserRole ).toString();
+	QObject * mm = this->ui_->preview->movie();
+	if( path.endsWith( ".gif", Qt::CaseInsensitive ) ) {
+		QMovie * m = new QMovie( path, QByteArray(), this );
+		this->ui_->preview->setMovie( m );
+		m->start();
+	} else {
+		this->ui_->preview->setPixmap( QPixmap( path ).scaled( this->ui_->preview->size(), Qt::KeepAspectRatio ) );
+	}
+	if( mm ) {
+		mm->deleteLater();
+	}
 }
