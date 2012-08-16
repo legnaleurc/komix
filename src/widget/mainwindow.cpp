@@ -20,7 +20,6 @@
  */
 #include "aboutwidget.hpp"
 #include "global.hpp"
-#include "imagearea.hpp"
 #include "mainwindow.hpp"
 #include "preference.hpp"
 #include "ui_mainwindow.h"
@@ -42,7 +41,6 @@ using namespace KomiX::widget;
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 ui_( new Ui::MainWindow ),
-imageArea_( new ImageArea( this ) ),
 preference_( new Preference( this ) ),
 trayIcon_( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), this ) ),
 about_( new AboutWidget( this ) ),
@@ -50,10 +48,8 @@ dumpState_( Qt::WindowNoState ) {
 	this->ui_->setupUi( this );
 
 	this->setupMenuBar_();
-	initCentralWidget_();
+	this->setupCentralWidget_();
 	initTrayIcon_();
-
-	connect( imageArea_, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
 }
 
 MainWindow::~MainWindow() {
@@ -80,33 +76,33 @@ void MainWindow::setupFileMenu_() {
 
 void MainWindow::setupEditMenu_() {
 	connect( this->ui_->action_Preference, SIGNAL( triggered() ), this->preference_, SLOT( exec() ) );
-	connect( this->preference_, SIGNAL( accepted() ), this->imageArea_, SLOT( loadSettings() ) );
+	connect( this->preference_, SIGNAL( accepted() ), this->ui_->graphicsView, SLOT( loadSettings() ) );
 }
 
 void MainWindow::setupViewMenu_() {
 	this->addAction( this->ui_->actionSmooth_Next );
-	connect( this->ui_->actionSmooth_Next, SIGNAL( triggered() ), this->imageArea_, SLOT( smoothMove() ) );
+	connect( this->ui_->actionSmooth_Next, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( smoothMove() ) );
 	this->addAction( this->ui_->actionSmooth_Previous );
-	connect( this->ui_->actionSmooth_Previous, SIGNAL( triggered() ), this->imageArea_, SLOT( reverseSmoothMove() ) );
+	connect( this->ui_->actionSmooth_Previous, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( smoothReversingMove() ) );
 	this->addAction( this->ui_->actionPage_Head );
-	connect( this->ui_->actionPage_Head, SIGNAL( triggered() ), this->imageArea_, SLOT( home() ) );
+	connect( this->ui_->actionPage_Head, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( begin() ) );
 	this->addAction( this->ui_->actionPage_Tail );
-	connect( this->ui_->actionPage_Tail, SIGNAL( triggered() ), this->imageArea_, SLOT( end() ) );
+	connect( this->ui_->actionPage_Tail, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( end() ) );
 	this->addAction( this->ui_->action_Fullscreen );
 	connect( this->ui_->action_Fullscreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
 	this->addAction( this->ui_->action_Hide_Window );
 	connect( this->ui_->action_Hide_Window, SIGNAL( triggered() ), this, SLOT( toggleSystemTray() ) );
 	this->addAction( this->ui_->action_Scale_Image );
-	connect( this->ui_->action_Scale_Image, SIGNAL( triggered() ), imageArea_, SLOT( showScalePanel() ) );
+	connect( this->ui_->action_Scale_Image, SIGNAL( triggered() ), ui_->graphicsView, SLOT( showControlPanel() ) );
 }
 
 void MainWindow::setupGoMenu_() {
 	this->addAction( this->ui_->action_Go_To );
-	connect( this->ui_->action_Go_To, SIGNAL( triggered() ), imageArea_, SLOT( showNavigator() ) );
+	connect( this->ui_->action_Go_To, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( showNavigator() ) );
 	this->addAction( this->ui_->action_Previous_Image );
-	connect( this->ui_->action_Previous_Image, SIGNAL( triggered() ), imageArea_, SLOT( prev() ) );
+	connect( this->ui_->action_Previous_Image, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( previousPage() ) );
 	this->addAction( this->ui_->action_Next_Image );
-	connect( this->ui_->action_Next_Image, SIGNAL( triggered() ), imageArea_, SLOT( next() ) );
+	connect( this->ui_->action_Next_Image, SIGNAL( triggered() ), this->ui_->graphicsView, SLOT( nextPage() ) );
 }
 
 void MainWindow::setupHelpMenu_() {
@@ -115,11 +111,10 @@ void MainWindow::setupHelpMenu_() {
 	connect( this->ui_->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
-void MainWindow::initCentralWidget_() {
-	setCentralWidget( imageArea_ );
-
-	connect( imageArea_, SIGNAL( fileDroped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
-	connect( imageArea_, SIGNAL( requireToogleScreen() ), this, SLOT( toggleFullScreen() ) );
+void MainWindow::setupCentralWidget_() {
+	connect( this->ui_->graphicsView, SIGNAL( errorOccured( const QString & ) ), this, SLOT( popupError_( const QString & ) ) );
+	connect( this->ui_->graphicsView, SIGNAL( fileDropped( const QUrl & ) ), this, SLOT( open( const QUrl & ) ) );
+	connect( this->ui_->graphicsView, SIGNAL( middleClicked() ), this, SLOT( toggleFullScreen() ) );
 }
 
 void MainWindow::initTrayIcon_() {
@@ -146,8 +141,8 @@ void MainWindow::systemTrayHelper_( QSystemTrayIcon::ActivationReason reason ) {
 }
 
 void MainWindow::open( const QUrl & url ) {
-	if( !imageArea_->open( url ) ) {
-		QMessageBox::critical( this, tr( "No file to open" ), tr( "No openable file in this directory." ) );
+	if( !this->ui_->graphicsView->open( url ) ) {
+		QMessageBox::critical( this, tr( "Error" ), tr( "No openable file in this directory." ) );
 	}
 }
 

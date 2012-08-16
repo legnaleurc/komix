@@ -5,7 +5,7 @@ project(KomiX)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 set(QT_USE_QTSVG TRUE)
-find_package(Qt4 4.5 REQUIRED)
+find_package(Qt4 4.6 REQUIRED)
 include(${QT_USE_FILE})
 
 set(KOMIX_VERSION_MAJOR 0)
@@ -22,6 +22,8 @@ set(KOMIX_MOC_HEADERS
     src/model/single/singlehook.hpp
     src/utility/filecontroller.hpp
     src/widget/imagearea.hpp
+    src/widget/imageitem.hpp
+    src/widget/imageview.hpp
     src/widget/mainwindow.hpp
     src/widget/navigator.hpp
     src/widget/preference.hpp
