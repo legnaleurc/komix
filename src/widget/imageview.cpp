@@ -155,6 +155,7 @@ void ImageView::setImage( const QPixmap & pixmap ) {
 	this->setImage( QList< QPixmap >() << pixmap );
 }
 
+// TODO this function should consider multi-paging mode
 void ImageView::setImage( const QList< QPixmap > & images ) {
 	if( images.empty() ) {
 		return;
@@ -162,6 +163,7 @@ void ImageView::setImage( const QList< QPixmap > & images ) {
 	// stop all movement
 	this->anime_->stop();
 
+	this->scene()->setSceneRect( images[0].rect() );
 	this->scene()->clear();
 	this->anime_->clear();
 
