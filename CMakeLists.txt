@@ -72,7 +72,7 @@ else()
     set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 endif()
 
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEAPPLICATION_LIBRARY})
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES})
 
 if(WIN32)
     install(TARGETS komix
