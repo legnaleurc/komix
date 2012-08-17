@@ -45,10 +45,14 @@ Exception::Private::Private( const QString & msg ): msg( msg ) {
 }
 
 Exception::Exception( int code ): p_( new Private ) {
+#ifdef _MSCVER
 	wchar_t tmp[1024];
 	errno_t ret = _wcserror_s( tmp, code );
 	assert( ret == 0 || !"invalid errno" );
 	this->p_->msg.fromWCharArray( tmp );
+#else
+	this->p_->msg.fromLocal8Bit( strerror( code ) );
+#endif
 }
 
 /**
