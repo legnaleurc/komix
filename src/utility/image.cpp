@@ -40,8 +40,8 @@ QLabel * Image::createLabel() const {
 		QMovie * movie = new QMovie( this->p_->path );
 		movie->setParent( label );
 		label->setMovie( movie );
-		label->resize( movie->scaledSize() );
 		movie->start();
+		label->resize( movie->frameRect().size() );
 	} else {
 		QPixmap pixmap( this->p_->path );
 		label->setPixmap( pixmap );
