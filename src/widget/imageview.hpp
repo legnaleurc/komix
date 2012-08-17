@@ -25,12 +25,13 @@
 #include <QtGui/QGraphicsView>
 #include <QtCore/QAbstractAnimation>
 
+#include "image.hpp"
+
 class QParallelAnimationGroup;
 
 namespace KomiX {
 
 	class FileController;
-	class Image;
 
 	namespace widget {
 

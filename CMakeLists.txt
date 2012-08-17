@@ -69,6 +69,7 @@ if(WIN32)
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 else()
     add_executable(komix ${KOMIX_COMPILE_UNITS})
+    set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 endif()
 
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${QTSINGLEAPPLICATION_LIBRARY})
