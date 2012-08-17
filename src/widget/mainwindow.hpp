@@ -24,6 +24,8 @@
 #include <QtGui/QMainWindow>
 #include <QtCore/QUrl>
 
+#include <memory>
+
 namespace KomiX {
 namespace widget {
 
