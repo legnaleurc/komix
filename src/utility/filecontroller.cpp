@@ -21,10 +21,9 @@
 #include "error.hpp"
 #include "filecontroller.hpp"
 #include "global.hpp"
+#include "image.hpp"
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QPixmap>
-#include <QtGui/QMovie>
 
 #include <QtCore/QtDebug>
 
@@ -109,11 +108,6 @@ KomiX::model::FileModelSP FileController::getModel() const {
 }
 
 void FileController::fromIndex_( const QModelIndex & index ) {
-	QString path = index.data( Qt::UserRole ).toString();
-	if( path.endsWith( ".gif", Qt::CaseInsensitive ) ) {
-		QMovie * anime = new QMovie( path, QByteArray(), this );
-		emit imageLoaded( anime );
-	} else {
-		emit imageLoaded( QPixmap( path ) );
-	}
+	Image image = index.data( Qt::UserRole ).value< Image >();
+	emit this->imageLoaded( image );
 }

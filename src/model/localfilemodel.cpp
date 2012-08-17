@@ -20,8 +20,7 @@
  */
 #include "global.hpp"
 #include "localfilemodel.hpp"
-
-#include <QtGui/QPixmap>
+#include "image.hpp"
 
 using namespace KomiX::model;
 
@@ -93,7 +92,7 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 			case Qt::DisplayRole:
 				return files_[index.row()];
 			case Qt::UserRole:
-				return QString( root_.filePath( files_[index.row()] ) );
+				return QVariant::fromValue( KomiX::Image( root_.filePath( files_[index.row()] ) ) );
 			default:
 				return QVariant();
 			}

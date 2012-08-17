@@ -21,15 +21,16 @@
 #ifndef KOMIX_WIDGET_IMAGEITEM_HPP
 #define KOMIX_WIDGET_IMAGEITEM_HPP
 
-#include <QtGui/QGraphicsPixmapItem>
+#include <QtGui/QGraphicsProxyWidget>
 
 namespace KomiX {
+	class Image;
 	namespace widget {
-		class ImageItem : public QObject, public QGraphicsPixmapItem {
+		class ImageItem : public QGraphicsProxyWidget {
 			Q_OBJECT
 			Q_PROPERTY( QPointF pos READ pos WRITE setPos )
 		public:
-			explicit ImageItem( const QPixmap & pixmap );
+			explicit ImageItem( const Image & image );
 		};
 	}
 }

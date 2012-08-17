@@ -23,11 +23,11 @@
 
 #include "filemodel.hpp"
 
-class QPixmap;
 class QModelIndex;
-class QMovie;
 
 namespace KomiX {
+
+class Image;
 
 /**
  * @brief The file controller
@@ -90,8 +90,7 @@ signals:
 	 * @brief get image
 	 * @param image image
 	 */
-	void imageLoaded( const QPixmap & image );
-	void imageLoaded( QMovie * anime );
+	void imageLoaded( const KomiX::Image & image );
 	/**
 	 * @brief Some error occured
 	 * @param errMsg error message

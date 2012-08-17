@@ -23,6 +23,7 @@
 #include "imageview.hpp"
 #include "navigator.hpp"
 #include "scalewidget.hpp"
+#include "image.hpp"
 
 #include <QtCore/QParallelAnimationGroup>
 #include <QtCore/QPropertyAnimation>
@@ -46,11 +47,12 @@ pressEndPosition_(),
 pressStartPosition_(),
 scaleMode_( Custom ),
 vpRect_(),
-vpState_() {
+vpState_(),
+pageBuffer_() {
 	this->setScene( new QGraphicsScene( this ) );
 	this->vpRect_ = this->mapToScene( this->viewport()->rect() ).boundingRect();
 
-	QObject::connect( this->controller_, SIGNAL( imageLoaded( const QPixmap & ) ), this, SLOT( setImage( const QPixmap & ) ) );
+	QObject::connect( this->controller_, SIGNAL( imageLoaded( const KomiX::Image & ) ), this, SLOT( addImage( const KomiX::Image & ) ) );
 	QObject::connect( this->controller_, SIGNAL( errorOccured( const QString & ) ), this, SIGNAL( errorOccured( const QString & ) ) );
 
 	QObject::connect( this->navigator_, SIGNAL( required( const QModelIndex & ) ), this->controller_, SLOT( open( const QModelIndex & ) ) );
@@ -151,34 +153,39 @@ void ImageView::scale( double ratio ) {
 	this->imgRatio_ *= ratio;
 }
 
-void ImageView::setImage( const QPixmap & pixmap ) {
-	this->setImage( QList< QPixmap >() << pixmap );
+void ImageView::addImage( const KomiX::Image & image ) {
+	this->pageBuffer_.push_back( image );
+	if( this->pageBuffer_.size() == 1 ) {
+		// TODO should scale in multi-paging mode
+		this->setImage_( this->pageBuffer_ );
+		this->pageBuffer_.clear();
+	}
 }
 
 // TODO this function should consider multi-paging mode
-void ImageView::setImage( const QList< QPixmap > & images ) {
+void ImageView::setImage_( const QList< KomiX::Image > & images ) {
 	if( images.empty() ) {
 		return;
 	}
 	// stop all movement
 	this->anime_->stop();
 
-	this->scene()->setSceneRect( images[0].rect() );
 	this->scene()->clear();
 	this->anime_->clear();
 
 	ImageItem * item = new ImageItem( images[0] );
 	this->anime_->addAnimation( new QPropertyAnimation( item, "pos" ) );
+	this->scene()->setSceneRect( item->subWidgetRect( item->widget() ) );
 	this->scene()->addItem( item );
-	item->setTransformationMode( Qt::SmoothTransformation );
+//	item->setTransformationMode( Qt::SmoothTransformation );
 	this->imgRect_ = item->sceneBoundingRect();
 
 	for( int i = 1; i < images.size(); ++i ) {
 		item = new ImageItem( images[i] );
 		this->anime_->addAnimation( new QPropertyAnimation( item, "pos" ) );
 		this->scene()->addItem( item );
-		item->setTransformationMode( Qt::SmoothTransformation );
-		item->setPos( this->imgRect_.topLeft() + QPointF( images[i].width(), 0.0 ) );
+//		item->setTransformationMode( Qt::SmoothTransformation );
+		item->setPos( this->imgRect_.topLeft() + QPointF( item->subWidgetRect( item->widget() ).width(), 0.0 ) );
 		this->imgRect_ = this->imgRect_.united( item->sceneBoundingRect() );
 	}
 
