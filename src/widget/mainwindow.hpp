@@ -27,26 +27,12 @@
 namespace KomiX {
 namespace widget {
 
-/**
- * @brief Main window
- *
- * The main window widget, all GUI components are managed by this.
- */
 class MainWindow: public QMainWindow {
 	Q_OBJECT
 public:
-	/**
-		* @brief default constructor
-		* @param parent parent widget
-		* @param f window flags
-		*/
 	explicit MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 public slots:
-	/**
-		* @brief open url
-		* @param url file url
-		*/
 	void open( const QUrl & url );
 	void open( const QString & localFile );
 

@@ -18,6 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ * @class KomiX::widget::MainWindow
+ * @brief Main window
+ *
+ * The main window widget, all GUI components are managed by this.
+ */
+
 #include "global.hpp"
 #include "mainwindow.hpp"
 #include "mainwindow_p.hpp"
@@ -156,6 +163,11 @@ void MainWindow::Private::toggleSystemTray() {
 	}
 }
 
+/**
+ * @brief default constructor
+ * @param parent parent widget
+ * @param f window flags
+ */
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 p_( new Private( this ) ) {
@@ -166,6 +178,10 @@ p_( new Private( this ) ) {
 	this->p_->initTrayIcon();
 }
 
+/**
+ * @brief open url
+ * @param url file url
+ */
 void MainWindow::open( const QUrl & url ) {
 	if( !this->p_->ui->graphicsView->open( url ) ) {
 		QMessageBox::critical( this, tr( "Error" ), tr( "No openable file in this directory." ) );
