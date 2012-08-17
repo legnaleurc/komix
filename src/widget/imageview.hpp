@@ -30,6 +30,7 @@ class QParallelAnimationGroup;
 namespace KomiX {
 
 	class FileController;
+	class Image;
 
 	namespace widget {
 
@@ -70,8 +71,7 @@ namespace KomiX {
 			void nextPage();
 			void previousPage();
 			void scale( int pcRatio );
-			void setImage( const QPixmap & pixmap );
-			void setImage( const QList< QPixmap > & images );
+			void addImage( const KomiX::Image & image );
 			void showControlPanel();
 			void showNavigator();
 			void smoothMove();
@@ -113,7 +113,8 @@ namespace KomiX {
 				Height,
 				Window
 			};
-
+			
+			void setImage_( const QList< KomiX::Image > & images );
 			void moveBy_( const QPointF & );
 			void updateScaling_();
 			void updateViewportRectangle_();
@@ -134,6 +135,7 @@ namespace KomiX {
 			ScaleMode scaleMode_;
 			QRectF vpRect_;
 			Direction vpState_;
+			QList< Image > pageBuffer_;
 		};
 
 	}

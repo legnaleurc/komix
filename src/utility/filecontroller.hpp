@@ -23,10 +23,11 @@
 
 #include "filemodel.hpp"
 
-class QPixmap;
 class QModelIndex;
 
 namespace KomiX {
+
+class Image;
 
 /**
  * @brief The file controller
@@ -89,7 +90,7 @@ signals:
 	 * @brief get image
 	 * @param image image
 	 */
-	void imageLoaded( const QPixmap & image );
+	void imageLoaded( const KomiX::Image & image );
 	/**
 	 * @brief Some error occured
 	 * @param errMsg error message
@@ -97,6 +98,7 @@ signals:
 	void errorOccured( const QString & errMsg );
 
 private:
+	void fromIndex_( const QModelIndex & );
 	int index_;
 
 	model::FileModelSP model_;

@@ -21,9 +21,11 @@
 #include "error.hpp"
 #include "filecontroller.hpp"
 #include "global.hpp"
+#include "image.hpp"
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QPixmap>
+
+#include <QtCore/QtDebug>
 
 using namespace KomiX;
 
@@ -52,7 +54,7 @@ bool FileController::open( const QUrl & url ) {
 			first = model_->index( 0, 0 );
 			index_ = 0;
 		}
-		emit imageLoaded( first.data( Qt::UserRole ).value< QPixmap >() );
+		this->fromIndex_( first );
 		return true;
 	}
 }
@@ -60,7 +62,7 @@ bool FileController::open( const QUrl & url ) {
 void FileController::open( const QModelIndex & index ) {
 	if( !isEmpty() ) {
 		index_ = index.row();
-		emit imageLoaded( index.data( Qt::UserRole ).value< QPixmap >() );
+		this->fromIndex_( index );
 	}
 }
 
@@ -79,7 +81,7 @@ void FileController::next() {
 			index_ = 0;
 		}
 		QModelIndex item = model_->index( index_, 0 );
-		emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
+		this->fromIndex_( item );
 	}
 }
 
@@ -90,7 +92,7 @@ void FileController::prev() {
 			index_ = model_->rowCount() - 1;
 		}
 		QModelIndex item = model_->index( index_, 0 );
-		emit imageLoaded( item.data( Qt::UserRole ).value< QPixmap >() );
+		this->fromIndex_( item );
 	}
 }
 
@@ -103,4 +105,9 @@ bool FileController::isEmpty() const {
 
 KomiX::model::FileModelSP FileController::getModel() const {
 	return model_;
+}
+
+void FileController::fromIndex_( const QModelIndex & index ) {
+	Image image = index.data( Qt::UserRole ).value< Image >();
+	emit this->imageLoaded( image );
 }
