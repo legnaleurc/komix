@@ -51,6 +51,10 @@ Exception::Exception( int code ): p_( new Private ) {
 	this->p_->msg.fromWCharArray( tmp );
 }
 
+/**
+ * @brief Constructor which accept a C-Style string
+ * @note please encode to UTF-8
+ */
 Exception::Exception( const char * msg ): p_( new Private( QString::fromUtf8( msg ) ) ) {
 }
 
@@ -63,15 +67,29 @@ Exception::Exception( const std::string & msg ): p_( new Private( QString::fromS
 Exception::Exception( const std::wstring & msg ): p_( new Private( QString::fromStdWString( msg ) ) ) {
 }
 
+/**
+ * @brief Constructor which accept a QString
+ */
 Exception::Exception( const QString & msg ): p_( new Private( msg ) ) {
 }
 
-Exception::~Exception() throw() {}
+/**
+ * @brief Destructor
+ */
+Exception::~Exception() throw() {
+}
 
+/**
+ * @brief Get message for STL
+ * @note encode as UTF-8
+ */
 const char * Exception::what() const throw() {
 	return this->p_->msg.toLocal8Bit().constData();
 }
 
+/**
+ * @brief Get message for Qt
+ */
 const QString & Exception::getMessage() const {
 	return this->p_->msg;
 }

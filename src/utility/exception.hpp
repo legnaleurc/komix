@@ -32,32 +32,17 @@ namespace exception {
 
 class Exception: public std::exception {
 public:
-	/**
-		* @brief Constructor which accept a C-Style string
-		* @note please encode to UTF-8
-		*/
 	explicit Exception( int code );
 	explicit Exception( const char * msg );
 	explicit Exception( const wchar_t * msg );
-	/**
-		* @brief Constructor which accept a QString
-		*/
 	explicit Exception( const std::string & msg );
 	explicit Exception( const std::wstring & msg );
 	explicit Exception( const QString & msg );
-	/**
-		* @brief Destructor
-		*/
 	virtual ~Exception() throw();
-	/**
-		* @brief Get message for STL
-		* @note encode as UTF-8
-		*/
+
 	virtual const char * what() const throw();
-	/**
-		* @brief Get message for Qt
-		*/
 	const QString & getMessage() const;
+
 private:
 	class Private;
 	std::shared_ptr< Private > p_;
