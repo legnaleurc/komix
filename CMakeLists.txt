@@ -21,7 +21,6 @@ set(KOMIX_MOC_HEADERS
     src/model/directory/directoryhook.hpp
     src/model/single/singlehook.hpp
     src/utility/filecontroller.hpp
-    src/widget/imagearea.hpp
     src/widget/imageitem.hpp
     src/widget/imageview.hpp
     src/widget/mainwindow.hpp
