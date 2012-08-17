@@ -20,7 +20,7 @@
  */
 #include "archivehook.hpp"
 #include "archivemodel.hpp"
-#include "error.hpp"
+#include "exception.hpp"
 #include "global.hpp"
 
 #include <QtCore/QCryptographicHash>
@@ -31,14 +31,18 @@
 #include <QtGui/QPixmap>
 
 namespace KomiX {
-	namespace error {
+namespace exception {
 
-		/// Private archive error class
-		class Archive {};
-		/// Convenient typedef
-		typedef Error< Archive > ArchiveError;
-
+/// Private archive error class
+class ArchiveException: public Exception {
+public:
+	ArchiveException( const char * msg ): Exception( msg ) {
 	}
+	ArchiveException( const QString & msg ): Exception( msg ) {
+	}
+};
+
+}
 } // end of namespace
 
 namespace {
@@ -55,9 +59,9 @@ namespace {
 
 	KomiX::model::FileModelSP create( const QUrl & url ) {
 		if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
-			throw KomiX::error::ArchiveError( "This feature is based on 7-zip. Please install it." );
+			throw KomiX::exception::ArchiveException( "This feature is based on 7-zip. Please install it." );
 		} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
-			throw KomiX::error::ArchiveError( "I could not create temporary directory." );
+			throw KomiX::exception::ArchiveException( "I could not create temporary directory." );
 		}
 		return KomiX::model::FileModelSP( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 	}
@@ -146,7 +150,7 @@ void ArchiveModel::Extract_( const QString & hash, const QString & aFilePath ) {
 		QString err = QString::fromLocal8Bit( p->readAllStandardError() );
 		qWarning() << p->readAllStandardOutput();
 		qWarning() << err;
-		throw error::ArchiveError( err );
+		throw exception::ArchiveException( err );
 	}
 }
 

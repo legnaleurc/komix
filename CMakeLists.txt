@@ -58,6 +58,7 @@ set(KOMIX_COMPILE_UNITS ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOUR
 if(WIN32)
     add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_COMPILE_UNITS})
     set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+    set_target_properties(komix PROPERTIES COMPILE_FLAGS "/MP /Zc:wchar_t-")
 else()
     add_executable(komix ${KOMIX_COMPILE_UNITS})
     set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")

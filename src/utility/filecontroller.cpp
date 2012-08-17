@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "error.hpp"
+#include "exception.hpp"
 #include "filecontroller.hpp"
 #include "global.hpp"
 #include "image.hpp"
@@ -40,7 +40,7 @@ model_( NULL ) {
 bool FileController::open( const QUrl & url ) {
 	try {
 		model_ = FileModel::createModel( url );
-	} catch( error::BasicError & e ) {
+	} catch( exception::Exception & e ) {
 		emit errorOccured( e.getMessage() );
 		return false;
 	}
