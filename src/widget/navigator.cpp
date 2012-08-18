@@ -28,17 +28,17 @@
 using KomiX::widget::Navigator;
 using KomiX::model::FileModelSP;
 
-Navigator::Private::Private( Navigator * owner ):
+Navigator::Private::Private( FileController * controller, Navigator * owner ):
 QObject(),
 owner( owner ),
 ui(),
+controller( controller ),
 model( NULL ),
 selection( NULL ) {
 }
 
 void Navigator::Private::openHelper() {
-	qDebug() << "Send: " << this->ui.list->currentIndex();
-	emit this->required( this->ui.list->currentIndex() );
+	this->controller->open( this->ui.list->currentIndex() );
 	this->owner->accept();
 }
 
@@ -61,7 +61,7 @@ void Navigator::Private::viewImage( const QModelIndex & current, const QModelInd
 
 Navigator::Navigator( FileController * controller, QWidget * parent ) :
 QDialog( parent ),
-p_( new Private( this ) ) {
+p_( new Private( controller, this ) ) {
 	this->p_->ui.setupUi( this );
 	this->p_->ui.list->setFixedSize( 160, 480 );
 	this->p_->ui.preview->setFixedSize( 480, 480 );
@@ -69,9 +69,6 @@ p_( new Private( this ) ) {
 
 	this->connect( this->p_->ui.buttons, SIGNAL( rejected() ), SLOT( reject() ) );
 	this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
-	this->connect( this->p_.get(), SIGNAL( required( const QModelIndex & ) ), SIGNAL( required( const QModelIndex & ) ) );
-
-	controller->connect( this, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
 }
 
 void Navigator::setModel( FileModelSP model ) {

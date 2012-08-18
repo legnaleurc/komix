@@ -40,7 +40,6 @@ namespace widget {
  * open which you want.
  */
 class Navigator : public QDialog {
-	Q_OBJECT
 public:
 	/**
 	 * @brief default constructor
@@ -52,13 +51,6 @@ public:
 	void setModel( model::FileModelSP model );
 	/// set current model index
 	void setCurrentIndex( const QModelIndex & index );
-
-signals:
-	/**
-	 * @brief required open a item
-	 * @param item index in the model
-	 */
-	void required( const QModelIndex & item );
 
 private:
 	class Private;

@@ -30,7 +30,7 @@ namespace widget {
 class Navigator::Private: public QObject {
 	Q_OBJECT
 public:
-	Private( Navigator * owner );
+	Private( FileController * controller, Navigator * owner );
 
 public slots:
 	void openHelper();
@@ -42,6 +42,7 @@ signals:
 public:
 	Navigator * owner;
 	Ui::Navigator ui;
+	FileController * controller;
 	model::FileModelSP model;
 	QItemSelectionModel * selection;
 };
