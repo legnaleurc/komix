@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "exception.hpp"
-#include "filecontroller.hpp"
+#include "filecontroller_p.hpp"
 #include "global.hpp"
 #include "image.hpp"
 
@@ -27,23 +27,48 @@
 
 #include <QtCore/QtDebug>
 
-using namespace KomiX;
+using KomiX::FileController;
+using KomiX::model::FileModel;
 
-using model::FileModel;
+FileController::Private::Private( FileController * owner ):
+QObject(),
+owner( owner ),
+index( 0 ),
+openingURL(),
+model( NULL ) {
+	this->owner->connect( this, SIGNAL( imageLoaded( const KomiX::Image & ) ), SIGNAL( imageLoaded( const KomiX::Image & ) ) );
+}
 
-FileController::FileController( QObject * parent ) :
+void FileController::Private::onModelReady() {
+	if( this->owner->isEmpty() ) {
+		return;
+	}
+	QModelIndex first = this->model->index( this->openingURL );
+	if( first.isValid() ) {
+		this->index = first.row();
+	} else {
+		first = this->model->index( 0, 0 );
+		this->index = 0;
+	}
+	this->fromIndex( first );
+}
+
+void FileController::Private::fromIndex( const QModelIndex & index ) {
+	Image image = index.data( Qt::UserRole ).value< Image >();
+	emit this->imageLoaded( image );
+}
+
+FileController::FileController( QObject * parent ):
 QObject( parent ),
-index_( 0 ),
-openingURL_(),
-model_( NULL ) {
+p_( new Private( this ) ) {
 }
 
 bool FileController::open( const QUrl & url ) {
 	try {
-		this->model_ = FileModel::createModel( url );
-		this->connect( this->model_.data(), SIGNAL( ready() ), SLOT( onModelReady_() ) );
-		this->model_->initialize();
-		this->openingURL_ = url;
+		this->p_->model = FileModel::createModel( url );
+		this->connect( this->p_->model.data(), SIGNAL( ready() ), SLOT( onModelReady_() ) );
+		this->p_->model->initialize();
+		this->p_->openingURL = url;
 	} catch( exception::Exception & e ) {
 		emit errorOccured( e.getMessage() );
 		return false;
@@ -51,69 +76,50 @@ bool FileController::open( const QUrl & url ) {
 	return true;
 }
 
-void FileController::onModelReady_() {
-	if( isEmpty() ) {
-		return;
-	}
-	QModelIndex first = model_->index( this->openingURL_ );
-	if( first.isValid() ) {
-		index_ = first.row();
-	} else {
-		first = model_->index( 0, 0 );
-		index_ = 0;
-	}
-	this->fromIndex_( first );
-}
-
 void FileController::open( const QModelIndex & index ) {
-	if( !isEmpty() ) {
-		index_ = index.row();
-		this->fromIndex_( index );
+	if( !this->isEmpty() ) {
+		this->p_->index = index.row();
+		this->p_->fromIndex( index );
 	}
 }
 
 QModelIndex FileController::getCurrentIndex() const {
-	if( !isEmpty() ) {
-		return model_->index( index_, 0 );
+	if( !this->isEmpty() ) {
+		return this->p_->model->index( this->p_->index, 0 );
 	} else {
 		return QModelIndex();
 	}
 }
 
 void FileController::next() {
-	if( !isEmpty() ) {
-		++index_;
-		if( index_ >= model_->rowCount() ) {
-			index_ = 0;
+	if( !this->isEmpty() ) {
+		++this->p_->index;
+		if( this->p_->index >= this->p_->model->rowCount() ) {
+			this->p_->index = 0;
 		}
-		QModelIndex item = model_->index( index_, 0 );
-		this->fromIndex_( item );
+		QModelIndex item = this->p_->model->index( this->p_->index, 0 );
+		this->p_->fromIndex( item );
 	}
 }
 
 void FileController::prev() {
-	if( !isEmpty() ) {
-		--index_;
-		if( index_ < 0 ) {
-			index_ = model_->rowCount() - 1;
+	if( !this->isEmpty() ) {
+		--this->p_->index;
+		if( this->p_->index < 0 ) {
+			this->p_->index = this->p_->model->rowCount() - 1;
 		}
-		QModelIndex item = model_->index( index_, 0 );
-		this->fromIndex_( item );
+		QModelIndex item = this->p_->model->index( this->p_->index, 0 );
+		this->p_->fromIndex( item );
 	}
 }
 
 bool FileController::isEmpty() const {
-	if( !model_ ) {
+	if( !this->p_->model ) {
 		return true;
 	}
-	return model_->rowCount() == 0;
+	return this->p_->model->rowCount() == 0;
 }
 
 KomiX::model::FileModelSP FileController::getModel() const {
-	return model_;
-}
-
-void FileController::fromIndex_( const QModelIndex & index ) {
-	Image image = index.data( Qt::UserRole ).value< Image >();
-	emit this->imageLoaded( image );
+	return this->p_->model;
 }
