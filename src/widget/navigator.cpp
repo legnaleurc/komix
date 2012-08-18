@@ -58,7 +58,8 @@ void Navigator::Private::viewImage( const QModelIndex & current, const QModelInd
 }
 
 Navigator::Navigator( QWidget * parent ) :
-QDialog( parent ) {
+QDialog( parent ),
+p_( new Private( this ) ) {
 	this->p_->ui->setupUi( this );
 	this->p_->ui->list->setFixedSize( 160, 480 );
 	this->p_->ui->preview->setFixedSize( 480, 480 );
