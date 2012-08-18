@@ -73,7 +73,6 @@ public slots:
 	void smoothReversingMove();
 
 signals:
-//	void errorOccured( const QString & message );
 	void fileDropped( const QUrl & uri );
 	void middleClicked();
 	void scaled( int ratio );
