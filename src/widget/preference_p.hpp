@@ -1,5 +1,5 @@
 /**
- * @file preference.hpp
+ * @file preference_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,37 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_PREFERENCE_HPP
-#define KOMIX_WIDGET_PREFERENCE_HPP
+#ifndef KOMIX_WIDGET_PREFERENCE_P_HPP
+#define KOMIX_WIDGET_PREFERENCE_P_HPP
 
-#include <QtGui/QDialog>
-
-#include <memory>
+#include "preference.hpp"
+#include "ui_preference.h"
 
 namespace KomiX {
 namespace widget {
 
-/**
- * @brief preference widget
- */
-class Preference: public QDialog {
+class Preference::Private: public QObject {
 	Q_OBJECT
 public:
-	/// constructor
-	explicit Preference( QWidget * parent );
+	explicit Private( Preference * owner );
+
+	void loadSettings();
+	void saveSettings();
 
 public slots:
-	/// Override from QDialog, won't hide dialog
-	virtual void accept();
-	/// Override from QDialog
-	virtual void reject();
+	void dispatch( QAbstractButton * );
 
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+public:
+	Preference * owner;
+	Ui::Preference ui;
 };
 
 }
-} // end of namespace
+}
 
 #endif

@@ -19,65 +19,66 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "preference.hpp"
-#include "ui_preference.h"
+#include "preference_p.hpp"
 
 #include <QtCore/QSettings>
 
-using namespace KomiX::widget;
+using KomiX::widget::Preference;
 
-Preference::Preference( QWidget * parent ):
-QDialog( parent ),
-ui_( new Ui::Preference ) {
-	this->ui_->setupUi( this );
-	connect( this->ui_->buttons, SIGNAL( clicked( QAbstractButton * ) ), this, SLOT( dispatch_( QAbstractButton * ) ) );
-
-	this->loadSettings_();
+Preference::Private::Private( Preference * owner ):
+QObject(),
+owner( owner ),
+ui() {
 }
 
-Preference::~Preference() {
-	delete this->ui_;
-}
-
-void Preference::dispatch_( QAbstractButton * button ) {
-	switch( this->ui_->buttons->buttonRole( button ) ) {
+void Preference::Private::dispatch( QAbstractButton * button ) {
+	switch( this->ui.buttons->buttonRole( button ) ) {
 	case QDialogButtonBox::RejectRole:
-		this->reject();
+		this->owner->reject();
 		break;
 	case QDialogButtonBox::ApplyRole:
-		this->accept();
+		this->owner->accept();
 		break;
 	case QDialogButtonBox::AcceptRole:
-		this->accept();
-		this->hide();
+		this->owner->accept();
+		this->owner->hide();
 		break;
 	default:
 		;
 	}
 }
 
-void Preference::loadSettings_() {
+void Preference::Private::loadSettings() {
 	QSettings ini;
 
-	this->ui_->pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
-	this->ui_->msInterval->setValue( ini.value( "ms_interval", 1 ).toInt() );
+	this->ui.pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
+	this->ui.msInterval->setValue( ini.value( "ms_interval", 1 ).toInt() );
 }
 
-void Preference::saveSettings_() {
+void Preference::Private::saveSettings() {
 	QSettings ini;
 
-	ini.setValue( "pixel_interval", this->ui_->pixelInterval->value() );
-	ini.setValue( "ms_interval", this->ui_->msInterval->value() );
+	ini.setValue( "pixel_interval", this->ui.pixelInterval->value() );
+	ini.setValue( "ms_interval", this->ui.msInterval->value() );
+}
+
+Preference::Preference( QWidget * parent ):
+QDialog( parent ),
+p_( new Private( this ) ) {
+	this->p_->ui.setupUi( this );
+	this->p_->connect( this->p_->ui.buttons, SIGNAL( clicked( QAbstractButton * ) ), SLOT( dispatch( QAbstractButton * ) ) );
+
+	this->p_->loadSettings();
 }
 
 void Preference::accept() {
-	this->saveSettings_();
+	this->p_->saveSettings();
 
-	emit accepted();
+	emit this->accepted();
 }
 
 void Preference::reject() {
-	this->loadSettings_();
+	this->p_->loadSettings();
 
-	QDialog::reject();
+	this->QDialog::reject();
 }
