@@ -67,7 +67,7 @@ p_( new Private( this ) ) {
 
 	this->connect( this->p_->ui->buttons, SIGNAL( rejected() ), SLOT( reject() ) );
 	this->p_->connect( this->p_->ui->buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
-	this->connect( this->p_.get(), SIGNAL( required( const QModelIndex & ) ), SIGNAL( const QModelIndex & ) );
+	this->connect( this->p_.get(), SIGNAL( required( const QModelIndex & ) ), SIGNAL( required( const QModelIndex & ) ) );
 }
 
 void Navigator::setModel( FileModelSP model ) {

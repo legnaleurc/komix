@@ -192,7 +192,7 @@ p_( new Private( this ) ) {
 	this->setScene( new QGraphicsScene( this ) );
 	this->p_->vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
 
-	this->p_->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
+	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
 	this->connect( this->p_->controller, SIGNAL( errorOccured( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
 
 	this->p_->controller->connect( this->p_->navigator, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
