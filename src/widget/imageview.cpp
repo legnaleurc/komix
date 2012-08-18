@@ -33,7 +33,7 @@ ImageView::Private::Private( ImageView * owner ):
 QObject(),
 owner( owner ),
 anime( new QParallelAnimationGroup( owner ) ),
-controller( new FileController( owner ) ),
+controller( nullptr ),
 imgRatio( 1.0 ),
 imgRect(),
 msInterval( 1 ),
@@ -192,11 +192,6 @@ p_( new Private( this ) ) {
 	this->setScene( new QGraphicsScene( this ) );
 	this->p_->vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
 
-	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
-	this->connect( this->p_->controller, SIGNAL( errorOccured( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
-
-	this->p_->controller->connect( this->p_->navigator, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
-
 	this->p_->panel->connect( this, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
 	this->connect( this->p_->panel, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
 	this->connect( this->p_->panel, SIGNAL( fitHeight() ), SLOT( fitHeight() ) );
@@ -204,6 +199,15 @@ p_( new Private( this ) ) {
 	this->connect( this->p_->panel, SIGNAL( fitWindow() ), SLOT( fitWindow() ) );
 
 	this->p_->connect( this->p_->anime, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), SLOT( animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
+}
+
+void ImageView::initialize( FileController * controller ) {
+	this->p_->controller = controller;
+
+	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
+	this->connect( this->p_->controller, SIGNAL( errorOccured( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
+
+	this->p_->controller->connect( this->p_->navigator, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {

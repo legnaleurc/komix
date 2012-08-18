@@ -27,6 +27,7 @@
 
 #include "global.hpp"
 #include "mainwindow_p.hpp"
+#include "filecontroller.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtGui/QAction>
@@ -169,6 +170,9 @@ MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 p_( new Private( this ) ) {
 	this->p_->ui.setupUi( this );
+
+	FileController * controller = new FileController( this );
+	this->p_->ui.graphicsView->initialize( controller );
 
 	this->p_->setupMenuBar();
 	this->p_->setupCentralWidget();

@@ -27,6 +27,7 @@
 
 namespace KomiX {
 
+class FileController;
 class Image;
 
 namespace widget {
@@ -49,6 +50,7 @@ class ImageView : public QGraphicsView {
 public:
 	explicit ImageView( QWidget * parent );
 
+	void initialize( FileController * controller );
 	void moveTo( Direction d );
 	void slideTo( Direction d );
 	void moveBy( QPointF delta = QPointF() );
