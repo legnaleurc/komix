@@ -28,6 +28,9 @@
 #include <memory>
 
 namespace KomiX {
+
+class FileController;
+
 namespace widget {
 
 /**
@@ -43,7 +46,7 @@ public:
 	 * @brief default constructor
 	 * @param parent parent widget
 	 */
-	explicit Navigator( QWidget * parent );
+	Navigator( FileController * controller, QWidget * parent );
 
 	/// set current using model
 	void setModel( model::FileModelSP model );

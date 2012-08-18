@@ -20,6 +20,7 @@
  */
 #include "global.hpp"
 #include "navigator_p.hpp"
+#include "filecontroller.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtGui/QMovie>
@@ -58,7 +59,7 @@ void Navigator::Private::viewImage( const QModelIndex & current, const QModelInd
 	}
 }
 
-Navigator::Navigator( QWidget * parent ) :
+Navigator::Navigator( FileController * controller, QWidget * parent ) :
 QDialog( parent ),
 p_( new Private( this ) ) {
 	this->p_->ui.setupUi( this );
@@ -69,6 +70,8 @@ p_( new Private( this ) ) {
 	this->connect( this->p_->ui.buttons, SIGNAL( rejected() ), SLOT( reject() ) );
 	this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
 	this->connect( this->p_.get(), SIGNAL( required( const QModelIndex & ) ), SIGNAL( required( const QModelIndex & ) ) );
+
+	controller->connect( this, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
 }
 
 void Navigator::setModel( FileModelSP model ) {

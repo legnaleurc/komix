@@ -37,7 +37,6 @@ controller( nullptr ),
 imgRatio( 1.0 ),
 imgRect(),
 msInterval( 1 ),
-navigator( new Navigator( owner ) ),
 panel( new ScaleWidget( owner ) ),
 pixelInterval( 1 ),
 pressEndPosition(),
@@ -205,9 +204,6 @@ void ImageView::initialize( FileController * controller ) {
 	this->p_->controller = controller;
 
 	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
-	this->connect( this->p_->controller, SIGNAL( errorOccured( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
-
-	this->p_->controller->connect( this->p_->navigator, SIGNAL( required( const QModelIndex & ) ), SLOT( open( const QModelIndex & ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -308,16 +304,6 @@ void ImageView::addImage( const KomiX::Image & image ) {
 
 void ImageView::showControlPanel() {
 	this->p_->panel->show();
-}
-
-void ImageView::showNavigator() {
-	if( this->p_->controller->isEmpty() ) {
-		emit this->errorOccured( tr( "No openable file." ) );
-		return;
-	}
-	this->p_->navigator->setModel( this->p_->controller->getModel() );
-	this->p_->navigator->setCurrentIndex( this->p_->controller->getCurrentIndex() );
-	this->p_->navigator->exec();
 }
 
 void ImageView::smoothMove() {

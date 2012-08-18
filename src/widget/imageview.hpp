@@ -69,12 +69,11 @@ public slots:
 	void scale( int pcRatio );
 	void addImage( const KomiX::Image & image );
 	void showControlPanel();
-	void showNavigator();
 	void smoothMove();
 	void smoothReversingMove();
 
 signals:
-	void errorOccured( const QString & message );
+//	void errorOccured( const QString & message );
 	void fileDropped( const QUrl & uri );
 	void middleClicked();
 	void scaled( int ratio );

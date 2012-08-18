@@ -23,7 +23,6 @@
 
 #include "imageview.hpp"
 #include "image.hpp"
-#include "navigator.hpp"
 #include "scalewidget.hpp"
 #include "filecontroller.hpp"
 
@@ -62,7 +61,6 @@ public:
 	double imgRatio;
 	QRectF imgRect;
 	int msInterval;
-	Navigator * navigator;
 	ScaleWidget * panel;
 	int pixelInterval;
 	QPoint pressEndPosition;

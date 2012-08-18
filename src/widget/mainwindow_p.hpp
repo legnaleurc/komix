@@ -24,6 +24,8 @@
 #include "aboutwidget.hpp"
 #include "mainwindow.hpp"
 #include "preference.hpp"
+#include "navigator.hpp"
+#include "filecontroller.hpp"
 #include "ui_mainwindow.h"
 
 #include <QtGui/QSystemTrayIcon>
@@ -45,6 +47,7 @@ public:
 	void setupViewMenu();
 
 public slots:
+	void showNavigator();
 	void systemTrayHelper( QSystemTrayIcon::ActivationReason reason );
 	void popupError( const QString & errMsg );
 	/// toggle full-screen mode
@@ -55,6 +58,8 @@ public slots:
 public:
 	MainWindow * owner;
 	Ui::MainWindow ui;
+	FileController * controller;
+	Navigator * navigator;
 	Preference * preference;
 	QSystemTrayIcon * trayIcon;
 	AboutWidget * about;

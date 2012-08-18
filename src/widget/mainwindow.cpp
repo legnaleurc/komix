@@ -27,7 +27,6 @@
 
 #include "global.hpp"
 #include "mainwindow_p.hpp"
-#include "filecontroller.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtGui/QAction>
@@ -44,10 +43,13 @@ MainWindow::Private::Private( MainWindow * owner ):
 QObject(),
 owner( owner ),
 ui(),
+controller( new FileController( this ) ),
+navigator( new Navigator( this->controller, owner ) ),
 preference( new Preference( owner ) ),
 trayIcon( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), owner ) ),
 about( new AboutWidget( owner ) ),
 dumpState( Qt::WindowNoState ) {
+	this->connect( this->controller, SIGNAL( errorOccured( const QString & ) ), SLOT( popupError( const QString & ) ) );
 }
 
 void MainWindow::Private::setupMenuBar() {
@@ -98,7 +100,7 @@ void MainWindow::Private::setupViewMenu() {
 
 void MainWindow::Private::setupGoMenu() {
 	this->owner->addAction( this->ui.action_Go_To );
-	this->ui.graphicsView->connect( this->ui.action_Go_To, SIGNAL( triggered() ), SLOT( showNavigator() ) );
+	this->connect( this->ui.action_Go_To, SIGNAL( triggered() ), SLOT( showNavigator() ) );
 
 	this->owner->addAction( this->ui.action_Previous_Image );
 	this->ui.graphicsView->connect( this->ui.action_Previous_Image, SIGNAL( triggered() ), SLOT( previousPage() ) );
@@ -114,7 +116,6 @@ void MainWindow::Private::setupHelpMenu() {
 }
 
 void MainWindow::Private::setupCentralWidget() {
-	this->connect( this->ui.graphicsView, SIGNAL( errorOccured( const QString & ) ), SLOT( popupError( const QString & ) ) );
 	this->owner->connect( this->ui.graphicsView, SIGNAL( fileDropped( const QUrl & ) ), SLOT( open( const QUrl & ) ) );
 	this->connect( this->ui.graphicsView, SIGNAL( middleClicked() ), SLOT( toggleFullScreen() ) );
 }
@@ -161,6 +162,16 @@ void MainWindow::Private::toggleSystemTray() {
 	}
 }
 
+void MainWindow::Private::showNavigator() {
+	if( this->controller->isEmpty() ) {
+		this->popupError( tr( "No openable file." ) );
+		return;
+	}
+	this->navigator->setModel( this->controller->getModel() );
+	this->navigator->setCurrentIndex( this->controller->getCurrentIndex() );
+	this->navigator->exec();
+}
+
 /**
  * @brief default constructor
  * @param parent parent widget
@@ -171,8 +182,7 @@ QMainWindow( parent, f ),
 p_( new Private( this ) ) {
 	this->p_->ui.setupUi( this );
 
-	FileController * controller = new FileController( this );
-	this->p_->ui.graphicsView->initialize( controller );
+	this->p_->ui.graphicsView->initialize( this->p_->controller );
 
 	this->p_->setupMenuBar();
 	this->p_->setupCentralWidget();
