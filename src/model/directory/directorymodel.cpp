@@ -40,4 +40,5 @@ static const bool registered = KomiX::model::FileModel::registerModel( check, cr
 
 using namespace KomiX::model::directory;
 
-DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {}
+DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {
+}

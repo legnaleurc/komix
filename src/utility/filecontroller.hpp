@@ -97,9 +97,13 @@ signals:
 	 */
 	void errorOccured( const QString & errMsg );
 
+private slots:
+	void onModelReady_();
+
 private:
 	void fromIndex_( const QModelIndex & );
 	int index_;
+	QUrl openingURL_;
 
 	model::FileModelSP model_;
 };

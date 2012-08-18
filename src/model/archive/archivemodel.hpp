@@ -46,6 +46,9 @@ namespace KomiX {
 				 */
 				ArchiveModel( const QFileInfo & root );
 
+			protected:
+				virtual void doInitialize();
+
 			private:
 				friend class ArchiveHook;
 
@@ -54,6 +57,8 @@ namespace KomiX {
 				static const QDir & TmpDir_();
 				static QDir ArchiveDir_( const QString & );
 				static void Extract_( const QString &, const QString & );
+
+				QFileInfo root_;
 			};
 
 			/// get supported archive formats

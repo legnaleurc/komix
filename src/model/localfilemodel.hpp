@@ -53,6 +53,7 @@ public:
 	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 protected:
+	virtual void doInitialize();
 	/// Set top-level directory
 	void setRoot( const QDir & root );
 

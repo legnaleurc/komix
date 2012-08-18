@@ -34,29 +34,35 @@ using model::FileModel;
 FileController::FileController( QObject * parent ) :
 QObject( parent ),
 index_( 0 ),
+openingURL_(),
 model_( NULL ) {
 }
 
 bool FileController::open( const QUrl & url ) {
 	try {
-		model_ = FileModel::createModel( url );
+		this->model_ = FileModel::createModel( url );
+		this->connect( this->model_.data(), SIGNAL( ready() ), SLOT( onModelReady_() ) );
+		this->model_->initialize();
+		this->openingURL_ = url;
 	} catch( exception::Exception & e ) {
 		emit errorOccured( e.getMessage() );
 		return false;
 	}
+	return true;
+}
+
+void FileController::onModelReady_() {
 	if( isEmpty() ) {
-		return false;
-	} else {
-		QModelIndex first = model_->index( url );
-		if( first.isValid() ) {
-			index_ = first.row();
-		} else {
-			first = model_->index( 0, 0 );
-			index_ = 0;
-		}
-		this->fromIndex_( first );
-		return true;
+		return;
 	}
+	QModelIndex first = model_->index( this->openingURL_ );
+	if( first.isValid() ) {
+		index_ = first.row();
+	} else {
+		first = model_->index( 0, 0 );
+		index_ = 0;
+	}
+	this->fromIndex_( first );
 }
 
 void FileController::open( const QModelIndex & index ) {

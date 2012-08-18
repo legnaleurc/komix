@@ -29,6 +29,10 @@ root_( root ),
 files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
 }
 
+void LocalFileModel::doInitialize() {
+	emit this->ready();
+}
+
 void LocalFileModel::setRoot( const QDir & root ) {
 	root_ = root;
 	files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );

@@ -162,20 +162,25 @@ bool ArchiveModel::IsPrepared() {
 	return QDir::temp() != TmpDir_();
 }
 
-ArchiveModel::ArchiveModel( const QFileInfo & root ) {
-	QString hash = QString::fromUtf8( QCryptographicHash::hash( root.fileName().toUtf8(), QCryptographicHash::Sha1 ).toHex() );
+ArchiveModel::ArchiveModel( const QFileInfo & root ): LocalFileModel(), root_( root ) {
+}
+
+void ArchiveModel::doInitialize() {
+	QString hash = QString::fromUtf8( QCryptographicHash::hash( this->root_.fileName().toUtf8(), QCryptographicHash::Sha1 ).toHex() );
 	qDebug() << hash;
 
 	if( !TmpDir_().exists( hash ) ) {
-		Extract_( hash, root.absoluteFilePath() );
+		Extract_( hash, this->root_.absoluteFilePath() );
 		// check if is tar-compressed
-		if( isTwo( root.fileName() ) ) {
-			QString name = ArchiveDir_( hash ).absoluteFilePath( root.completeBaseName() );
+		if( isTwo( this->root_.fileName() ) ) {
+			QString name = ArchiveDir_( hash ).absoluteFilePath( this->root_.completeBaseName() );
 			Extract_( hash, name );
 		}
 	}
 
 	setRoot( ArchiveDir_( hash ) );
+
+	emit this->ready();
 }
 
 namespace KomiX {

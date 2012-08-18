@@ -48,4 +48,5 @@ namespace {
 
 using namespace KomiX::model::single;
 
-SingleModel::SingleModel( const QFileInfo & root ) : LocalFileModel( root.dir() ) {}
+SingleModel::SingleModel( const QFileInfo & root ) : LocalFileModel( root.dir() ) {
+}

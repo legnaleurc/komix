@@ -57,6 +57,10 @@ bool FileModel::registerModel( const KeyFunctor & key, const ValueFunctor & valu
 	return true;
 }
 
+void FileModel::initialize() {
+	this->doInitialize();
+}
+
 FileModel::Matcher::Matcher( const QUrl & url ) : url_( url ) {
 }
 

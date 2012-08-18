@@ -41,6 +41,7 @@ namespace KomiX {
 		 * Describe how to retrive files.
 		 */
 		class FileModel : public QAbstractItemModel {
+			Q_OBJECT
 		public:
 			/// Functor of key comparsion
 			typedef bool ( * KeyFunctor )( const QUrl & );
@@ -63,6 +64,14 @@ namespace KomiX {
 			using QAbstractItemModel::index;
 			/// Query the index @p url in the model
 			virtual QModelIndex index( const QUrl & url ) const = 0;
+
+			void initialize();
+
+		protected:
+			virtual void doInitialize() = 0;
+
+		signals:
+			void ready();
 
 		private:
 			typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
