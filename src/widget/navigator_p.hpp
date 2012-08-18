@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file navigator_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,51 +18,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_WIDGET_NAVIGATOR_P_HPP
+#define KOMIX_WIDGET_NAVIGATOR_P_HPP
 
-#include "filemodel.hpp"
-
-#include <QtGui/QDialog>
-
-#include <memory>
+#include "navigator.hpp"
+#include "ui_navigator.h"
 
 namespace KomiX {
 namespace widget {
 
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
+class Navigator::Private: public QObject {
 	Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	explicit Navigator( QWidget * parent );
+	Private( Navigator * owner );
 
-	/// set current using model
-	void setModel( model::FileModelSP model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+public slots:
+	void openHelper();
+	void viewImage( const QModelIndex &, const QModelIndex & );
 
 signals:
-	/**
-	 * @brief required open a item
-	 * @param item index in the model
-	 */
-	void required( const QModelIndex & item );
+	void required( const QModelIndex & index );
 
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+public:
+	Navigator * owner;
+	Ui::Navigator * ui;
+	model::FileModelSP model;
+	QItemSelectionModel * selection;
 };
 
 }
-} // end namespace
+}
 
 #endif

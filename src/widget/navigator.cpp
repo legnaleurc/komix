@@ -19,66 +19,66 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "global.hpp"
-#include "navigator.hpp"
-#include "ui_navigator.h"
+#include "navigator_p.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtGui/QMovie>
 
-using namespace KomiX::widget;
+using KomiX::widget::Navigator;
 using KomiX::model::FileModelSP;
 
-Navigator::Navigator( QWidget * parent ) :
-QDialog( parent ),
-ui_( new Ui::Navigator ),
-model_( NULL ),
-selection_( NULL ) {
-	this->ui_->setupUi( this );
-	this->ui_->list->setFixedSize( 160, 480 );
-	this->ui_->preview->setFixedSize( 480, 480 );
-	this->ui_->preview->setAlignment( Qt::AlignCenter );
-
-	connect( this->ui_->buttons, SIGNAL( rejected() ), this, SLOT( reject() ) );
-	connect( this->ui_->buttons, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
+Navigator::Private::Private( Navigator * owner ):
+QObject(),
+ui( new Ui::Navigator ),
+model( NULL ),
+selection( NULL ) {
 }
 
-Navigator::~Navigator() {
-	delete this->ui_;
+void Navigator::Private::openHelper() {
+	qDebug() << "Send: " << this->ui->list->currentIndex();
+	emit this->required( this->ui->list->currentIndex() );
+	this->owner->accept();
 }
 
-void Navigator::setModel( FileModelSP model ) {
-	if( this->selection_ ) {
-		disconnect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-	}
-	this->model_ = model;
-	this->ui_->list->setModel( this->model_.data() );
-	this->selection_ = this->ui_->list->selectionModel();
-	connect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
-}
-
-void Navigator::setCurrentIndex( const QModelIndex & index ) {
-	this->ui_->list->setCurrentIndex( index );
-}
-
-void Navigator::openHelper_() {
-	qDebug() << "Send: " << this->ui_->list->currentIndex();
-	emit required( this->ui_->list->currentIndex() );
-	accept();
-}
-
-void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
+void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	qDebug( "Preview::viewImage_()" );
 	qDebug() << current;
 	QString path = current.data( Qt::UserRole ).toString();
-	QObject * mm = this->ui_->preview->movie();
+	QObject * mm = this->ui->preview->movie();
 	if( path.endsWith( ".gif", Qt::CaseInsensitive ) ) {
 		QMovie * m = new QMovie( path, QByteArray(), this );
-		this->ui_->preview->setMovie( m );
+		this->ui->preview->setMovie( m );
 		m->start();
 	} else {
-		this->ui_->preview->setPixmap( QPixmap( path ).scaled( this->ui_->preview->size(), Qt::KeepAspectRatio ) );
+		this->ui->preview->setPixmap( QPixmap( path ).scaled( this->ui->preview->size(), Qt::KeepAspectRatio ) );
 	}
 	if( mm ) {
 		mm->deleteLater();
 	}
+}
+
+Navigator::Navigator( QWidget * parent ) :
+QDialog( parent ) {
+	this->p_->ui->setupUi( this );
+	this->p_->ui->list->setFixedSize( 160, 480 );
+	this->p_->ui->preview->setFixedSize( 480, 480 );
+	this->p_->ui->preview->setAlignment( Qt::AlignCenter );
+
+	this->connect( this->p_->ui->buttons, SIGNAL( rejected() ), SLOT( reject() ) );
+	this->p_->connect( this->p_->ui->buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
+	this->connect( this->p_.get(), SIGNAL( required( const QModelIndex & ) ), SIGNAL( const QModelIndex & ) );
+}
+
+void Navigator::setModel( FileModelSP model ) {
+	if( this->p_->selection ) {
+		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+	}
+	this->p_->model = model;
+	this->p_->ui->list->setModel( this->p_->model.data() );
+	this->p_->selection = this->p_->ui->list->selectionModel();
+	this->p_->connect( this->p_->selection, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+}
+
+void Navigator::setCurrentIndex( const QModelIndex & index ) {
+	this->p_->ui->list->setCurrentIndex( index );
 }
