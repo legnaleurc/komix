@@ -22,73 +22,54 @@
 #define KOMIX_MODEL_FILEMODEL_HPP
 
 #include <QtCore/QAbstractItemModel>
-#include <QtCore/QSharedPointer>
 #include <QtCore/QUrl>
 
-#include <list>
-#include <utility>
+#include <functional>
+#include <memory>
 
 namespace KomiX {
-	namespace model {
+namespace model {
 
-		class FileModel;
-		/// FileModel smart pointer
-		typedef QSharedPointer< FileModel > FileModelSP;
+/**
+ * @brief Abstract file model
+ * 
+ * Describe how to retrive files.
+ */
+class FileModel: public QAbstractItemModel {
+	Q_OBJECT
+public:
+	/// Functor of key comparsion
+	typedef std::function< bool ( const QUrl & ) > KeyFunctor;
+	/// Functor of model creation
+	typedef std::function< std::shared_ptr< FileModel > ( const QUrl & ) > ValueFunctor;
 
-		/**
-		 * @brief Abstract file model
-		 * 
-		 * Describe how to retrive files.
-		 */
-		class FileModel : public QAbstractItemModel {
-			Q_OBJECT
-		public:
-			/// Functor of key comparsion
-			typedef bool ( * KeyFunctor )( const QUrl & );
-			/// Functor of model creation
-			typedef FileModelSP ( * ValueFunctor )( const QUrl & );
+	/**
+	 * @brief Create concrete model
+	 * @param url opening url
+	 */
+	static std::shared_ptr< FileModel > createModel( const QUrl & url );
+	/**
+	 * @brief Register model
+	 * @param key compare function
+	 * @param value create function
+	 * @return always true
+	 */
+	static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
 
-			/**
-			 * @brief Create concrete model
-			 * @param url opening url
-			 */
-			static FileModelSP createModel( const QUrl & url );
-			/**
-			 * @brief Register model
-			 * @param key compare function
-			 * @param value create function
-			 * @return always true
-			 */
-			static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
+	using QAbstractItemModel::index;
+	/// Query the index @p url in the model
+	virtual QModelIndex index( const QUrl & url ) const = 0;
 
-			using QAbstractItemModel::index;
-			/// Query the index @p url in the model
-			virtual QModelIndex index( const QUrl & url ) const = 0;
+	void initialize();
 
-			void initialize();
+protected:
+	virtual void doInitialize() = 0;
 
-		protected:
-			virtual void doInitialize() = 0;
+signals:
+	void ready();
+};
 
-		signals:
-			void ready();
-
-		private:
-			typedef std::pair< KeyFunctor, ValueFunctor > FunctorPair;
-			typedef std::list< FunctorPair > FunctorList;
-
-			class Matcher {
-			public:
-				Matcher( const QUrl & );
-				bool operator ()( const FunctorPair & ) const;
-			private:
-				QUrl url_;
-			};
-
-			static FunctorList & getFunctorList_();
-		};
-
-	}
+}
 } // end namespace
 
 #endif

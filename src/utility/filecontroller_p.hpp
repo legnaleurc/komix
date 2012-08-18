@@ -42,7 +42,7 @@ public:
 	FileController * owner;
 	int index;
 	QUrl openingURL;
-	model::FileModelSP model;
+	std::shared_ptr< model::FileModel > model;
 };
 
 }

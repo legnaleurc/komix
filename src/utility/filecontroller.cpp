@@ -66,7 +66,7 @@ p_( new Private( this ) ) {
 bool FileController::open( const QUrl & url ) {
 	try {
 		this->p_->model = FileModel::createModel( url );
-		this->connect( this->p_->model.data(), SIGNAL( ready() ), SLOT( onModelReady_() ) );
+		this->p_->connect( this->p_->model.get(), SIGNAL( ready() ), SLOT( onModelReady() ) );
 		this->p_->model->initialize();
 		this->p_->openingURL = url;
 	} catch( exception::Exception & e ) {
@@ -120,6 +120,6 @@ bool FileController::isEmpty() const {
 	return this->p_->model->rowCount() == 0;
 }
 
-KomiX::model::FileModelSP FileController::getModel() const {
+std::shared_ptr< KomiX::model::FileModel > FileController::getModel() const {
 	return this->p_->model;
 }

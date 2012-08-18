@@ -48,7 +48,7 @@ public:
 	Navigator( FileController * controller, QWidget * parent );
 
 	/// set current using model
-	void setModel( model::FileModelSP model );
+	void setModel( std::shared_ptr< model::FileModel > model );
 	/// set current model index
 	void setCurrentIndex( const QModelIndex & index );
 

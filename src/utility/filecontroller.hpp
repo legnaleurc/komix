@@ -59,7 +59,7 @@ public:
 	bool isEmpty() const;
 
 	/// get current model
-	model::FileModelSP getModel() const;
+	std::shared_ptr< model::FileModel > getModel() const;
 	/// get current index
 	QModelIndex getCurrentIndex() const;
 

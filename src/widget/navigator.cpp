@@ -26,14 +26,13 @@
 #include <QtGui/QMovie>
 
 using KomiX::widget::Navigator;
-using KomiX::model::FileModelSP;
 
 Navigator::Private::Private( FileController * controller, Navigator * owner ):
 QObject(),
 owner( owner ),
 ui(),
 controller( controller ),
-model( NULL ),
+model(),
 selection( NULL ) {
 }
 
@@ -71,12 +70,12 @@ p_( new Private( controller, this ) ) {
 	this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
 }
 
-void Navigator::setModel( FileModelSP model ) {
+void Navigator::setModel( std::shared_ptr< KomiX::model::FileModel > model ) {
 	if( this->p_->selection ) {
 		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
 	}
 	this->p_->model = model;
-	this->p_->ui.list->setModel( this->p_->model.data() );
+	this->p_->ui.list->setModel( this->p_->model.get() );
 	this->p_->selection = this->p_->ui.list->selectionModel();
 	this->p_->connect( this->p_->selection, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
 }

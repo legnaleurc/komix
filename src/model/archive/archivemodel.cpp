@@ -57,13 +57,13 @@ namespace {
 		return false;
 	}
 
-	KomiX::model::FileModelSP create( const QUrl & url ) {
+	std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
 		if( !KomiX::model::archive::ArchiveModel::IsRunnable() ) {
 			throw KomiX::exception::ArchiveException( "This feature is based on 7-zip. Please install it." );
 		} else if( !KomiX::model::archive::ArchiveModel::IsPrepared() ) {
 			throw KomiX::exception::ArchiveException( "I could not create temporary directory." );
 		}
-		return KomiX::model::FileModelSP( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
+		return std::shared_ptr< KomiX::model::FileModel >( new KomiX::model::archive::ArchiveModel( QFileInfo( url.toLocalFile() ) ) );
 	}
 
 	static const bool registered = KomiX::model::FileModel::registerModel( check, create );

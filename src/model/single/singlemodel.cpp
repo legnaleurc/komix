@@ -38,8 +38,8 @@ namespace {
 		return false;
 	}
 
-	KomiX::model::FileModelSP create( const QUrl & url ) {
-		return KomiX::model::FileModelSP( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
+	std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
+		return std::shared_ptr< KomiX::model::FileModel >( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
 	}
 
 	static const bool registered = KomiX::model::FileModel::registerModel( check, create );

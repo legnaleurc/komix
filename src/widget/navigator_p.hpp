@@ -43,7 +43,7 @@ public:
 	Navigator * owner;
 	Ui::Navigator ui;
 	FileController * controller;
-	model::FileModelSP model;
+	std::shared_ptr< model::FileModel > model;
 	QItemSelectionModel * selection;
 };
 
