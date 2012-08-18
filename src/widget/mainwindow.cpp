@@ -26,7 +26,6 @@
  */
 
 #include "global.hpp"
-#include "mainwindow.hpp"
 #include "mainwindow_p.hpp"
 
 #include <QtCore/QtDebug>
@@ -37,8 +36,6 @@
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QMessageBox>
-#include <QtGui/QTabWidget>
-#include <QtGui/QVBoxLayout>
 
 using KomiX::widget::MainWindow;
 
