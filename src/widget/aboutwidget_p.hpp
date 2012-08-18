@@ -32,7 +32,7 @@ public:
 	Private( AboutWidget * owner );
 
 	AboutWidget * owner;
-	Ui::AboutWidget * ui;
+	Ui::AboutWidget ui;
 };
 
 }

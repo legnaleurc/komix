@@ -41,7 +41,7 @@ signals:
 
 public:
 	Navigator * owner;
-	Ui::Navigator * ui;
+	Ui::Navigator ui;
 	model::FileModelSP model;
 	QItemSelectionModel * selection;
 };

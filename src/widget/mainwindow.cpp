@@ -45,7 +45,7 @@ using KomiX::widget::MainWindow;
 MainWindow::Private::Private( MainWindow * owner ):
 QObject(),
 owner( owner ),
-ui( new Ui::MainWindow ),
+ui(),
 preference( new Preference( owner ) ),
 trayIcon( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), owner ) ),
 about( new AboutWidget( owner ) ),
@@ -61,7 +61,7 @@ void MainWindow::Private::setupMenuBar() {
 }
 
 void MainWindow::Private::setupFileMenu() {
-	QMenu * fileMenu = this->ui->menu_File;
+	QMenu * fileMenu = this->ui.menu_File;
 
 	foreach( FileMenuHook hook, getFileMenuHooks() ) {
 		QAction * action = hook( this->owner );
@@ -71,54 +71,54 @@ void MainWindow::Private::setupFileMenu() {
 }
 
 void MainWindow::Private::setupEditMenu() {
-	this->preference->connect( this->ui->action_Preference, SIGNAL( triggered() ), SLOT( exec() ) );
-	this->ui->graphicsView->connect( this->preference, SIGNAL( accepted() ), SLOT( loadSettings() ) );
+	this->preference->connect( this->ui.action_Preference, SIGNAL( triggered() ), SLOT( exec() ) );
+	this->ui.graphicsView->connect( this->preference, SIGNAL( accepted() ), SLOT( loadSettings() ) );
 }
 
 void MainWindow::Private::setupViewMenu() {
-	this->owner->addAction( this->ui->actionSmooth_Next );
-	this->ui->graphicsView->connect( this->ui->actionSmooth_Next, SIGNAL( triggered() ), SLOT( smoothMove() ) );
+	this->owner->addAction( this->ui.actionSmooth_Next );
+	this->ui.graphicsView->connect( this->ui.actionSmooth_Next, SIGNAL( triggered() ), SLOT( smoothMove() ) );
 
-	this->owner->addAction( this->ui->actionSmooth_Previous );
-	this->ui->graphicsView->connect( this->ui->actionSmooth_Previous, SIGNAL( triggered() ), SLOT( smoothReversingMove() ) );
+	this->owner->addAction( this->ui.actionSmooth_Previous );
+	this->ui.graphicsView->connect( this->ui.actionSmooth_Previous, SIGNAL( triggered() ), SLOT( smoothReversingMove() ) );
 
-	this->owner->addAction( this->ui->actionPage_Head );
-	this->ui->graphicsView->connect( this->ui->actionPage_Head, SIGNAL( triggered() ), SLOT( begin() ) );
+	this->owner->addAction( this->ui.actionPage_Head );
+	this->ui.graphicsView->connect( this->ui.actionPage_Head, SIGNAL( triggered() ), SLOT( begin() ) );
 
-	this->owner->addAction( this->ui->actionPage_Tail );
-	this->ui->graphicsView->connect( this->ui->actionPage_Tail, SIGNAL( triggered() ), SLOT( end() ) );
+	this->owner->addAction( this->ui.actionPage_Tail );
+	this->ui.graphicsView->connect( this->ui.actionPage_Tail, SIGNAL( triggered() ), SLOT( end() ) );
 
-	this->owner->addAction( this->ui->action_Fullscreen );
-	this->connect( this->ui->action_Fullscreen, SIGNAL( triggered() ), SLOT( toggleFullScreen() ) );
+	this->owner->addAction( this->ui.action_Fullscreen );
+	this->connect( this->ui.action_Fullscreen, SIGNAL( triggered() ), SLOT( toggleFullScreen() ) );
 
-	this->owner->addAction( this->ui->action_Hide_Window );
-	this->connect( this->ui->action_Hide_Window, SIGNAL( triggered() ), SLOT( toggleSystemTray() ) );
+	this->owner->addAction( this->ui.action_Hide_Window );
+	this->connect( this->ui.action_Hide_Window, SIGNAL( triggered() ), SLOT( toggleSystemTray() ) );
 
-	this->owner->addAction( this->ui->action_Scale_Image );
-	this->ui->graphicsView->connect( this->ui->action_Scale_Image, SIGNAL( triggered() ), SLOT( showControlPanel() ) );
+	this->owner->addAction( this->ui.action_Scale_Image );
+	this->ui.graphicsView->connect( this->ui.action_Scale_Image, SIGNAL( triggered() ), SLOT( showControlPanel() ) );
 }
 
 void MainWindow::Private::setupGoMenu() {
-	this->owner->addAction( this->ui->action_Go_To );
-	this->ui->graphicsView->connect( this->ui->action_Go_To, SIGNAL( triggered() ), SLOT( showNavigator() ) );
+	this->owner->addAction( this->ui.action_Go_To );
+	this->ui.graphicsView->connect( this->ui.action_Go_To, SIGNAL( triggered() ), SLOT( showNavigator() ) );
 
-	this->owner->addAction( this->ui->action_Previous_Image );
-	this->ui->graphicsView->connect( this->ui->action_Previous_Image, SIGNAL( triggered() ), SLOT( previousPage() ) );
+	this->owner->addAction( this->ui.action_Previous_Image );
+	this->ui.graphicsView->connect( this->ui.action_Previous_Image, SIGNAL( triggered() ), SLOT( previousPage() ) );
 
-	this->owner->addAction( this->ui->action_Next_Image );
-	this->ui->graphicsView->connect( this->ui->action_Next_Image, SIGNAL( triggered() ), SLOT( nextPage() ) );
+	this->owner->addAction( this->ui.action_Next_Image );
+	this->ui.graphicsView->connect( this->ui.action_Next_Image, SIGNAL( triggered() ), SLOT( nextPage() ) );
 }
 
 void MainWindow::Private::setupHelpMenu() {
-	this->about->connect( this->ui->action_About, SIGNAL( triggered() ), SLOT( show() ) );
+	this->about->connect( this->ui.action_About, SIGNAL( triggered() ), SLOT( show() ) );
 
-	qApp->connect( this->ui->actionAbout_Qt, SIGNAL( triggered() ), SLOT( aboutQt() ) );
+	qApp->connect( this->ui.actionAbout_Qt, SIGNAL( triggered() ), SLOT( aboutQt() ) );
 }
 
 void MainWindow::Private::setupCentralWidget() {
-	this->connect( this->ui->graphicsView, SIGNAL( errorOccured( const QString & ) ), SLOT( popupError( const QString & ) ) );
-	this->owner->connect( this->ui->graphicsView, SIGNAL( fileDropped( const QUrl & ) ), SLOT( open( const QUrl & ) ) );
-	this->connect( this->ui->graphicsView, SIGNAL( middleClicked() ), SLOT( toggleFullScreen() ) );
+	this->connect( this->ui.graphicsView, SIGNAL( errorOccured( const QString & ) ), SLOT( popupError( const QString & ) ) );
+	this->owner->connect( this->ui.graphicsView, SIGNAL( fileDropped( const QUrl & ) ), SLOT( open( const QUrl & ) ) );
+	this->connect( this->ui.graphicsView, SIGNAL( middleClicked() ), SLOT( toggleFullScreen() ) );
 }
 
 void MainWindow::Private::initTrayIcon() {
@@ -171,7 +171,7 @@ void MainWindow::Private::toggleSystemTray() {
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 p_( new Private( this ) ) {
-	this->p_->ui->setupUi( this );
+	this->p_->ui.setupUi( this );
 
 	this->p_->setupMenuBar();
 	this->p_->setupCentralWidget();
@@ -183,7 +183,7 @@ p_( new Private( this ) ) {
  * @param url file url
  */
 void MainWindow::open( const QUrl & url ) {
-	if( !this->p_->ui->graphicsView->open( url ) ) {
+	if( !this->p_->ui.graphicsView->open( url ) ) {
 		QMessageBox::critical( this, tr( "Error" ), tr( "No openable file in this directory." ) );
 	}
 }

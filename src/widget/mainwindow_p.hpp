@@ -54,7 +54,7 @@ public slots:
 
 public:
 	MainWindow * owner;
-	Ui::MainWindow * ui;
+	Ui::MainWindow ui;
 	Preference * preference;
 	QSystemTrayIcon * trayIcon;
 	AboutWidget * about;
