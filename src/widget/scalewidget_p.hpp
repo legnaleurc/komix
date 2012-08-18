@@ -1,5 +1,5 @@
 /**
- * @file scalewidget.hpp
+ * @file scalewidget_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,53 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_SCALEWIDGET_HPP
-#define KOMIX_WIDGET_SCALEWIDGET_HPP
+#ifndef KOMIX_WIDGET_SCALEWIDGET_P_HPP
+#define KOMIX_WIDGET_SCALEWIDGET_P_HPP
 
-#include <QtGui/QWidget>
-
-#include <memory>
+#include "scalewidget.hpp"
+#include "ui_scalewidget.h"
 
 namespace KomiX {
 namespace widget {
 
-/**
- * @brief Widget to scale image
- *
- * This widget is simple ... too simple. Maybe I'll
- * change this widget to option widget.
- */
-class ScaleWidget: public QWidget {
+class ScaleWidget::Private: public QObject {
 	Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	explicit ScaleWidget( QWidget * parent );
+	explicit Private( ScaleWidget * owner );
 
 public slots:
-	/// to move slider
-	void scale( int ratio );
+	void valueHelper();
 
 signals:
-	void fitHeight();
-	void fitWidth();
-	void fitWindow();
-	/**
-	 * @brief scale event
-	 * @param ratio scalar ratio
-	 *
-	 * The ratio means percents, so 100 actually means 100%.
-	 */
-	void scaled( int ratio );
+	void scaled( int );
 
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+public:
+	ScaleWidget * owner;
+	Ui::ScaleWidget ui;
+	QButtonGroup * modes;
 };
 
 }
-} // end namespace
+}
 
 #endif

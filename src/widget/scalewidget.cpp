@@ -18,67 +18,66 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "scalewidget.hpp"
-#include "ui_scalewidget.h"
+#include "scalewidget_p.hpp"
 
 #include <QtGui/QButtonGroup>
 
 namespace {
 
-	/// native enum
-	enum ScaleMode {
-		Custom,
-		Width,
-		Height,
-		Window
-	};
+/// native enum
+enum ScaleMode {
+	Custom,
+	Width,
+	Height,
+	Window
+};
 
 } // end of namespace
 
-using namespace KomiX::widget;
+using KomiX::widget::ScaleWidget;
+
+ScaleWidget::Private::Private( ScaleWidget * owner ):
+QObject(),
+owner( owner ),
+ui(),
+modes( new QButtonGroup( owner ) ){
+	this->owner->connect( this, SIGNAL( scaled( int ) ), SIGNAL( scaled( int ) ) );
+}
+
+void ScaleWidget::Private::valueHelper() {
+	emit this->scaled( this->ui.scaleSlider->value() );
+}
 
 ScaleWidget::ScaleWidget( QWidget * parent ):
 QWidget( parent, Qt::Dialog ),
-ui_( new Ui::ScaleWidget ),
-modes_( new QButtonGroup( this ) ) {
-	this->ui_->setupUi( this );
+p_( new Private( this ) ) {
+	this->p_->ui.setupUi( this );
 
-	this->modes_->addButton( this->ui_->custom );
-	this->modes_->setId( this->ui_->custom, Custom );
-	connect( this->ui_->custom, SIGNAL( clicked() ), this, SLOT( valueHelper_() ) );
+	this->p_->modes->addButton( this->p_->ui.custom );
+	this->p_->modes->setId( this->p_->ui.custom, Custom );
+	this->p_->connect( this->p_->ui.custom, SIGNAL( clicked() ), SLOT( valueHelper() ) );
 
-	this->modes_->addButton( this->ui_->width );
-	this->modes_->setId( this->ui_->width, Width );
-	connect( this->ui_->width, SIGNAL( clicked() ), this, SIGNAL( fitWidth() ) );
+	this->p_->modes->addButton( this->p_->ui.width );
+	this->p_->modes->setId( this->p_->ui.width, Width );
+	this->connect( this->p_->ui.width, SIGNAL( clicked() ), SIGNAL( fitWidth() ) );
 
-	this->modes_->addButton( this->ui_->height );
-	this->modes_->setId( this->ui_->height, Height );
-	connect( this->ui_->height, SIGNAL( clicked() ), this, SIGNAL( fitHeight() ) );
+	this->p_->modes->addButton( this->p_->ui.height );
+	this->p_->modes->setId( this->p_->ui.height, Height );
+	this->connect( this->p_->ui.height, SIGNAL( clicked() ), SIGNAL( fitHeight() ) );
 
-	this->modes_->addButton( this->ui_->window );
-	this->modes_->setId( this->ui_->window, Window );
-	connect( this->ui_->window, SIGNAL( clicked() ), this, SIGNAL( fitWindow() ) );
+	this->p_->modes->addButton( this->p_->ui.window );
+	this->p_->modes->setId( this->p_->ui.window, Window );
+	this->connect( this->p_->ui.window, SIGNAL( clicked() ), SIGNAL( fitWindow() ) );
 
-	connect( this->ui_->scaleSlider, SIGNAL( sliderMoved( int ) ), this, SIGNAL( scaled( int ) ) );
-	connect( this->ui_->scaleSlider, SIGNAL( valueChanged( int ) ), this, SIGNAL( scaled( int ) ) );
+	this->connect( this->p_->ui.scaleSlider, SIGNAL( sliderMoved( int ) ), SIGNAL( scaled( int ) ) );
+	this->connect( this->p_->ui.scaleSlider, SIGNAL( valueChanged( int ) ), SIGNAL( scaled( int ) ) );
 }
-
-ScaleWidget::~ScaleWidget() {
-	delete this->ui_;
-}
-
 
 void ScaleWidget::scale( int ratio ) {
-	this->modes_->button( Custom )->setChecked( true );
+	this->p_->modes->button( Custom )->setChecked( true );
 	if( ratio != 0 ) {
-		this->ui_->scaleSlider->setValue( this->ui_->scaleSlider->value() + ratio );
+		this->p_->ui.scaleSlider->setValue( this->p_->ui.scaleSlider->value() + ratio );
 	} else {
-		this->ui_->scaleSlider->setValue( 100 );
+		this->p_->ui.scaleSlider->setValue( 100 );
 	}
-}
-
-void ScaleWidget::valueHelper_() {
-	qDebug( "ScaleImage::valueHelper_" );
-	qDebug( "%d", this->ui_->scaleSlider->value() );
-	emit scaled( this->ui_->scaleSlider->value() );
 }
