@@ -27,6 +27,7 @@
 #include <QtGui/QDropEvent>
 
 using KomiX::widget::ImageView;
+using KomiX::widget::Direction;
 
 ImageView::Private::Private( ImageView * owner ):
 QObject(),
