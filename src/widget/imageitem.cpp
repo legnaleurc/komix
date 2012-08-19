@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "imageitem.hpp"
-#include "image.hpp"
+#include "imagewrapper.hpp"
 
 using KomiX::widget::ImageItem;
 
-ImageItem::ImageItem( const KomiX::Image & image ): QGraphicsProxyWidget() {
+ImageItem::ImageItem( const KomiX::ImageWrapper & image ): QGraphicsProxyWidget() {
 	QLabel * label = image.createLabel();
 	this->setWidget( label );
 }

@@ -48,7 +48,7 @@ pageBuffer() {
 }
 
 // TODO this function should consider multi-paging mode
-void ImageView::Private::setImage( const QList< KomiX::Image > & images ) {
+void ImageView::Private::setImage( const QList< KomiX::ImageWrapper > & images ) {
 	if( images.empty() ) {
 		return;
 	}
@@ -203,7 +203,7 @@ p_( new Private( this ) ) {
 void ImageView::initialize( FileController * controller ) {
 	this->p_->controller = controller;
 
-	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::Image & ) ), SLOT( addImage( const KomiX::Image & ) ) );
+	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ), SLOT( addImage( const KomiX::ImageWrapper & ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -293,7 +293,7 @@ void ImageView::scale( double ratio ) {
 	this->p_->imgRatio *= ratio;
 }
 
-void ImageView::addImage( const KomiX::Image & image ) {
+void ImageView::addImage( const KomiX::ImageWrapper & image ) {
 	this->p_->pageBuffer.push_back( image );
 	if( this->p_->pageBuffer.size() == 1 ) {
 		// TODO should scale in multi-paging mode

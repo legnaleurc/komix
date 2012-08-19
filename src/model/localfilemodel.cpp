@@ -20,7 +20,7 @@
  */
 #include "global.hpp"
 #include "localfilemodel.hpp"
-#include "image.hpp"
+#include "imagewrapper.hpp"
 
 namespace KomiX {
 namespace model {
@@ -115,7 +115,7 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 			case Qt::DisplayRole:
 				return this->p_->files[index.row()];
 			case Qt::UserRole:
-				return QVariant::fromValue( KomiX::Image( this->p_->root.filePath( this->p_->files[index.row()] ) ) );
+				return QVariant::fromValue( KomiX::ImageWrapper( this->p_->root.filePath( this->p_->files[index.row()] ) ) );
 			default:
 				return QVariant();
 			}

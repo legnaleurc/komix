@@ -1,4 +1,4 @@
-#include "image.hpp"
+#include "imagewrapper.hpp"
 
 #include <QtGui/QImageReader>
 #include <QtGui/QPixmap>
@@ -6,7 +6,7 @@
 
 namespace KomiX {
 
-	class Image::Private {
+	class ImageWrapper::Private {
 	public:
 		Private( const QString & path );
 
@@ -16,22 +16,22 @@ namespace KomiX {
 
 }
 
-using KomiX::Image;
+using KomiX::ImageWrapper;
 
-Image::Private::Private( const QString & path ):
+ImageWrapper::Private::Private( const QString & path ):
 animatable( false ),
 path( path ) {
 	QImageReader fin( path );
 	this->animatable = fin.supportsAnimation();
 }
 
-Image::Image():p_() {
+ImageWrapper::ImageWrapper():p_() {
 }
 
-Image::Image( const QString & path ): p_( new Private( path ) ) {
+ImageWrapper::ImageWrapper( const QString & path ): p_( new Private( path ) ) {
 }
 
-QLabel * Image::createLabel() const {
+QLabel * ImageWrapper::createLabel() const {
 	if( !this->p_ ) {
 		return NULL;
 	}

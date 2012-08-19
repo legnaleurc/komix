@@ -22,7 +22,7 @@
 #define KOMIX_WIDGET_IMAGEVIEW_P_HPP
 
 #include "imageview.hpp"
-#include "image.hpp"
+#include "imagewrapper.hpp"
 #include "scalewidget.hpp"
 #include "filecontroller.hpp"
 
@@ -43,7 +43,7 @@ public:
 
 	explicit Private( ImageView * owner );
 
-	void setImage( const QList< KomiX::Image > & images );
+	void setImage( const QList< KomiX::ImageWrapper > & images );
 	void moveBy( const QPointF & );
 	void updateScaling();
 	void updateViewportRectangle();
@@ -68,7 +68,7 @@ public:
 	ScaleMode scaleMode;
 	QRectF vpRect;
 	Direction vpState;
-	QList< Image > pageBuffer;
+	QList< ImageWrapper > pageBuffer;
 };
 
 }

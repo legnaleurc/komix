@@ -36,7 +36,7 @@ public slots:
 	void onModelReady();
 
 signals:
-	void imageLoaded( const KomiX::Image & image );
+	void imageLoaded( const KomiX::ImageWrapper & image );
 
 public:
 	FileController * owner;

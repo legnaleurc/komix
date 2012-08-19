@@ -29,7 +29,7 @@ class QModelIndex;
 
 namespace KomiX {
 
-class Image;
+class ImageWrapper;
 
 /**
  * @brief The file controller
@@ -91,7 +91,7 @@ signals:
 	 * @brief get image
 	 * @param image image
 	 */
-	void imageLoaded( const KomiX::Image & image );
+	void imageLoaded( const KomiX::ImageWrapper & image );
 	/**
 	 * @brief Some error occured
 	 * @param errMsg error message

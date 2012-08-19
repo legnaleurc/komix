@@ -24,13 +24,13 @@
 #include <QtGui/QGraphicsProxyWidget>
 
 namespace KomiX {
-	class Image;
+	class ImageWrapper;
 	namespace widget {
 		class ImageItem : public QGraphicsProxyWidget {
 			Q_OBJECT
 			Q_PROPERTY( QPointF pos READ pos WRITE setPos )
 		public:
-			explicit ImageItem( const Image & image );
+			explicit ImageItem( const ImageWrapper & image );
 		};
 	}
 }

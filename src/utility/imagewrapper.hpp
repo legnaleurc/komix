@@ -4,17 +4,19 @@
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 #include <QtGui/QLabel>
+#include <QtGui/QGraphicsItem>
 
 #include <memory>
 
 namespace KomiX {
 
-	class Image {
+	class ImageWrapper {
 	public:
-		Image();
-		explicit Image( const QString & path );
+		ImageWrapper();
+		explicit ImageWrapper( const QString & path );
 
 		QLabel * createLabel() const;
+		QGraphicsItem * createGraphicsItem() const;
 
 	private:
 		class Private;
@@ -23,6 +25,6 @@ namespace KomiX {
 
 }
 
-Q_DECLARE_METATYPE( KomiX::Image );
+Q_DECLARE_METATYPE( KomiX::ImageWrapper );
 
 #endif

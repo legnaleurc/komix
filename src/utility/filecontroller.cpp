@@ -21,7 +21,7 @@
 #include "exception.hpp"
 #include "filecontroller_p.hpp"
 #include "global.hpp"
-#include "image.hpp"
+#include "imagewrapper.hpp"
 
 #include <QtCore/QFileInfo>
 
@@ -36,7 +36,7 @@ owner( owner ),
 index( 0 ),
 openingURL(),
 model( NULL ) {
-	this->owner->connect( this, SIGNAL( imageLoaded( const KomiX::Image & ) ), SIGNAL( imageLoaded( const KomiX::Image & ) ) );
+	this->owner->connect( this, SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ), SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ) );
 }
 
 void FileController::Private::onModelReady() {
@@ -54,7 +54,7 @@ void FileController::Private::onModelReady() {
 }
 
 void FileController::Private::fromIndex( const QModelIndex & index ) {
-	Image image = index.data( Qt::UserRole ).value< Image >();
+	ImageWrapper image = index.data( Qt::UserRole ).value< ImageWrapper >();
 	emit this->imageLoaded( image );
 }
 
