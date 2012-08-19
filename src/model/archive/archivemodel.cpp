@@ -156,6 +156,9 @@ void ArchiveModel::Private::checkTwo( int exitCode ) {
 	if( isTwo( this->root.fileName() ) ) {
 		QString name = archiveDir( this->hash ).absoluteFilePath( this->root.completeBaseName() );
 		this->extract( name, SLOT( allDone( int ) ) );
+	} else {
+		this->owner->setRoot( archiveDir( this->hash ) );
+		emit this->ready();
 	}
 }
 
@@ -163,6 +166,7 @@ void ArchiveModel::Private::allDone( int exitCode ) {
 	if( exitCode != 0 ) {
 		return;
 	}
+	this->owner->setRoot( archiveDir( this->hash ) );
 	emit this->ready();
 }
 
