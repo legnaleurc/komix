@@ -66,6 +66,7 @@ protected:
 	virtual void doInitialize() = 0;
 
 signals:
+	void error( const QString & msg );
 	void ready();
 };
 

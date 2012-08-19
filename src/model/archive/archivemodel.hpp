@@ -24,60 +24,49 @@
 #include "localfilemodel.hpp"
 
 namespace KomiX {
-	namespace model {
-		namespace archive {
+namespace model {
+namespace archive {
 
-			/**
-			 * @brief The model using 7-Zip to open compressed file
-			 *
-			 * Supported file formats: 7z, zip, rar, tar.gz, tar.bz2.
-			 * Do not support password.
-			 */
-			class ArchiveModel : public LocalFileModel {
-			public:
-				/// Check if 7-zip existed
-				static bool IsRunnable();
-				/// Check if temporary directory is prepared
-				static bool IsPrepared();
+/**
+ * @brief The model using 7-Zip to open compressed file
+ *
+ * Supported file formats: 7z, zip, rar, tar.gz, tar.bz2.
+ * Do not support password.
+ */
+class ArchiveModel: public LocalFileModel {
+public:
+	/// Check if 7-zip existed
+	static bool IsRunnable();
+	/// Check if temporary directory is prepared
+	static bool IsPrepared();
 
-				/**
-				 * @brief Constructor with given fileinfo
-				 * @param root top-level file
-				 */
-				ArchiveModel( const QFileInfo & root );
+	/**
+	 * @brief Constructor with given fileinfo
+	 * @param root top-level file
+	 */
+	ArchiveModel( const QFileInfo & root );
 
-			protected:
-				virtual void doInitialize();
+protected:
+	virtual void doInitialize();
 
-			private:
-				friend class ArchiveHook;
+private:
+	friend class ArchiveHook;
+	class Private;
+	std::shared_ptr< Private > p_;
+};
 
-				static const QString & SevenZip_();
-				static QStringList Arguments_( const QString & );
-				static const QDir & TmpDir_();
-				static QDir ArchiveDir_( const QString & );
-				static void Extract_( const QString &, const QString & );
+/// get supported archive formats
+const QStringList & ArchiveFormats();
+/// get supported archive formats name filter
+const QStringList & ArchiveFormatsFilter();
+/**
+ * @brief check if archive is supported
+ * @param path file path
+ */
+bool isArchiveSupported( const QString & path );
 
-				QFileInfo root_;
-			};
-
-			/// get supported archive formats
-			const QStringList & ArchiveFormats();
-			/// get supported archive formats name filter
-			const QStringList & ArchiveFormatsFilter();
-			/**
-			 * @brief check if archive is supported
-			 * @param path file path
-			 */
-			bool isArchiveSupported( const QString & path );
-			/**
-			 * @breif delete directory tree
-			 * @param dir directory to be delete.
-			 */
-			int delTree( QDir dir );
-
-		}
-	}
+}
+}
 } // end of namespace
 
 #endif
