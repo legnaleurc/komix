@@ -24,14 +24,16 @@
 #include "filemodel.hpp"
 
 #include <QDir>
-#include <QStringList>
 
-namespace KomiX { namespace model {
+#include <memory>
+
+namespace KomiX {
+namespace model {
 
 /**
  * @brief The model to retrive files in local
  */
-class LocalFileModel : public FileModel {
+class LocalFileModel: public FileModel {
 public:
 	/**
 	 * @brief Default constructor, open @p root as top-level directory
@@ -58,10 +60,11 @@ protected:
 	void setRoot( const QDir & root );
 
 private:
-	QDir root_;
-	QStringList files_;
+	class Private;
+	std::shared_ptr< Private > p_;
 };
 
-} } // end of namespace
+}
+} // end of namespace
 
 #endif

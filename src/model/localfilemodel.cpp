@@ -22,11 +22,30 @@
 #include "localfilemodel.hpp"
 #include "image.hpp"
 
-using namespace KomiX::model;
+namespace KomiX {
+namespace model {
+
+class LocalFileModel::Private {
+public:
+	Private( const QDir & root );
+
+	QDir root;
+	QStringList files;
+};
+
+}
+}
+
+using KomiX::model::LocalFileModel;
+
+LocalFileModel::Private::Private( const QDir & root ):
+root( root ),
+files( root.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
+}
 
 LocalFileModel::LocalFileModel( const QDir & root ):
-root_( root ),
-files_( root_.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
+FileModel(),
+p_( new Private( root ) ) {
 }
 
 void LocalFileModel::doInitialize() {
@@ -34,12 +53,12 @@ void LocalFileModel::doInitialize() {
 }
 
 void LocalFileModel::setRoot( const QDir & root ) {
-	root_ = root;
-	files_ = root_.entryList( SupportedFormatsFilter(), QDir::Files );
+	this->p_->root = root;
+	this->p_->files = root.entryList( SupportedFormatsFilter(), QDir::Files );
 }
 
 QModelIndex LocalFileModel::index( const QUrl & url ) const {
-	int row = files_.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
+	int row = this->p_->files.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
 	return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 }
 
@@ -47,7 +66,7 @@ QModelIndex LocalFileModel::index( const QUrl & url ) const {
 QModelIndex LocalFileModel::index( int row, int column, const QModelIndex & parent ) const {
 	if( !parent.isValid() ) {
 		// query from root
-		if( column == 0 && row >= 0 && row < files_.size() ) {
+		if( column == 0 && row >= 0 && row < this->p_->files.size() ) {
 			return createIndex( row, 0, row );
 		} else {
 			return QModelIndex();
@@ -63,7 +82,7 @@ QModelIndex LocalFileModel::parent( const QModelIndex & child ) const {
 		// root has no parent
 		return QModelIndex();
 	} else {
-		if( child.column() == 0 && child.row() >= 0 && child.row() < files_.size() ) {
+		if( child.column() == 0 && child.row() >= 0 && child.row() < this->p_->files.size() ) {
 			return QModelIndex();
 		} else {
 			return QModelIndex();
@@ -74,7 +93,7 @@ QModelIndex LocalFileModel::parent( const QModelIndex & child ) const {
 int LocalFileModel::rowCount( const QModelIndex & parent ) const {
 	if( !parent.isValid() ) {
 		// root row size
-		return files_.size();
+		return this->p_->files.size();
 	} else {
 		// others are leaf
 		return 0;
@@ -91,12 +110,12 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 	}
 	switch( index.column() ) {
 	case 0:
-		if( index.row() >= 0 && index.row() < files_.size() ) {
+		if( index.row() >= 0 && index.row() < this->p_->files.size() ) {
 			switch( role ) {
 			case Qt::DisplayRole:
-				return files_[index.row()];
+				return this->p_->files[index.row()];
 			case Qt::UserRole:
-				return QVariant::fromValue( KomiX::Image( root_.filePath( files_[index.row()] ) ) );
+				return QVariant::fromValue( KomiX::Image( this->p_->root.filePath( this->p_->files[index.row()] ) ) );
 			default:
 				return QVariant();
 			}
