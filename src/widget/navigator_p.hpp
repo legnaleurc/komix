@@ -35,6 +35,7 @@ public:
 public slots:
 	void openHelper();
 	void viewImage( const QModelIndex &, const QModelIndex & );
+	void onFinished( int id, const QByteArray & data );
 
 signals:
 	void required( const QModelIndex & index );

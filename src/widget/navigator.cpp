@@ -22,8 +22,11 @@
 #include "navigator_p.hpp"
 #include "filecontroller.hpp"
 #include "imagewrapper.hpp"
+#include "blockdeviceloader.hpp"
+#include "characterdeviceloader.hpp"
 
-#include <QtCore/QtDebug>
+#include <QtCore/QThreadPool>
+#include <QtCore/QBuffer>
 #include <QtGui/QMovie>
 
 using KomiX::widget::Navigator;
@@ -44,8 +47,39 @@ void Navigator::Private::openHelper() {
 }
 
 void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
-//	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
-//	path.moveToLabel( this->ui.preview, this->ui.preview->size() );
+	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
+	DeviceLoader * loader = nullptr;
+	if( device->isSequential() ) {
+		loader = new CharacterDeviceLoader( -1, device );
+	} else {
+		loader = new BlockDeviceLoader( -1, device );
+	}
+	this->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
+	QThreadPool::globalInstance()->start( loader );
+}
+
+void Navigator::Private::onFinished( int id, const QByteArray & data ) {
+	QBuffer * buffer = new QBuffer;
+	buffer->setData( data );
+	buffer->open( QIODevice::ReadOnly );
+	QImageReader iin( buffer );
+	QMovie * tmp = this->ui.preview->movie();
+	if( iin.supportsAnimation() ) {
+		// QMovie
+		buffer->seek( 0 );
+		QMovie * movie = new QMovie( buffer );
+		buffer->setParent( movie );
+		this->ui.preview->setMovie( movie );
+		movie->setScaledSize( this->ui.preview->size() );
+		movie->start();
+	} else {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		buffer->deleteLater();
+		this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
+	}
+	if( tmp ) {
+		tmp->deleteLater();
+	}
 }
 
 Navigator::Navigator( FileController * controller, QWidget * parent ) :
