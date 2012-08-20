@@ -1,51 +1,50 @@
+#if 0
 #include "imagewrapper.hpp"
 
 #include <QtGui/QImageReader>
 #include <QtGui/QPixmap>
 #include <QtGui/QMovie>
 
+#include <functional>
+
 namespace KomiX {
 
-	class ImageWrapper::Private {
-	public:
-		Private( const QString & path );
+class ImageWrapper::Private {
+public:
+	explicit Private( QIODevice * device );
 
-		bool animatable;
-		QString path;
-	};
+	QIODevice * device;
+};
 
 }
 
 using KomiX::ImageWrapper;
 
-ImageWrapper::Private::Private( const QString & path ):
-animatable( false ),
-path( path ) {
-	QImageReader fin( path );
-	this->animatable = fin.supportsAnimation();
+ImageWrapper::Private::Private( QIODevice * device ):
+device( device ) {
 }
 
-ImageWrapper::ImageWrapper():p_() {
+ImageWrapper::ImageWrapper(): p_() {
 }
 
-ImageWrapper::ImageWrapper( const QString & path ): p_( new Private( path ) ) {
+ImageWrapper::ImageWrapper( QIODevice * device ): p_( new Private( device ) ) {
 }
 
-QLabel * ImageWrapper::createLabel() const {
+void ImageWrapper::moveToLabel( QLabel * label, const QSize & size ) const {
 	if( !this->p_ ) {
-		return NULL;
+		return;
 	}
-	QLabel * label = new QLabel;
-	if( this->p_->animatable ) {
-		QMovie * movie = new QMovie( this->p_->path );
-		movie->setParent( label );
-		label->setMovie( movie );
-		movie->start();
-		label->resize( movie->frameRect().size() );
-	} else {
-		QPixmap pixmap( this->p_->path );
-		label->setPixmap( pixmap );
-		label->resize( pixmap.size() );
+	if( this->p_->movie && this->p_->movie->isValid() ) {
+		this->p_->movie->setScaledSize( size );
+		this->p_->movie->setParent( label );
+		label->setMovie( this->p_->movie.release() );
+		label->movie()->start();
+	} else if( !this->p_->pixmap.isNull() ) {
+		label->setPixmap( this->p_->pixmap.scaled( size, Qt::KeepAspectRatio ) );
 	}
-	return label;
 }
+
+QGraphicsItem * ImageWrapper::takeGraphicsItem( QGraphicsItem * parent ) const {
+	return parent;
+}
+#endif

@@ -1,5 +1,5 @@
 /**
- * @file filecontroller_p.hpp
+ * @file blockdeviceloader.cpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,33 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_UTILITY_FILECONTROLLER_HPP_
-#define KOMIX_UTILITY_FILECONTROLLER_HPP_
+#include "blockdeviceloader.hpp"
 
-#include "filecontroller.hpp"
+#include <QtGui/QImageReader>
 
-namespace KomiX {
+using KomiX::widget::BlockDeviceLoader;
 
-class FileController::Private: public QObject {
-	Q_OBJECT
-public:
-	explicit Private( FileController * owner );
-
-	void fromIndex( const QModelIndex & );
-
-public slots:
-	void onModelReady();
-
-signals:
-	void imageLoaded( QIODevice * device );
-
-public:
-	FileController * owner;
-	int index;
-	QUrl openingURL;
-	std::shared_ptr< model::FileModel > model;
-};
-
+BlockDeviceLoader::BlockDeviceLoader( int id, QIODevice * device ):
+DeviceLoader( id, device ) {
 }
 
-#endif
+void BlockDeviceLoader::run() {
+	QImageReader iin( this->getDevice() );
+	bool animatable = iin.supportsAnimation();
+	if( animatable ) {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		emit this->finished( this->getID(), pixmap );
+	} else {
+		this->getDevice()->seek( 0 );
+		QMovie * movie = new QMovie( this->getDevice() );
+		emit this->finished( this->getID(), movie );
+	}
+}

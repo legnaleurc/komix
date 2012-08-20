@@ -28,7 +28,6 @@
 namespace KomiX {
 
 class FileController;
-class ImageWrapper;
 
 namespace widget {
 
@@ -67,7 +66,6 @@ public slots:
 	void nextPage();
 	void previousPage();
 	void scale( int pcRatio );
-	void addImage( const KomiX::ImageWrapper & image );
 	void showControlPanel();
 	void smoothMove();
 	void smoothReversingMove();

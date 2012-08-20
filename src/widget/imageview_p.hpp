@@ -43,7 +43,7 @@ public:
 
 	explicit Private( ImageView * owner );
 
-	void setImage( const QList< KomiX::ImageWrapper > & images );
+	void setImage( const QList< QIODevice * > & images );
 	void moveBy( const QPointF & );
 	void updateScaling();
 	void updateViewportRectangle();
@@ -52,6 +52,7 @@ public:
 	void setupAnimation( int, double, double );
 
 public slots:
+	void addImage( QIODevice * image );
 	void animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State );
 
 public:
@@ -61,6 +62,7 @@ public:
 	double imgRatio;
 	QRectF imgRect;
 	int msInterval;
+	QList< QIODevice * > pageBuffer;
 	ScaleWidget * panel;
 	int pixelInterval;
 	QPoint pressEndPosition;
@@ -68,7 +70,6 @@ public:
 	ScaleMode scaleMode;
 	QRectF vpRect;
 	Direction vpState;
-	QList< ImageWrapper > pageBuffer;
 };
 
 }

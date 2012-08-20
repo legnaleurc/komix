@@ -1,8 +1,9 @@
 #ifndef KOMIX_UTILITY_IMAGE_HPP
 #define KOMIX_UTILITY_IMAGE_HPP
 
-#include <QtCore/QString>
+//#include <QtCore/QString>
 #include <QtCore/QMetaType>
+/*
 #include <QtGui/QLabel>
 #include <QtGui/QGraphicsItem>
 
@@ -13,10 +14,10 @@ namespace KomiX {
 	class ImageWrapper {
 	public:
 		ImageWrapper();
-		explicit ImageWrapper( const QString & path );
+		explicit ImageWrapper( QIODevice * device );
 
-		QLabel * createLabel() const;
-		QGraphicsItem * createGraphicsItem() const;
+		void moveToLabel( QLabel * label, const QSize & size ) const;
+		QGraphicsItem * takeGraphicsItem( QGraphicsItem * parent ) const;
 
 	private:
 		class Private;
@@ -24,7 +25,8 @@ namespace KomiX {
 	};
 
 }
+*/
 
-Q_DECLARE_METATYPE( KomiX::ImageWrapper );
+Q_DECLARE_METATYPE( QIODevice * )
 
 #endif

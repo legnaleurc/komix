@@ -21,18 +21,28 @@
 #ifndef KOMIX_WIDGET_IMAGEITEM_HPP
 #define KOMIX_WIDGET_IMAGEITEM_HPP
 
-#include <QtGui/QGraphicsProxyWidget>
+#include <QtGui/QGraphicsObject>
+
+#include <memory>
 
 namespace KomiX {
-	class ImageWrapper;
-	namespace widget {
-		class ImageItem : public QGraphicsProxyWidget {
-			Q_OBJECT
-			Q_PROPERTY( QPointF pos READ pos WRITE setPos )
-		public:
-			explicit ImageItem( const ImageWrapper & image );
-		};
-	}
+namespace widget {
+class ImageItem: public QGraphicsObject {
+	Q_OBJECT
+	Q_PROPERTY( QPointF pos READ pos WRITE setPos )
+public:
+	explicit ImageItem( const QList< QIODevice * > & devices );
+
+	virtual QRectF boundingRect() const;
+	virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+
+	QSizeF getSize() const;
+
+private:
+	class Private;
+	std::shared_ptr< Private > p_;
+};
+}
 }
 
 #endif

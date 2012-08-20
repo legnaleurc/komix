@@ -1,5 +1,5 @@
 /**
- * @file filecontroller_p.hpp
+ * @file characterdeviceloader_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,33 +18,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_UTILITY_FILECONTROLLER_HPP_
-#define KOMIX_UTILITY_FILECONTROLLER_HPP_
+#ifndef KOMIX_WIDGET_CHARACTERDEVICELOADER_HPP_
+#define KOMIX_WIDGET_CHARACTERDEVICELOADER_HPP_
 
-#include "filecontroller.hpp"
+#include "characterdeviceloader.hpp"
+
+#include <QtCore/QBuffer>
+
+#include <memory>
 
 namespace KomiX {
+namespace widget {
 
-class FileController::Private: public QObject {
+class CharacterDeviceLoader::Private: public QObject {
 	Q_OBJECT
 public:
-	explicit Private( FileController * owner );
-
-	void fromIndex( const QModelIndex & );
+	explicit Private( CharacterDeviceLoader * owner );
 
 public slots:
-	void onModelReady();
+	void onReadyRead();
+	void onReadFinished();
 
 signals:
-	void imageLoaded( QIODevice * device );
+	void finished();
 
 public:
-	FileController * owner;
-	int index;
-	QUrl openingURL;
-	std::shared_ptr< model::FileModel > model;
+	CharacterDeviceLoader * owner;
+	QBuffer buffer;
 };
 
+}
 }
 
 #endif

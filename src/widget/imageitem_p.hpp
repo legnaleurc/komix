@@ -1,5 +1,5 @@
 /**
- * @file filecontroller_p.hpp
+ * @file imageitem_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,33 +18,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_UTILITY_FILECONTROLLER_HPP_
-#define KOMIX_UTILITY_FILECONTROLLER_HPP_
+#ifndef KOMIX_WIDGET_IMAGEITEM_HPP_
+#define KOMIX_WIDGET_IMAGEITEM_HPP_
 
-#include "filecontroller.hpp"
+#include "imageitem.hpp"
 
 namespace KomiX {
+namespace widget {
 
-class FileController::Private: public QObject {
+class ImageItem::Private: public QObject {
 	Q_OBJECT
 public:
-	explicit Private( FileController * owner );
-
-	void fromIndex( const QModelIndex & );
+	explicit Private( ImageItem * owner );
 
 public slots:
-	void onModelReady();
-
-signals:
-	void imageLoaded( QIODevice * device );
+	void onFinished( int id, QMovie * movie );
+	void onFinished( int id, const QPixmap & pixmap );
 
 public:
-	FileController * owner;
-	int index;
-	QUrl openingURL;
-	std::shared_ptr< model::FileModel > model;
+	ImageItem * owner;
+	QGraphicsItem * item;
 };
 
+}
 }
 
 #endif

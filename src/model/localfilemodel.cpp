@@ -115,7 +115,10 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 			case Qt::DisplayRole:
 				return this->p_->files[index.row()];
 			case Qt::UserRole:
-				return QVariant::fromValue( KomiX::ImageWrapper( this->p_->root.filePath( this->p_->files[index.row()] ) ) );
+			{
+				QIODevice * fin = new QFile( this->p_->root.filePath( this->p_->files[index.row()] ) );
+				return QVariant::fromValue( fin );
+			}
 			default:
 				return QVariant();
 			}

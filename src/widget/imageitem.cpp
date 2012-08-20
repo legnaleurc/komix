@@ -18,12 +18,56 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "imageitem.hpp"
-#include "imagewrapper.hpp"
+#include "imageitem_p.hpp"
+#include "blockdeviceloader.hpp"
+#include "characterdeviceloader.hpp"
+
+#include <QtCore/QThreadPool>
+#include <QtGui/QGraphicsProxyWidget>
+#include <QtGui/QGraphicsPixmapItem>
+#include <QtGui/QLabel>
 
 using KomiX::widget::ImageItem;
 
-ImageItem::ImageItem( const KomiX::ImageWrapper & image ): QGraphicsProxyWidget() {
-	QLabel * label = image.createLabel();
-	this->setWidget( label );
+ImageItem::Private::Private( ImageItem * owner ):
+QObject(),
+owner( owner ),
+item( nullptr ) {
+}
+
+void ImageItem::Private::onFinished( int id, QMovie * movie ) {
+	QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
+	QLabel * label = new QLabel;
+	movie->setParent( label );
+	item->setWidget( label );
+	this->item = item;
+}
+
+void ImageItem::Private::onFinished( int id, const QPixmap & pixmap ) {
+	QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
+	item->setTransformationMode( Qt::SmoothTransformation );
+	this->item = item;
+}
+
+ImageItem::ImageItem( const QList< QIODevice * > & devices ):
+QGraphicsObject(),
+p_( new Private( this ) ) {
+	foreach( QIODevice * device, devices ) {
+		DeviceLoader * loader = nullptr;
+		if( device->isSequential() ) {
+			loader = new CharacterDeviceLoader( -1, device );
+		} else {
+			loader = new BlockDeviceLoader( -1, device );
+		}
+		this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
+		this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+		QThreadPool::globalInstance()->start( loader );
+	}
+}
+
+QRectF ImageItem::boundingRect() const {
+	return this->p_->item->boundingRect();
+}
+
+void ImageItem::paint( QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/ ) {
 }

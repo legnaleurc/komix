@@ -37,18 +37,27 @@ controller( nullptr ),
 imgRatio( 1.0 ),
 imgRect(),
 msInterval( 1 ),
+pageBuffer(),
 panel( new ScaleWidget( owner ) ),
 pixelInterval( 1 ),
 pressEndPosition(),
 pressStartPosition(),
 scaleMode( Custom ),
 vpRect(),
-vpState(),
-pageBuffer() {
+vpState() {
+}
+
+void ImageView::Private::addImage( QIODevice * image ) {
+	this->pageBuffer.push_back( image );
+	if( this->pageBuffer.size() == 1 ) {
+		// TODO should scale in multi-paging mode
+		this->setImage( this->pageBuffer );
+		this->pageBuffer.clear();
+	}
 }
 
 // TODO this function should consider multi-paging mode
-void ImageView::Private::setImage( const QList< KomiX::ImageWrapper > & images ) {
+void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 	if( images.empty() ) {
 		return;
 	}
@@ -58,21 +67,11 @@ void ImageView::Private::setImage( const QList< KomiX::ImageWrapper > & images )
 	this->owner->scene()->clear();
 	this->anime->clear();
 
-	ImageItem * item = new ImageItem( images[0] );
+	ImageItem * item = new ImageItem( images );
 	this->anime->addAnimation( new QPropertyAnimation( item, "pos" ) );
-	this->owner->scene()->setSceneRect( item->subWidgetRect( item->widget() ) );
+	this->owner->scene()->setSceneRect( item->boundingRect() );
 	this->owner->scene()->addItem( item );
-//	item->setTransformationMode( Qt::SmoothTransformation );
 	this->imgRect = item->sceneBoundingRect();
-
-	for( int i = 1; i < images.size(); ++i ) {
-		item = new ImageItem( images[i] );
-		this->anime->addAnimation( new QPropertyAnimation( item, "pos" ) );
-		this->owner->scene()->addItem( item );
-//		item->setTransformationMode( Qt::SmoothTransformation );
-		item->setPos( this->imgRect.topLeft() + QPointF( item->subWidgetRect( item->widget() ).width(), 0.0 ) );
-		this->imgRect = this->imgRect.united( item->sceneBoundingRect() );
-	}
 
 	this->updateViewportRectangle();
 	this->updateScaling();
@@ -203,7 +202,7 @@ p_( new Private( this ) ) {
 void ImageView::initialize( FileController * controller ) {
 	this->p_->controller = controller;
 
-	this->connect( this->p_->controller, SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ), SLOT( addImage( const KomiX::ImageWrapper & ) ) );
+	this->p_->connect( this->p_->controller, SIGNAL( imageLoaded( QIODevice * ) ), SLOT( addImage( QIODevice * ) ) );
 }
 
 bool ImageView::open( const QUrl & uri ) {
@@ -291,15 +290,6 @@ void ImageView::scale( double ratio ) {
 	this->p_->updateViewportRectangle();
 	this->moveBy();
 	this->p_->imgRatio *= ratio;
-}
-
-void ImageView::addImage( const KomiX::ImageWrapper & image ) {
-	this->p_->pageBuffer.push_back( image );
-	if( this->p_->pageBuffer.size() == 1 ) {
-		// TODO should scale in multi-paging mode
-		this->p_->setImage( this->p_->pageBuffer );
-		this->p_->pageBuffer.clear();
-	}
 }
 
 void ImageView::showControlPanel() {

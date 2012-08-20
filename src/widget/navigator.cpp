@@ -21,6 +21,7 @@
 #include "global.hpp"
 #include "navigator_p.hpp"
 #include "filecontroller.hpp"
+#include "imagewrapper.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtGui/QMovie>
@@ -42,20 +43,8 @@ void Navigator::Private::openHelper() {
 }
 
 void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
-	qDebug( "Preview::viewImage_()" );
-	qDebug() << current;
-	QString path = current.data( Qt::UserRole ).toString();
-	QObject * mm = this->ui.preview->movie();
-	if( path.endsWith( ".gif", Qt::CaseInsensitive ) ) {
-		QMovie * m = new QMovie( path, QByteArray(), this );
-		this->ui.preview->setMovie( m );
-		m->start();
-	} else {
-		this->ui.preview->setPixmap( QPixmap( path ).scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
-	}
-	if( mm ) {
-		mm->deleteLater();
-	}
+//	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
+//	path.moveToLabel( this->ui.preview, this->ui.preview->size() );
 }
 
 Navigator::Navigator( FileController * controller, QWidget * parent ) :

@@ -36,7 +36,7 @@ owner( owner ),
 index( 0 ),
 openingURL(),
 model( NULL ) {
-	this->owner->connect( this, SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ), SIGNAL( imageLoaded( const KomiX::ImageWrapper & ) ) );
+	this->owner->connect( this, SIGNAL( imageLoaded( QIODevice * ) ), SIGNAL( imageLoaded( QIODevice * ) ) );
 }
 
 void FileController::Private::onModelReady() {
@@ -54,7 +54,7 @@ void FileController::Private::onModelReady() {
 }
 
 void FileController::Private::fromIndex( const QModelIndex & index ) {
-	ImageWrapper image = index.data( Qt::UserRole ).value< ImageWrapper >();
+	QIODevice * image = index.data( Qt::UserRole ).value< QIODevice * >();
 	emit this->imageLoaded( image );
 }
 
