@@ -58,11 +58,13 @@ void ImageItem::Private::onFinished( int id, const QByteArray & data ) {
 		item->setTransformationMode( Qt::SmoothTransformation );
 		this->item = item;
 	}
+	emit this->changed();
 }
 
 ImageItem::ImageItem( const QList< QIODevice * > & devices ):
 QGraphicsObject(),
 p_( new Private( this ) ) {
+	this->connect( this->p_.get(), SIGNAL( changed() ), SIGNAL( changed() ) );
 	foreach( QIODevice * device, devices ) {
 		DeviceLoader * loader = nullptr;
 		if( device->isSequential() ) {

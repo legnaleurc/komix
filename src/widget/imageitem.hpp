@@ -38,6 +38,9 @@ public:
 
 	QSizeF getSize() const;
 
+signals:
+	void changed();
+
 private:
 	class Private;
 	std::shared_ptr< Private > p_;

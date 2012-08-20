@@ -56,6 +56,16 @@ void ImageView::Private::addImage( QIODevice * image ) {
 	}
 }
 
+void ImageView::Private::onImageChanged() {
+	ImageItem * item = static_cast< ImageItem * >( this->sender() );
+	this->owner->scene()->setSceneRect( item->boundingRect() );
+	this->imgRect = item->sceneBoundingRect();
+
+	this->updateViewportRectangle();
+	this->updateScaling();
+	this->owner->begin();
+}
+
 // TODO this function should consider multi-paging mode
 void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 	if( images.empty() ) {
@@ -68,6 +78,7 @@ void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 	this->anime->clear();
 
 	ImageItem * item = new ImageItem( images );
+	this->connect( item, SIGNAL( changed() ), SLOT( onImageChanged() ) );
 	this->anime->addAnimation( new QPropertyAnimation( item, "pos" ) );
 	this->owner->scene()->setSceneRect( item->boundingRect() );
 	this->owner->scene()->addItem( item );

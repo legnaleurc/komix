@@ -54,6 +54,7 @@ public:
 public slots:
 	void addImage( QIODevice * image );
 	void animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State );
+	void onImageChanged();
 
 public:
 	ImageView * owner;

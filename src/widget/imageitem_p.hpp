@@ -34,6 +34,9 @@ public:
 public slots:
 	void onFinished( int id, const QByteArray & data );
 
+signals:
+	void changed();
+
 public:
 	ImageItem * owner;
 	QGraphicsItem * item;
