@@ -66,7 +66,9 @@ p_( new Private( this ) ) {
 }
 
 QRectF ImageItem::boundingRect() const {
-	return this->p_->item->boundingRect();
+	if( this->p_->item ) {
+		return this->p_->item->boundingRect();
+	}
 }
 
 void ImageItem::paint( QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/ ) {
