@@ -68,8 +68,8 @@ bool FileController::open( const QUrl & url ) {
 		this->p_->model = FileModel::createModel( url );
 		this->p_->connect( this->p_->model.get(), SIGNAL( ready() ), SLOT( onModelReady() ) );
 		this->connect( this->p_->model.get(), SIGNAL( error( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
-		this->p_->model->initialize();
 		this->p_->openingURL = url;
+		this->p_->model->initialize();
 	} catch( exception::Exception & e ) {
 		emit errorOccured( e.getMessage() );
 		return false;
