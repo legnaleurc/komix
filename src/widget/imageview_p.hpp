@@ -24,6 +24,7 @@
 #include "imageview.hpp"
 #include "scalewidget.hpp"
 #include "filecontroller.hpp"
+#include "imageitem.hpp"
 
 #include <QtCore/QPropertyAnimation>
 
@@ -57,6 +58,7 @@ public slots:
 
 public:
 	ImageView * owner;
+	ImageItem * image;
 	QPropertyAnimation * anime;
 	FileController * controller;
 	double imgRatio;

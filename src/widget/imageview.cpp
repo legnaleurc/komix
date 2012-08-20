@@ -18,7 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "imageitem.hpp"
 #include "imageview_p.hpp"
 
 #include <QtCore/QSettings>
@@ -32,6 +31,7 @@ using KomiX::FileController;
 ImageView::Private::Private( ImageView * owner ):
 QObject(),
 owner( owner ),
+image( nullptr ),
 anime( nullptr ),
 controller( nullptr ),
 imgRatio( 1.0 ),
@@ -57,9 +57,9 @@ void ImageView::Private::addImage( QIODevice * image ) {
 }
 
 void ImageView::Private::onImageChanged() {
-	ImageItem * item = static_cast< ImageItem * >( this->sender() );
-	this->owner->scene()->setSceneRect( item->boundingRect() );
-	this->imgRect = item->sceneBoundingRect();
+	this->owner->scene()->setSceneRect( this->image->boundingRect() );
+	this->image->setPos( 0.0, 0.0 );
+	this->imgRect = this->image->sceneBoundingRect();
 
 	this->updateViewportRectangle();
 	this->updateScaling();
@@ -80,34 +80,25 @@ void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 
 	this->owner->scene()->clear();
 
-	ImageItem * item = new ImageItem( images );
-	this->connect( item, SIGNAL( changed() ), SLOT( onImageChanged() ) );
-	this->owner->scene()->setSceneRect( item->boundingRect() );
-	this->owner->scene()->addItem( item );
-	this->imgRect = item->sceneBoundingRect();
+	this->image = new ImageItem( images );
+	this->connect( this->image, SIGNAL( changed() ), SLOT( onImageChanged() ) );
+	this->owner->scene()->addItem( this->image );
 
-	this->anime = new QPropertyAnimation( item, "pos" );
+	this->anime = new QPropertyAnimation( this->image, "pos" );
 	this->connect( this->anime, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), SLOT( animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
-
-	this->updateViewportRectangle();
-	this->updateScaling();
-	this->owner->begin();
 }
 
 void ImageView::Private::animeStateChanged( QAbstractAnimation::State newState, QAbstractAnimation::State /*oldState*/ ) {
 	if( newState == QAbstractAnimation::Stopped ) {
-		this->imgRect = QRectF();
-		foreach( QGraphicsItem * item, this->owner->items() ) {
-			this->imgRect = this->imgRect.united( item->sceneBoundingRect() );
-		}
+		this->imgRect = this->image->sceneBoundingRect();
 	}
 }
 
 void ImageView::Private::moveBy( const QPointF & delta ) {
-	foreach( QGraphicsItem * item, this->owner->items() ) {
-		item->moveBy( delta.x(), delta.y() );
+	if( this->image ) {
+		this->image->moveBy( delta.x(), delta.y() );
+		this->imgRect.translate( delta );
 	}
-	this->imgRect.translate( delta );
 }
 
 void ImageView::Private::updateScaling() {
@@ -190,10 +181,9 @@ QLineF ImageView::Private::getMotionVector( double dx, double dy ) {
 }
 
 void ImageView::Private::setupAnimation( int msDuration, double dx, double dy ) {
-	QGraphicsItem * item = this->owner->items().back();
 	this->anime->setDuration( msDuration );
-	this->anime->setStartValue( item->pos() );
-	this->anime->setEndValue( item->pos() + QPointF( dx, dy ) );
+	this->anime->setStartValue( this->image->pos() );
+	this->anime->setEndValue( this->image->pos() + QPointF( dx, dy ) );
 }
 
 ImageView::ImageView( QWidget * parent ):
@@ -289,7 +279,7 @@ void ImageView::previousPage() {
 }
 
 void ImageView::scale( int pcRatio ) {
-	if( pcRatio <= 0 || this->items().empty() ) {
+	if( pcRatio <= 0 || !this->p_->image ) {
 		return;
 	}
 
@@ -309,7 +299,7 @@ void ImageView::showControlPanel() {
 }
 
 void ImageView::smoothMove() {
-	if( this->items().empty() ) {
+	if( !this->p_->image ) {
 		return;
 	}
 	this->p_->anime->stop();
@@ -345,7 +335,7 @@ void ImageView::smoothMove() {
 }
 
 void ImageView::smoothReversingMove() {
-	if( this->items().empty() ) {
+	if( !this->p_->image ) {
 		return;
 	}
 	this->p_->anime->stop();
@@ -421,20 +411,16 @@ void ImageView::keyPressEvent( QKeyEvent * event ) {
 void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 	if( event->buttons() & Qt::LeftButton ) {	// left drag event
 		// change cursor icon
-		foreach( QGraphicsItem * item, this->scene()->items() ) {
-			if( item->cursor().shape() == Qt::BlankCursor ) {
-				item->setCursor( Qt::ClosedHandCursor );
-			}
+		if( this->p_->image->cursor().shape() == Qt::BlankCursor ) {
+			this->p_->image->setCursor( Qt::ClosedHandCursor );
 		}
 
 		QPoint delta = event->pos() - this->p_->pressEndPosition;
 		this->moveBy( delta );
 		this->p_->pressEndPosition = event->pos();	// update end point
 	} else {
-		foreach( QGraphicsItem * item, this->scene()->items() ) {
-			if( item->cursor().shape() == Qt::BlankCursor ) {
-				item->setCursor( Qt::OpenHandCursor );
-			}
+		if( this->p_->image->cursor().shape() == Qt::BlankCursor ) {
+			this->p_->image->setCursor( Qt::OpenHandCursor );
 		}
 	}
 }
@@ -444,9 +430,7 @@ void ImageView::mousePressEvent( QMouseEvent * event ) {
 	this->p_->pressEndPosition = event->pos();
 
 	if( event->button() == Qt::LeftButton ) {
-		foreach( QGraphicsItem * item, this->scene()->items() ) {
-			item->setCursor( Qt::ClosedHandCursor );
-		}
+		this->p_->image->setCursor( Qt::ClosedHandCursor );
 	}
 }
 
@@ -457,10 +441,8 @@ void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
 		}
 
 		// update cursor icon
-		foreach( QGraphicsItem * item, this->scene()->items() ) {
-			if( item->cursor().shape() == Qt::ClosedHandCursor ) {
-				item->setCursor( Qt::OpenHandCursor );
-			}
+		if( this->p_->image->cursor().shape() == Qt::ClosedHandCursor ) {
+			this->p_->image->setCursor( Qt::OpenHandCursor );
 		}
 	} else if( event->button() == Qt::MidButton ) {
 		if( this->p_->pressStartPosition == event->pos() ) {
