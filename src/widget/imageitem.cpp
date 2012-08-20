@@ -38,22 +38,26 @@ item( nullptr ) {
 }
 
 void ImageItem::Private::onFinished( int id, const QByteArray & data ) {
-	QBuffer buffer;
-	buffer.setData( data );
-	buffer.open( QIODevice::ReadOnly );
-	QImageReader iin( &buffer );
+	QBuffer * buffer = new QBuffer;
+	buffer->setData( data );
+	buffer->open( QIODevice::ReadOnly );
+	QImageReader iin( buffer );
 	if( iin.supportsAnimation() ) {
 		// QMovie
-		buffer.seek( 0 );
+		buffer->seek( 0 );
 		QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
 		QLabel * label = new QLabel;
-		QMovie * movie = new QMovie( &buffer );
+		QMovie * movie = new QMovie( buffer );
+		buffer->setParent( movie );
+		label->setMovie( movie );
 		movie->setParent( label );
 		item->setWidget( label );
 		movie->start();
+		label->resize( movie->frameRect().size() );
 		this->item = item;
 	} else {
 		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		buffer->deleteLater();
 		QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
 		item->setTransformationMode( Qt::SmoothTransformation );
 		this->item = item;

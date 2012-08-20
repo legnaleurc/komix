@@ -28,6 +28,7 @@
 
 using KomiX::widget::ImageView;
 using KomiX::widget::Direction;
+using KomiX::FileController;
 
 ImageView::Private::Private( ImageView * owner ):
 QObject(),

@@ -27,6 +27,7 @@
 #include <QtGui/QMovie>
 
 using KomiX::widget::Navigator;
+using KomiX::FileController;
 
 Navigator::Private::Private( FileController * controller, Navigator * owner ):
 QObject(),

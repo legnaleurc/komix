@@ -117,6 +117,7 @@ QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
 			case Qt::UserRole:
 			{
 				QIODevice * fin = new QFile( this->p_->root.filePath( this->p_->files[index.row()] ) );
+				fin->open( QIODevice::ReadOnly );
 				return QVariant::fromValue( fin );
 			}
 			default:
