@@ -23,43 +23,32 @@
 
 #include <QtGui/QDialog>
 
-namespace Ui {
-	class Preference;
-}
-class QAbstractButton;
+#include <memory>
 
 namespace KomiX {
-	namespace widget {
+namespace widget {
 
-		/**
-		 * @brief preference widget
-		 */
-		class Preference : public QDialog {
-			Q_OBJECT
+/**
+ * @brief preference widget
+ */
+class Preference: public QDialog {
+	Q_OBJECT
+public:
+	/// constructor
+	explicit Preference( QWidget * parent );
 
-		public:
-			/// constructor
-			explicit Preference( QWidget * parent );
-			virtual ~Preference();
+public slots:
+	/// Override from QDialog, won't hide dialog
+	virtual void accept();
+	/// Override from QDialog
+	virtual void reject();
 
+private:
+	class Private;
+	std::shared_ptr< Private > p_;
+};
 
-		public slots:
-			/// Override from QDialog, won't hide dialog
-			virtual void accept();
-			/// Override from QDialog
-			virtual void reject();
-
-		private slots:
-			void dispatch_( QAbstractButton * );
-
-		private:
-			void loadSettings_();
-			void saveSettings_();
-
-			Ui::Preference * ui_;
-		};
-
-	}
+}
 } // end of namespace
 
 #endif

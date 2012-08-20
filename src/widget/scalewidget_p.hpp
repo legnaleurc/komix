@@ -1,5 +1,5 @@
 /**
- * @file error.cpp
+ * @file scalewidget_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,20 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "error.hpp"
+#ifndef KOMIX_WIDGET_SCALEWIDGET_P_HPP
+#define KOMIX_WIDGET_SCALEWIDGET_P_HPP
 
-using namespace KomiX::error;
+#include "scalewidget.hpp"
+#include "ui_scalewidget.h"
 
-BasicError::BasicError( const char * msg ) : msg_( QString::fromUtf8( msg ) ) {}
+namespace KomiX {
+namespace widget {
 
-BasicError::BasicError( const QString & msg ) : msg_( msg ) {}
+class ScaleWidget::Private: public QObject {
+	Q_OBJECT
+public:
+	explicit Private( ScaleWidget * owner );
 
-BasicError::~BasicError() throw() {}
+public slots:
+	void valueHelper();
 
-const char * BasicError::what() const throw() {
-	return msg_.toLocal8Bit().constData();
+signals:
+	void scaled( int );
+
+public:
+	ScaleWidget * owner;
+	Ui::ScaleWidget ui;
+	QButtonGroup * modes;
+};
+
+}
 }
 
-const QString & BasicError::getMessage() const {
-	return msg_;
-}
+#endif

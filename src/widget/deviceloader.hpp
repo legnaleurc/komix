@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file deviceloader.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,46 +18,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_WIDGET_DEVICELOADER_HPP
+#define KOMIX_WIDGET_DEVICELOADER_HPP
 
-#include "filemodel.hpp"
-
-#include <QtGui/QDialog>
+#include <QtCore/QIODevice>
+#include <QtCore/QRunnable>
+#include <QtGui/QPixmap>
+#include <QtGui/QMovie>
 
 #include <memory>
 
 namespace KomiX {
-
-class FileController;
-
 namespace widget {
-
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
+class DeviceLoader: public QObject, public QRunnable {
+	Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
+	DeviceLoader( int id, QIODevice * device );
 
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+protected:
+	int getID() const;
+	QIODevice * getDevice() const;
+
+signals:
+	void finished( int id, const QByteArray & data );
 
 private:
 	class Private;
 	std::shared_ptr< Private > p_;
 };
-
 }
-} // end namespace
+}
 
 #endif

@@ -23,26 +23,25 @@
 
 #include "filemodel.hpp"
 
+#include <memory>
+
 class QModelIndex;
 
 namespace KomiX {
-
-class Image;
 
 /**
  * @brief The file controller
  *
  * This class is used to provide a generic open image action.
  */
-class FileController : public QObject {
+class FileController: public QObject {
 	Q_OBJECT
-
 public:
 	/**
 	 * @brief default constructor
 	 * @param parent parent widget
 	 */
-	FileController( QObject * parent = 0 );
+	FileController( QObject * parent );
 
 	/**
 	 * @brief open a url
@@ -58,7 +57,7 @@ public:
 	bool isEmpty() const;
 
 	/// get current model
-	model::FileModelSP getModel() const;
+	std::shared_ptr< model::FileModel > getModel() const;
 	/// get current index
 	QModelIndex getCurrentIndex() const;
 
@@ -90,7 +89,7 @@ signals:
 	 * @brief get image
 	 * @param image image
 	 */
-	void imageLoaded( const KomiX::Image & image );
+	void imageLoaded( QIODevice * device );
 	/**
 	 * @brief Some error occured
 	 * @param errMsg error message
@@ -98,10 +97,8 @@ signals:
 	void errorOccured( const QString & errMsg );
 
 private:
-	void fromIndex_( const QModelIndex & );
-	int index_;
-
-	model::FileModelSP model_;
+	class Private;
+	std::shared_ptr< Private > p_;
 };
 
 } // end of KomiX

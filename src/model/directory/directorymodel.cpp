@@ -30,8 +30,8 @@ bool check( const QUrl & url ) {
 	return false;
 }
 
-KomiX::model::FileModelSP create( const QUrl & url ) {
-	return KomiX::model::FileModelSP( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
+std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
+	return std::shared_ptr<  KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );
@@ -40,4 +40,5 @@ static const bool registered = KomiX::model::FileModel::registerModel( check, cr
 
 using namespace KomiX::model::directory;
 
-DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {}
+DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {
+}

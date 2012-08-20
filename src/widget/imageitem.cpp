@@ -18,12 +18,75 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "imageitem.hpp"
-#include "image.hpp"
+#include "imageitem_p.hpp"
+#include "blockdeviceloader.hpp"
+#include "characterdeviceloader.hpp"
+
+#include <QtCore/QThreadPool>
+#include <QtCore/QBuffer>
+#include <QtGui/QGraphicsProxyWidget>
+#include <QtGui/QGraphicsPixmapItem>
+#include <QtGui/QLabel>
+#include <QtGui/QImageReader>
 
 using KomiX::widget::ImageItem;
 
-ImageItem::ImageItem( const KomiX::Image & image ): QGraphicsProxyWidget() {
-	QLabel * label = image.createLabel();
-	this->setWidget( label );
+ImageItem::Private::Private( ImageItem * owner ):
+QObject(),
+owner( owner ),
+item( nullptr ) {
+}
+
+void ImageItem::Private::onFinished( int id, const QByteArray & data ) {
+	QBuffer * buffer = new QBuffer;
+	buffer->setData( data );
+	buffer->open( QIODevice::ReadOnly );
+	QImageReader iin( buffer );
+	if( iin.supportsAnimation() ) {
+		// QMovie
+		buffer->seek( 0 );
+		QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
+		QLabel * label = new QLabel;
+		QMovie * movie = new QMovie( buffer );
+		buffer->setParent( movie );
+		label->setMovie( movie );
+		movie->setParent( label );
+		item->setWidget( label );
+		movie->start();
+		label->resize( movie->frameRect().size() );
+		this->item = item;
+	} else {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		buffer->deleteLater();
+		QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
+		item->setTransformationMode( Qt::SmoothTransformation );
+		this->item = item;
+	}
+	emit this->changed();
+}
+
+ImageItem::ImageItem( const QList< QIODevice * > & devices ):
+QGraphicsObject(),
+p_( new Private( this ) ) {
+	this->connect( this->p_.get(), SIGNAL( changed() ), SIGNAL( changed() ) );
+	foreach( QIODevice * device, devices ) {
+		DeviceLoader * loader = nullptr;
+		if( device->isSequential() ) {
+			loader = new CharacterDeviceLoader( -1, device );
+		} else {
+			loader = new BlockDeviceLoader( -1, device );
+		}
+		this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
+		QThreadPool::globalInstance()->start( loader );
+	}
+}
+
+QRectF ImageItem::boundingRect() const {
+	if( !this->p_->item ) {
+		return QRectF();
+	}
+	return this->p_->item->boundingRect();
+}
+
+void ImageItem::paint( QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/ ) {
 }

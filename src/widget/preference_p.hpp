@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file preference_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,46 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_WIDGET_PREFERENCE_P_HPP
+#define KOMIX_WIDGET_PREFERENCE_P_HPP
 
-#include "filemodel.hpp"
-
-#include <QtGui/QDialog>
-
-#include <memory>
+#include "preference.hpp"
+#include "ui_preference.h"
 
 namespace KomiX {
-
-class FileController;
-
 namespace widget {
 
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
+class Preference::Private: public QObject {
+	Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
+	explicit Private( Preference * owner );
 
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+	void loadSettings();
+	void saveSettings();
 
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+public slots:
+	void dispatch( QAbstractButton * );
+
+public:
+	Preference * owner;
+	Ui::Preference ui;
 };
 
 }
-} // end namespace
+}
 
 #endif

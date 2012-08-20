@@ -23,23 +23,21 @@
 
 #include <QtGui/QWidget>
 
-namespace Ui {
-	class AboutWidget;
-}
+#include <memory>
 
 namespace KomiX {
-	namespace widget {
+namespace widget {
 
-		class AboutWidget : public QWidget {
-		public:
-			explicit AboutWidget( QWidget * parent );
-			virtual ~AboutWidget();
+class AboutWidget : public QWidget {
+public:
+	explicit AboutWidget( QWidget * parent );
 
-		private:
-			Ui::AboutWidget * ui_;
-		};
+private:
+	class Private;
+	std::shared_ptr< Private > p_;
+};
 
-	}
+}
 }
 
-#endif // KOMIX_WIDGET_ABOUT_HPP
+#endif

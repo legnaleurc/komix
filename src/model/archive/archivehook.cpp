@@ -20,9 +20,10 @@
  */
 #include "archivehook.hpp"
 #include "archivemodel.hpp"
+#include "archive.hpp"
 #include "global.hpp"
 
-#include <QtGui/QApplication>
+#include <QtCore/QCoreApplication>
 #include <QtGui/QFileDialog>
 
 namespace {
@@ -54,8 +55,9 @@ ArchiveHook::ArchiveHook( QWidget * parent ) : QAction( parent ) {
 
 	connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
 	connect( this, SIGNAL( opened( const QUrl & ) ), parent, SLOT( open( const QUrl & ) ) );
-	// for cleanup, delete temp dir
-	connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( cleanup_() ) );
+
+	// cleanup temporary dir on exit
+	this->connect( qApp, SIGNAL( aboutToQuit() ), SLOT( cleanup_() ) );
 }
 
 void ArchiveHook::helper_() {
@@ -66,5 +68,5 @@ void ArchiveHook::helper_() {
 }
 
 void ArchiveHook::cleanup_() {
-	delTree( ArchiveModel::TmpDir_() );
+	delTree( getTmpDir() );
 }

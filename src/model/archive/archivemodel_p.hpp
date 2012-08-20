@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file archivemodel.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,46 +18,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP_
+#define KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP_
 
-#include "filemodel.hpp"
-
-#include <QtGui/QDialog>
-
-#include <memory>
+#include "archivemodel.hpp"
 
 namespace KomiX {
+namespace model {
+namespace archive {
 
-class FileController;
-
-namespace widget {
-
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
+class ArchiveModel::Private: public QObject {
+	Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
+	explicit Private( ArchiveModel * owner, const QFileInfo & root );
 
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+	void extract( const QString &, const char * );
 
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+public slots:
+	void cleanup( int );
+	void checkTwo( int );
+	void allDone( int );
+
+signals:
+	void ready();
+	void error( const QString & );
+
+public:
+	ArchiveModel * owner;
+	QFileInfo root;
+	QString hash;
 };
 
 }
-} // end namespace
+}
+}
 
 #endif

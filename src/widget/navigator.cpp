@@ -19,66 +19,91 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "global.hpp"
-#include "navigator.hpp"
-#include "ui_navigator.h"
+#include "navigator_p.hpp"
+#include "filecontroller.hpp"
+#include "imagewrapper.hpp"
+#include "blockdeviceloader.hpp"
+#include "characterdeviceloader.hpp"
 
-#include <QtCore/QtDebug>
+#include <QtCore/QThreadPool>
+#include <QtCore/QBuffer>
 #include <QtGui/QMovie>
 
-using namespace KomiX::widget;
-using KomiX::model::FileModelSP;
+using KomiX::widget::Navigator;
+using KomiX::FileController;
 
-Navigator::Navigator( QWidget * parent ) :
-QDialog( parent ),
-ui_( new Ui::Navigator ),
-model_( NULL ),
-selection_( NULL ) {
-	this->ui_->setupUi( this );
-	this->ui_->list->setFixedSize( 160, 480 );
-	this->ui_->preview->setFixedSize( 480, 480 );
-	this->ui_->preview->setAlignment( Qt::AlignCenter );
-
-	connect( this->ui_->buttons, SIGNAL( rejected() ), this, SLOT( reject() ) );
-	connect( this->ui_->buttons, SIGNAL( accepted() ), this, SLOT( openHelper_() ) );
+Navigator::Private::Private( FileController * controller, Navigator * owner ):
+QObject(),
+owner( owner ),
+ui(),
+controller( controller ),
+model(),
+selection( NULL ) {
 }
 
-Navigator::~Navigator() {
-	delete this->ui_;
+void Navigator::Private::openHelper() {
+	this->controller->open( this->ui.list->currentIndex() );
+	this->owner->accept();
 }
 
-void Navigator::setModel( FileModelSP model ) {
-	if( this->selection_ ) {
-		disconnect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
+	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
+	DeviceLoader * loader = nullptr;
+	if( device->isSequential() ) {
+		loader = new CharacterDeviceLoader( -1, device );
+	} else {
+		loader = new BlockDeviceLoader( -1, device );
 	}
-	this->model_ = model;
-	this->ui_->list->setModel( this->model_.data() );
-	this->selection_ = this->ui_->list->selectionModel();
-	connect( this->selection_, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage_( const QModelIndex &, const QModelIndex & ) ) );
+	this->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
+	QThreadPool::globalInstance()->start( loader );
+}
+
+void Navigator::Private::onFinished( int id, const QByteArray & data ) {
+	QBuffer * buffer = new QBuffer;
+	buffer->setData( data );
+	buffer->open( QIODevice::ReadOnly );
+	QImageReader iin( buffer );
+	QMovie * tmp = this->ui.preview->movie();
+	if( iin.supportsAnimation() ) {
+		// QMovie
+		buffer->seek( 0 );
+		QMovie * movie = new QMovie( buffer );
+		buffer->setParent( movie );
+		this->ui.preview->setMovie( movie );
+		movie->setScaledSize( this->ui.preview->size() );
+		movie->start();
+	} else {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		buffer->deleteLater();
+		this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
+	}
+	if( tmp ) {
+		tmp->deleteLater();
+	}
+}
+
+Navigator::Navigator( FileController * controller, QWidget * parent ) :
+QDialog( parent ),
+p_( new Private( controller, this ) ) {
+	this->p_->ui.setupUi( this );
+	this->p_->ui.list->setFixedSize( 160, 480 );
+	this->p_->ui.preview->setFixedSize( 480, 480 );
+	this->p_->ui.preview->setAlignment( Qt::AlignCenter );
+
+	this->connect( this->p_->ui.buttons, SIGNAL( rejected() ), SLOT( reject() ) );
+	this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
+}
+
+void Navigator::setModel( std::shared_ptr< KomiX::model::FileModel > model ) {
+	if( this->p_->selection ) {
+		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+	}
+	this->p_->model = model;
+	this->p_->ui.list->setModel( this->p_->model.get() );
+	this->p_->selection = this->p_->ui.list->selectionModel();
+	this->p_->connect( this->p_->selection, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
 }
 
 void Navigator::setCurrentIndex( const QModelIndex & index ) {
-	this->ui_->list->setCurrentIndex( index );
-}
-
-void Navigator::openHelper_() {
-	qDebug() << "Send: " << this->ui_->list->currentIndex();
-	emit required( this->ui_->list->currentIndex() );
-	accept();
-}
-
-void Navigator::viewImage_( const QModelIndex & current, const QModelIndex & /* previous */ ) {
-	qDebug( "Preview::viewImage_()" );
-	qDebug() << current;
-	QString path = current.data( Qt::UserRole ).toString();
-	QObject * mm = this->ui_->preview->movie();
-	if( path.endsWith( ".gif", Qt::CaseInsensitive ) ) {
-		QMovie * m = new QMovie( path, QByteArray(), this );
-		this->ui_->preview->setMovie( m );
-		m->start();
-	} else {
-		this->ui_->preview->setPixmap( QPixmap( path ).scaled( this->ui_->preview->size(), Qt::KeepAspectRatio ) );
-	}
-	if( mm ) {
-		mm->deleteLater();
-	}
+	this->p_->ui.list->setCurrentIndex( index );
 }

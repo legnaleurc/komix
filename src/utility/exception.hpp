@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file exception.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,39 +18,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_EXCEPTION_HPP
+#define KOMIX_EXCEPTION_HPP
 
-#include "filemodel.hpp"
+#include <QtCore/QString>
 
-#include <QtGui/QDialog>
-
+#include <exception>
 #include <memory>
+#include <string>
 
 namespace KomiX {
+namespace exception {
 
-class FileController;
-
-namespace widget {
-
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
+class Exception: public std::exception {
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
+	explicit Exception( int code );
+	explicit Exception( const char * msg );
+	explicit Exception( const wchar_t * msg );
+	explicit Exception( const std::string & msg );
+	explicit Exception( const std::wstring & msg );
+	explicit Exception( const QString & msg );
+	virtual ~Exception() throw();
 
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+	virtual const char * what() const throw();
+	const QString & getMessage() const;
 
 private:
 	class Private;
@@ -58,6 +49,6 @@ private:
 };
 
 }
-} // end namespace
+} // end of namespace
 
 #endif

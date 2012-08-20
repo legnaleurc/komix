@@ -22,70 +22,28 @@
 #define KOMIX_WIDGET_MAINWINDOW_HPP
 
 #include <QtGui/QMainWindow>
-#include <QtGui/QSystemTrayIcon>
+#include <QtCore/QUrl>
 
-namespace Ui {
-	class MainWindow;
-}
-class QUrl;
+#include <memory>
 
 namespace KomiX {
-	namespace widget {
+namespace widget {
 
-		class AboutWidget;
-		class Preference;
+class MainWindow: public QMainWindow {
+	Q_OBJECT
+public:
+	explicit MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-		/**
-		 * @brief Main window
-		 *
-		 * The main window widget, all GUI components are managed by this.
-		 */
-		class MainWindow : public QMainWindow {
-			Q_OBJECT
+public slots:
+	void open( const QUrl & url );
+	void open( const QString & localFile );
 
-		public:
-			/**
-			 * @brief default constructor
-			 * @param parent parent widget
-			 * @param f window flags
-			 */
-			explicit MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-			virtual ~MainWindow();
-
-		public slots:
-			/**
-			 * @brief open url
-			 * @param url file url
-			 */
-			void open( const QUrl & url );
-			void open( const QString & localFile );
-			/// toggle full-screen mode
-			void toggleFullScreen();
-			/// toggle minimize system tray
-			void toggleSystemTray();
-
-		private slots:
-			void systemTrayHelper_( QSystemTrayIcon::ActivationReason reason );
-			void popupError_( const QString & errMsg );
-
-		private:
-			void initTrayIcon_();
-			void setupCentralWidget_();
-			void setupEditMenu_();
-			void setupFileMenu_();
-			void setupGoMenu_();
-			void setupHelpMenu_();
-			void setupMenuBar_();
-			void setupViewMenu_();
-
-			Ui::MainWindow * ui_;
-			Preference * preference_;
-			QSystemTrayIcon * trayIcon_;
-			AboutWidget * about_;
-			Qt::WindowStates dumpState_;
-		};
+private:
+	class Private;
+	std::shared_ptr< Private > p_;
+};
 	
-	}
+}
 } // end namespace
 
 #endif

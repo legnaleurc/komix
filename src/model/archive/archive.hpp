@@ -1,5 +1,5 @@
 /**
- * @file navigator.hpp
+ * @file archive.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,46 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_NAVIGATOR_HPP
-#define KOMIX_WIDGET_NAVIGATOR_HPP
+#ifndef KOMIX_MODEL_ARCHIVE_ARCHIVE_HPP
+#define KOMIX_MODEL_ARCHIVE_ARCHIVE_HPP
 
-#include "filemodel.hpp"
-
-#include <QtGui/QDialog>
-
-#include <memory>
+#include <QtCore/QDir>
 
 namespace KomiX {
+namespace model {
+namespace archive {
 
-class FileController;
-
-namespace widget {
-
-/**
- * @brief Preview and goto widget
- *
- * This widget can preview other images in same dicrectory, and
- * open which you want.
- */
-class Navigator : public QDialog {
-public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
-
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
-
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
-};
+const QDir & getTmpDir();
+int delTree( const QDir & dir );
 
 }
-} // end namespace
+}
+}
 
 #endif
