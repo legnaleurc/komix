@@ -21,7 +21,6 @@
 #include "imageitem.hpp"
 #include "imageview_p.hpp"
 
-#include <QtCore/QPropertyAnimation>
 #include <QtCore/QSettings>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
@@ -33,7 +32,7 @@ using KomiX::FileController;
 ImageView::Private::Private( ImageView * owner ):
 QObject(),
 owner( owner ),
-anime( new QParallelAnimationGroup( owner ) ),
+anime( nullptr ),
 controller( nullptr ),
 imgRatio( 1.0 ),
 imgRect(),
@@ -73,17 +72,22 @@ void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 		return;
 	}
 	// stop all movement
-	this->anime->stop();
+	if( this->anime ) {
+		this->anime->stop();
+		this->anime->deleteLater();
+		this->anime = nullptr;
+	}
 
 	this->owner->scene()->clear();
-	this->anime->clear();
 
 	ImageItem * item = new ImageItem( images );
 	this->connect( item, SIGNAL( changed() ), SLOT( onImageChanged() ) );
-	this->anime->addAnimation( new QPropertyAnimation( item, "pos" ) );
 	this->owner->scene()->setSceneRect( item->boundingRect() );
 	this->owner->scene()->addItem( item );
 	this->imgRect = item->sceneBoundingRect();
+
+	this->anime = new QPropertyAnimation( item, "pos" );
+	this->connect( this->anime, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), SLOT( animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
 
 	this->updateViewportRectangle();
 	this->updateScaling();
@@ -186,14 +190,10 @@ QLineF ImageView::Private::getMotionVector( double dx, double dy ) {
 }
 
 void ImageView::Private::setupAnimation( int msDuration, double dx, double dy ) {
-	QList< QGraphicsItem * > items = this->owner->items();
-	for( int i = 0; i < items.length(); ++i ) {
-		QGraphicsItem * item = items.at( i );
-		QPropertyAnimation * anime = qobject_cast< QPropertyAnimation * >( this->anime->animationAt( i ) );
-		anime->setDuration( msDuration );
-		anime->setStartValue( item->pos() );
-		anime->setEndValue( item->pos() + QPointF( dx, dy ) );
-	}
+	QGraphicsItem * item = this->owner->items().back();
+	this->anime->setDuration( msDuration );
+	this->anime->setStartValue( item->pos() );
+	this->anime->setEndValue( item->pos() + QPointF( dx, dy ) );
 }
 
 ImageView::ImageView( QWidget * parent ):
@@ -207,8 +207,6 @@ p_( new Private( this ) ) {
 	this->connect( this->p_->panel, SIGNAL( fitHeight() ), SLOT( fitHeight() ) );
 	this->connect( this->p_->panel, SIGNAL( fitWidth() ), SLOT( fitWidth() ) );
 	this->connect( this->p_->panel, SIGNAL( fitWindow() ), SLOT( fitWindow() ) );
-
-	this->p_->connect( this->p_->anime, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), SLOT( animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
 }
 
 void ImageView::initialize( FileController * controller ) {
@@ -237,7 +235,9 @@ void ImageView::slideTo( Direction d ) {
 
 void ImageView::moveBy( QPointF delta ) {
 	delta /= this->p_->imgRatio;
-	this->p_->anime->stop();
+	if( this->p_->anime ) {
+		this->p_->anime->stop();
+	}
 	QLineF v = this->p_->getMotionVector( delta.x(), delta.y() );
 	this->p_->moveBy( v.p2() );
 }

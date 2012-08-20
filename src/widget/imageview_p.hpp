@@ -22,11 +22,10 @@
 #define KOMIX_WIDGET_IMAGEVIEW_P_HPP
 
 #include "imageview.hpp"
-#include "imagewrapper.hpp"
 #include "scalewidget.hpp"
 #include "filecontroller.hpp"
 
-#include <QtCore/QParallelAnimationGroup>
+#include <QtCore/QPropertyAnimation>
 
 namespace KomiX {
 namespace widget {
@@ -58,7 +57,7 @@ public slots:
 
 public:
 	ImageView * owner;
-	QParallelAnimationGroup * anime;
+	QPropertyAnimation * anime;
 	FileController * controller;
 	double imgRatio;
 	QRectF imgRect;
