@@ -32,8 +32,7 @@ public:
 	explicit Private( ImageItem * owner );
 
 public slots:
-	void onFinished( int id, QMovie * movie );
-	void onFinished( int id, const QPixmap & pixmap );
+	void onFinished( int id, const QByteArray & data );
 
 public:
 	ImageItem * owner;

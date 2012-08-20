@@ -20,8 +20,6 @@
  */
 #include "blockdeviceloader.hpp"
 
-#include <QtGui/QImageReader>
-
 using KomiX::widget::BlockDeviceLoader;
 
 BlockDeviceLoader::BlockDeviceLoader( int id, QIODevice * device ):
@@ -29,14 +27,5 @@ DeviceLoader( id, device ) {
 }
 
 void BlockDeviceLoader::run() {
-	QImageReader iin( this->getDevice() );
-	bool animatable = iin.supportsAnimation();
-	if( animatable ) {
-		QPixmap pixmap = QPixmap::fromImageReader( &iin );
-		emit this->finished( this->getID(), pixmap );
-	} else {
-		this->getDevice()->seek( 0 );
-		QMovie * movie = new QMovie( this->getDevice() );
-		emit this->finished( this->getID(), movie );
-	}
+	emit this->finished( this->getID(), this->getDevice()->readAll() );
 }

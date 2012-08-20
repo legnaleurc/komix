@@ -40,8 +40,7 @@ protected:
 	QIODevice * getDevice() const;
 
 signals:
-	void finished( int id, const QPixmap & );
-	void finished( int id, QMovie * );
+	void finished( int id, const QByteArray & data );
 
 private:
 	class Private;

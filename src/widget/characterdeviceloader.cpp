@@ -20,7 +20,6 @@
  */
 #include "characterdeviceloader_p.hpp"
 
-#include <QtGui/QImageReader>
 #include <QtCore/QEventLoop>
 
 using KomiX::widget::CharacterDeviceLoader;
@@ -40,6 +39,7 @@ void CharacterDeviceLoader::Private::onReadFinished() {
 	this->buffer.write( this->owner->getDevice()->readAll() );
 	this->owner->getDevice()->deleteLater();
 	this->buffer.seek( 0 );
+	emit this->finished();
 }
 
 CharacterDeviceLoader::CharacterDeviceLoader( int id, QIODevice * device ):
@@ -54,14 +54,5 @@ void CharacterDeviceLoader::run() {
 	wait.connect( this->p_.get(), SIGNAL( finished() ), SLOT( quit() ) );
 	wait.exec();
 
-	QImageReader iin( &this->p_->buffer );
-	bool animatable = iin.supportsAnimation();
-	if( animatable ) {
-		QPixmap pixmap = QPixmap::fromImageReader( &iin );
-		emit this->finished( this->getID(), pixmap );
-	} else {
-		this->p_->buffer.seek( 0 );
-		QMovie * movie = new QMovie( &this->p_->buffer );
-		emit this->finished( this->getID(), movie );
-	}
+	emit this->finished( this->getID(), this->p_->buffer.data() );
 }

@@ -23,9 +23,11 @@
 #include "characterdeviceloader.hpp"
 
 #include <QtCore/QThreadPool>
+#include <QtCore/QBuffer>
 #include <QtGui/QGraphicsProxyWidget>
 #include <QtGui/QGraphicsPixmapItem>
 #include <QtGui/QLabel>
+#include <QtGui/QImageReader>
 
 using KomiX::widget::ImageItem;
 
@@ -35,18 +37,27 @@ owner( owner ),
 item( nullptr ) {
 }
 
-void ImageItem::Private::onFinished( int id, QMovie * movie ) {
-	QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
-	QLabel * label = new QLabel;
-	movie->setParent( label );
-	item->setWidget( label );
-	this->item = item;
-}
-
-void ImageItem::Private::onFinished( int id, const QPixmap & pixmap ) {
-	QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
-	item->setTransformationMode( Qt::SmoothTransformation );
-	this->item = item;
+void ImageItem::Private::onFinished( int id, const QByteArray & data ) {
+	QBuffer buffer;
+	buffer.setData( data );
+	buffer.open( QIODevice::ReadOnly );
+	QImageReader iin( &buffer );
+	if( iin.supportsAnimation() ) {
+		// QMovie
+		buffer.seek( 0 );
+		QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
+		QLabel * label = new QLabel;
+		QMovie * movie = new QMovie( &buffer );
+		movie->setParent( label );
+		item->setWidget( label );
+		movie->start();
+		this->item = item;
+	} else {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
+		item->setTransformationMode( Qt::SmoothTransformation );
+		this->item = item;
+	}
 }
 
 ImageItem::ImageItem( const QList< QIODevice * > & devices ):
@@ -59,16 +70,16 @@ p_( new Private( this ) ) {
 		} else {
 			loader = new BlockDeviceLoader( -1, device );
 		}
-		this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
-		this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+		this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
 		QThreadPool::globalInstance()->start( loader );
 	}
 }
 
 QRectF ImageItem::boundingRect() const {
-	if( this->p_->item ) {
-		return this->p_->item->boundingRect();
+	if( !this->p_->item ) {
+		return QRectF();
 	}
+	return this->p_->item->boundingRect();
 }
 
 void ImageItem::paint( QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/ ) {
