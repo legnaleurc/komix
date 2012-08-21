@@ -82,7 +82,10 @@ void DeviceLoader::start() const {
 		loader = new BlockDeviceLoader( this->p_->id, this->p_->device );
 	} else {
 		// small block device, read directly
-		this->p_->read( this->p_->device );
+		// NOTE
+		// somehow QFile will lost file name information while looping QMovie
+		// so we must wrap with a QBuffer
+		this->p_->onFinished( this->p_->id, this->p_->device->readAll() );
 		return;
 	}
 	this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
