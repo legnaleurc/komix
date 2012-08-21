@@ -19,15 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "imageitem_p.hpp"
-#include "blockdeviceloader.hpp"
-#include "characterdeviceloader.hpp"
+#include "deviceloader.hpp"
 
-#include <QtCore/QThreadPool>
-#include <QtCore/QBuffer>
 #include <QtGui/QGraphicsProxyWidget>
 #include <QtGui/QGraphicsPixmapItem>
 #include <QtGui/QLabel>
-#include <QtGui/QImageReader>
 
 using KomiX::widget::ImageItem;
 
@@ -37,31 +33,24 @@ owner( owner ),
 item( nullptr ) {
 }
 
-void ImageItem::Private::onFinished( int id, const QByteArray & data ) {
-	QBuffer * buffer = new QBuffer;
-	buffer->setData( data );
-	buffer->open( QIODevice::ReadOnly );
-	QImageReader iin( buffer );
-	if( iin.supportsAnimation() ) {
-		// QMovie
-		buffer->seek( 0 );
-		QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
-		QLabel * label = new QLabel;
-		QMovie * movie = new QMovie( buffer );
-		buffer->setParent( movie );
-		label->setMovie( movie );
-		movie->setParent( label );
-		item->setWidget( label );
-		movie->start();
-		label->resize( movie->frameRect().size() );
-		this->item = item;
-	} else {
-		QPixmap pixmap = QPixmap::fromImageReader( &iin );
-		buffer->deleteLater();
-		QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
-		item->setTransformationMode( Qt::SmoothTransformation );
-		this->item = item;
-	}
+void ImageItem::Private::onFinished( int id, QMovie * movie ) {
+	QLabel * label = new QLabel;
+	label->setMovie( movie );
+	movie->setParent( label );
+	movie->start();
+	label->resize( movie->frameRect().size() );
+	QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
+	item->setWidget( label );
+
+	this->item = item;
+	emit this->changed();
+}
+
+void ImageItem::Private::onFinished( int id, const QPixmap & pixmap ) {
+	QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
+	item->setTransformationMode( Qt::SmoothTransformation );
+
+	this->item = item;
 	emit this->changed();
 }
 
@@ -70,14 +59,10 @@ QGraphicsObject(),
 p_( new Private( this ) ) {
 	this->connect( this->p_.get(), SIGNAL( changed() ), SIGNAL( changed() ) );
 	foreach( QIODevice * device, devices ) {
-		DeviceLoader * loader = nullptr;
-		if( device->isSequential() ) {
-			loader = new CharacterDeviceLoader( -1, device );
-		} else {
-			loader = new BlockDeviceLoader( -1, device );
-		}
-		this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
-		QThreadPool::globalInstance()->start( loader );
+		DeviceLoader * loader = new DeviceLoader( -1, device );
+		this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
+		this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+		loader->start();
 	}
 }
 

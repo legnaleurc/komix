@@ -22,15 +22,11 @@
 #include "navigator_p.hpp"
 #include "filecontroller.hpp"
 #include "imagewrapper.hpp"
-#include "blockdeviceloader.hpp"
-#include "characterdeviceloader.hpp"
-
-#include <QtCore/QThreadPool>
-#include <QtCore/QBuffer>
-#include <QtGui/QMovie>
+#include "deviceloader.hpp"
 
 using KomiX::widget::Navigator;
 using KomiX::FileController;
+using KomiX::DeviceLoader;
 
 Navigator::Private::Private( FileController * controller, Navigator * owner ):
 QObject(),
@@ -48,35 +44,29 @@ void Navigator::Private::openHelper() {
 
 void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
 	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
-	DeviceLoader * loader = nullptr;
-	if( device->isSequential() ) {
-		loader = new CharacterDeviceLoader( -1, device );
-	} else {
-		loader = new BlockDeviceLoader( -1, device );
-	}
-	this->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
-	QThreadPool::globalInstance()->start( loader );
+	DeviceLoader * loader = new DeviceLoader( -1, device );
+	this->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
+	this->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+	loader->start();
 }
 
-void Navigator::Private::onFinished( int id, const QByteArray & data ) {
-	QBuffer * buffer = new QBuffer;
-	buffer->setData( data );
-	buffer->open( QIODevice::ReadOnly );
-	QImageReader iin( buffer );
+void Navigator::Private::onFinished( int id, QMovie * movie ) {
 	QMovie * tmp = this->ui.preview->movie();
-	if( iin.supportsAnimation() ) {
-		// QMovie
-		buffer->seek( 0 );
-		QMovie * movie = new QMovie( buffer );
-		buffer->setParent( movie );
-		this->ui.preview->setMovie( movie );
-		movie->setScaledSize( this->ui.preview->size() );
-		movie->start();
-	} else {
-		QPixmap pixmap = QPixmap::fromImageReader( &iin );
-		buffer->deleteLater();
-		this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
+
+	this->ui.preview->setMovie( movie );
+	movie->setScaledSize( this->ui.preview->size() );
+	movie->start();
+
+	if( tmp ) {
+		tmp->deleteLater();
 	}
+}
+
+void Navigator::Private::onFinished( int id, const QPixmap & pixmap ) {
+	QMovie * tmp = this->ui.preview->movie();
+
+	this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
+
 	if( tmp ) {
 		tmp->deleteLater();
 	}

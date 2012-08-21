@@ -23,6 +23,8 @@
 
 #include "imageitem.hpp"
 
+#include <QtGui/QMovie>
+
 namespace KomiX {
 namespace widget {
 
@@ -32,7 +34,8 @@ public:
 	explicit Private( ImageItem * owner );
 
 public slots:
-	void onFinished( int id, const QByteArray & data );
+	void onFinished( int id, QMovie * movie );
+	void onFinished( int id, const QPixmap & pixmap );
 
 signals:
 	void changed();
