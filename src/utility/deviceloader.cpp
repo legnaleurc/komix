@@ -28,7 +28,7 @@
 
 namespace {
 /// 2 MiB
-const qint64 MAX_DEVICE_SIZE = 2 * 1024 * 1024;
+const qint64 MAX_DEVICE_SIZE = 10 * 1024 * 1024;
 }
 
 using KomiX::DeviceLoader;
