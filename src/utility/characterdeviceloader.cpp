@@ -22,7 +22,7 @@
 
 #include <QtCore/QEventLoop>
 
-using KomiX::widget::CharacterDeviceLoader;
+using KomiX::CharacterDeviceLoader;
 
 CharacterDeviceLoader::Private::Private( CharacterDeviceLoader * owner ):
 QObject(),

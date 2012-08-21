@@ -1,5 +1,5 @@
 /**
- * @file blockdeviceloader.hpp
+ * @file deviceloader.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,20 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_STATICITEM_HPP
-#define KOMIX_WIDGET_STATICITEM_HPP
+#ifndef KOMIX_WIDGET_DEVICELOADER_HPP
+#define KOMIX_WIDGET_DEVICELOADER_HPP
 
-#include "deviceloader.hpp"
+#include <QtCore/QIODevice>
+#include <QtCore/QRunnable>
+#include <QtGui/QPixmap>
+#include <QtGui/QMovie>
+
+#include <memory>
 
 namespace KomiX {
-namespace widget {
-class BlockDeviceLoader: public DeviceLoader {
+class DeviceLoader: public QObject, public QRunnable {
+	Q_OBJECT
 public:
-	BlockDeviceLoader( int id, QIODevice * device );
+	DeviceLoader( int id, QIODevice * device );
 
-	virtual void run();
+protected:
+	int getID() const;
+	QIODevice * getDevice() const;
+
+signals:
+	void finished( int id, const QByteArray & data );
+
+private:
+	class Private;
+	std::shared_ptr< Private > p_;
 };
-}
 }
 
 #endif
