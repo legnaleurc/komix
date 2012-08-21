@@ -86,6 +86,8 @@ void ImageView::Private::setImage( const QList< QIODevice * > & images ) {
 
 	this->anime = new QPropertyAnimation( this->image, "pos" );
 	this->connect( this->anime, SIGNAL( stateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ), SLOT( animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State ) ) );
+
+	this->onImageChanged();
 }
 
 void ImageView::Private::animeStateChanged( QAbstractAnimation::State newState, QAbstractAnimation::State /*oldState*/ ) {
