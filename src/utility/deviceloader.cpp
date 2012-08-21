@@ -18,39 +18,73 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "deviceloader.hpp"
+#include "deviceloader_p.hpp"
+#include "characterdeviceloader.hpp"
+#include "blockdeviceloader.hpp"
 
+#include <QtCore/QBuffer>
+#include <QtCore/QThreadPool>
 #include <QtGui/QImageReader>
 
-namespace KomiX {
-
-class DeviceLoader::Private {
-public:
-	Private( int id, QIODevice * device );
-
-	int id;
-	QIODevice * device;
-};
-
+namespace {
+/// 2 MiB
+const qint64 MAX_DEVICE_SIZE = 2 * 1024 * 1024;
 }
 
 using KomiX::DeviceLoader;
+using KomiX::AsynchronousLoader;
+using KomiX::CharacterDeviceLoader;
+using KomiX::BlockDeviceLoader;
 
 DeviceLoader::Private::Private( int id, QIODevice * device ):
+QObject(),
 id( id ),
 device( device ) {
 }
 
+void DeviceLoader::Private::read( QIODevice * device ) {
+	QImageReader iin( device );
+	if( iin.supportsAnimation() ) {
+		// QMovie
+		device->seek( 0 );
+		QMovie * movie = new QMovie( device );
+		device->setParent( movie );
+		emit this->finished( this->id, movie );
+	} else {
+		QPixmap pixmap = QPixmap::fromImageReader( &iin );
+		device->deleteLater();
+		emit this->finished( this->id, pixmap );
+	}
+}
+
+void DeviceLoader::Private::onFinished( int id, const QByteArray & data ) {
+	QBuffer * buffer = new QBuffer;
+	buffer->setData( data );
+	buffer->open( QIODevice::ReadOnly );
+	this->read( buffer );
+	this->device->deleteLater();
+}
+
 DeviceLoader::DeviceLoader( int id, QIODevice * device ):
 QObject(),
-QRunnable(),
 p_( new Private( id, device ) ) {
+	this->connect( this->p_.get(), SIGNAL( finished( int, QMovie * ) ), SIGNAL( finished( int, QMovie * ) ) );
+	this->connect( this->p_.get(), SIGNAL( finished( int, const QPixmap & ) ), SIGNAL( finished( int, const QPixmap & ) ) );
 }
 
-int DeviceLoader::getID() const {
-	return this->p_->id;
-}
-
-QIODevice * DeviceLoader::getDevice() const {
-	return this->p_->device;
+void DeviceLoader::start() const {
+	AsynchronousLoader * loader = nullptr;
+	if( this->p_->device->isSequential() ) {
+		// character device, async operation
+		loader = new CharacterDeviceLoader( this->p_->id, this->p_->device );
+	} else if( this->p_->device->size() >= MAX_DEVICE_SIZE ) {
+		// large block device, async operation
+		loader = new BlockDeviceLoader( this->p_->id, this->p_->device );
+	} else {
+		// small block device, read directly
+		this->p_->read( this->p_->device );
+		return;
+	}
+	this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
+	QThreadPool::globalInstance()->start( loader );
 }

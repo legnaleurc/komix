@@ -21,12 +21,12 @@
 #ifndef KOMIX_WIDGET_CHARACTERDEVICELOADER_HPP
 #define KOMIX_WIDGET_CHARACTERDEVICELOADER_HPP
 
-#include "deviceloader.hpp"
+#include "asynchronousloader.hpp"
 
 #include <memory>
 
 namespace KomiX {
-class CharacterDeviceLoader: public DeviceLoader {
+class CharacterDeviceLoader: public AsynchronousLoader {
 public:
 	CharacterDeviceLoader( int id, QIODevice * device );
 

@@ -1,5 +1,5 @@
 /**
- * @file deviceloader.hpp
+ * @file asynchronousloader.cpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,31 +18,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_DEVICELOADER_HPP
-#define KOMIX_WIDGET_DEVICELOADER_HPP
-
-#include <QtCore/QIODevice>
-#include <QtGui/QPixmap>
-#include <QtGui/QMovie>
-
-#include <memory>
+#include "asynchronousloader.hpp"
 
 namespace KomiX {
-class DeviceLoader: public QObject {
-	Q_OBJECT
+
+class AsynchronousLoader::Private {
 public:
-	DeviceLoader( int id, QIODevice * device );
+	Private( int id, QIODevice * device );
 
-	void start() const;
-
-signals:
-	void finished( int id, const QPixmap & pixmap );
-	void finished( int id, QMovie * movie );
-
-private:
-	class Private;
-	std::shared_ptr< Private > p_;
+	int id;
+	QIODevice * device;
 };
+
 }
 
-#endif
+using KomiX::AsynchronousLoader;
+
+AsynchronousLoader::Private::Private( int id, QIODevice * device ):
+id( id ),
+device( device ) {
+}
+
+AsynchronousLoader::AsynchronousLoader( int id, QIODevice * device ):
+QObject(),
+QRunnable(),
+p_( new Private( id, device ) ) {
+}
+
+int AsynchronousLoader::getID() const {
+	return this->p_->id;
+}
+
+QIODevice * AsynchronousLoader::getDevice() const {
+	return this->p_->device;
+}

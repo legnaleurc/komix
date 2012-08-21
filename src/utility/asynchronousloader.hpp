@@ -1,5 +1,5 @@
 /**
- * @file deviceloader.hpp
+ * @file asynchronousloader.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,26 +18,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_DEVICELOADER_HPP
-#define KOMIX_WIDGET_DEVICELOADER_HPP
+#ifndef KOMIX_WIDGET_ASYNCHRONOUSLOADER_HPP
+#define KOMIX_WIDGET_ASYNCHRONOUSLOADER_HPP
 
 #include <QtCore/QIODevice>
-#include <QtGui/QPixmap>
-#include <QtGui/QMovie>
+#include <QtCore/QRunnable>
 
 #include <memory>
 
 namespace KomiX {
-class DeviceLoader: public QObject {
+class AsynchronousLoader: public QObject, public QRunnable {
 	Q_OBJECT
 public:
-	DeviceLoader( int id, QIODevice * device );
+	AsynchronousLoader( int id, QIODevice * device );
 
-	void start() const;
+protected:
+	int getID() const;
+	QIODevice * getDevice() const;
 
 signals:
-	void finished( int id, const QPixmap & pixmap );
-	void finished( int id, QMovie * movie );
+	void finished( int id, const QByteArray & data );
 
 private:
 	class Private;

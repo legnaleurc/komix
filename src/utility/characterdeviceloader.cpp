@@ -43,7 +43,7 @@ void CharacterDeviceLoader::Private::onReadFinished() {
 }
 
 CharacterDeviceLoader::CharacterDeviceLoader( int id, QIODevice * device ):
-DeviceLoader( id, device ),
+AsynchronousLoader( id, device ),
 p_( new Private( this ) ) {
 	this->p_->connect( device, SIGNAL( readyRead() ), SLOT( onReadyRead() ) );
 	this->p_->connect( device, SIGNAL( readChannelFinished() ), SLOT( onReadFinished() ) );

@@ -21,10 +21,10 @@
 #ifndef KOMIX_WIDGET_STATICITEM_HPP
 #define KOMIX_WIDGET_STATICITEM_HPP
 
-#include "deviceloader.hpp"
+#include "asynchronousloader.hpp"
 
 namespace KomiX {
-class BlockDeviceLoader: public DeviceLoader {
+class BlockDeviceLoader: public AsynchronousLoader {
 public:
 	BlockDeviceLoader( int id, QIODevice * device );
 

@@ -24,6 +24,8 @@
 #include "navigator.hpp"
 #include "ui_navigator.h"
 
+#include <QtGui/QMovie>
+
 namespace KomiX {
 namespace widget {
 
@@ -35,7 +37,8 @@ public:
 public slots:
 	void openHelper();
 	void viewImage( const QModelIndex &, const QModelIndex & );
-	void onFinished( int id, const QByteArray & data );
+	void onFinished( int id, QMovie * movie );
+	void onFinished( int id, const QPixmap & pixmap );
 
 signals:
 	void required( const QModelIndex & index );

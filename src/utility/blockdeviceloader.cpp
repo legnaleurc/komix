@@ -23,7 +23,7 @@
 using KomiX::BlockDeviceLoader;
 
 BlockDeviceLoader::BlockDeviceLoader( int id, QIODevice * device ):
-DeviceLoader( id, device ) {
+AsynchronousLoader( id, device ) {
 }
 
 void BlockDeviceLoader::run() {
