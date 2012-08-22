@@ -88,7 +88,7 @@ p_( new Private( controller, this ) ) {
 
 void Navigator::setModel( std::shared_ptr< KomiX::model::FileModel > model ) {
 	if( this->p_->selection ) {
-		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this->p_.get(), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
 	}
 	this->p_->model = model;
 	this->p_->ui.list->setModel( this->p_->model.get() );
