@@ -54,8 +54,10 @@ void Navigator::Private::onFinished( int id, QMovie * movie ) {
 	QMovie * tmp = this->ui.preview->movie();
 
 	this->ui.preview->setMovie( movie );
-	movie->setScaledSize( this->ui.preview->size() );
 	movie->start();
+	QSize size = movie->frameRect().size();
+	size.scale( this->ui.preview->size(), Qt::KeepAspectRatio );
+	movie->setScaledSize( size );
 
 	if( tmp ) {
 		tmp->deleteLater();
