@@ -66,10 +66,38 @@ endif()
 
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES})
 
-if(WIN32)
-    install(TARGETS komix
-        RUNTIME DESTINATION .)
-else()
-    install(TARGETS komix
-        RUNTIME DESTINATION bin)
+# install
+foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
+	list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG "${QT_Q${f}_PLUGIN_DEBUG}")
+	list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE "${QT_Q${f}_PLUGIN_RELEASE}")
+endforeach()
+include(InstallRequiredSystemLibraries)
+install(TARGETS komix RUNTIME DESTINATION "bin" COMPONENT "Runtime")
+install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG} DESTINATION "plugins/imageformats" CONFIGURATIONS "Debug" "RelWithDebInfo" COMPONENT "Runtime")
+install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE} DESTINATION "plugins/imageformats" CONFIGURATIONS "Release" "MinSizeRel" COMPONENT "Runtime")
+if(APPLE OR WIN32)
+	configure_file("${CMAKE_SOURCE_DIR}/cmake/modules/install.cmake.in" "${CMAKE_BINARY_DIR}/install.cmake" @ONLY)
+	install(SCRIPT "${CMAKE_BINARY_DIR}/install.cmake" COMPONENT Runtime)
 endif()
+
+# package
+set(CPACK_PACKAGE_VERSION_MAJOR ${KOMIX_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${KOMIX_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${KOMIX_VERSION_PATCH})
+#set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
+if(APPLE)
+	set(CPACK_GENERATOR DragNDrop)
+elseif(WIN32)
+	set(CPACK_PACKAGE_INSTALL_DIRECTORY "KomiX")
+	set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+  CreateShortCut \\\"\\\$SMPROGRAMS\\\\\\\$STARTMENU_FOLDER\\\\KomiX.lnk\\\" \\\"\\\$INSTDIR\\\\bin\\\\KomiX.exe\\\"
+  CreateShortCut \\\"\\\$DESKTOP\\\\KomiX.lnk\\\" \\\"\\\$INSTDIR\\\\bin\\\\KomiX.exe\\\"
+	")
+	set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+  Delete \\\"\\\$DESKTOP\\\\KomiX.lnk\\\"
+  !insertmacro MUI_STARTMENU_GETFOLDER Application \\\$MUI_TEMP
+  Delete \\\"\\\$SMPROGRAMS\\\\\\\$MUI_TEMP\\\\KomiX.lnk\\\"
+	")
+endif()
+
+include(CPack)
