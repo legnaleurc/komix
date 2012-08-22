@@ -202,7 +202,9 @@ p_( new Private( this ) ) {
 }
 
 void ImageView::setPaused( bool paused ) {
-	this->p_->image->setPaused( paused );
+	if( this->p_->image ) {
+		this->p_->image->setPaused( paused );
+	}
 }
 
 void ImageView::initialize( FileController * controller ) {
