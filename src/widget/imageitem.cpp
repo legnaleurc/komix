@@ -30,7 +30,8 @@ using KomiX::widget::ImageItem;
 ImageItem::Private::Private( ImageItem * owner ):
 QObject(),
 owner( owner ),
-item( nullptr ) {
+item( nullptr ),
+movie( nullptr ) {
 }
 
 void ImageItem::Private::onFinished( int id, QMovie * movie ) {
@@ -42,6 +43,7 @@ void ImageItem::Private::onFinished( int id, QMovie * movie ) {
 	QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
 	item->setWidget( label );
 
+	this->movie = movie;
 	this->item = item;
 	emit this->changed();
 }
@@ -63,6 +65,12 @@ p_( new Private( this ) ) {
 		this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
 		this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
 		loader->start();
+	}
+}
+
+void ImageItem::setPaused( bool paused ) {
+	if( this->p_->movie ) {
+		this->p_->movie->setPaused( paused );
 	}
 }
 

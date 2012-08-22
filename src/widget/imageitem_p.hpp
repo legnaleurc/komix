@@ -43,6 +43,7 @@ signals:
 public:
 	ImageItem * owner;
 	QGraphicsItem * item;
+	QMovie * movie;
 };
 
 }

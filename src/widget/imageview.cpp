@@ -201,6 +201,10 @@ p_( new Private( this ) ) {
 	this->connect( this->p_->panel, SIGNAL( fitWindow() ), SLOT( fitWindow() ) );
 }
 
+void ImageView::setPaused( bool paused ) {
+	this->p_->image->setPaused( paused );
+}
+
 void ImageView::initialize( FileController * controller ) {
 	this->p_->controller = controller;
 

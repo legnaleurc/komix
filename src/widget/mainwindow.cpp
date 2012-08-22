@@ -169,7 +169,9 @@ void MainWindow::Private::showNavigator() {
 	}
 	this->navigator->setModel( this->controller->getModel() );
 	this->navigator->setCurrentIndex( this->controller->getCurrentIndex() );
+	this->ui.graphicsView->setPaused( true );
 	this->navigator->exec();
+	this->ui.graphicsView->setPaused( false );
 }
 
 /**

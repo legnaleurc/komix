@@ -55,6 +55,7 @@ public:
 	void moveBy( QPointF delta = QPointF() );
 	bool open( const QUrl & uri );
 	void scale( double ratio );
+	void setPaused( bool paused );
 
 public slots:
 	void begin();
