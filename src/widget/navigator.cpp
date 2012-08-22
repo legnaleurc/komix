@@ -97,3 +97,12 @@ void Navigator::setModel( std::shared_ptr< KomiX::model::FileModel > model ) {
 void Navigator::setCurrentIndex( const QModelIndex & index ) {
 	this->p_->ui.list->setCurrentIndex( index );
 }
+
+void Navigator::setVisible( bool visible ) {
+	// pause movie for performance
+	QMovie * movie = this->p_->ui.preview->movie();
+	if( movie ) {
+		movie->setPaused( !visible );
+	}
+	this->QDialog::setVisible( visible );
+}

@@ -52,6 +52,8 @@ public:
 	/// set current model index
 	void setCurrentIndex( const QModelIndex & index );
 
+	virtual void setVisible( bool visible );
+
 private:
 	class Private;
 	std::shared_ptr< Private > p_;
