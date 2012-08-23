@@ -29,15 +29,13 @@
 
 namespace {
 
-	inline void tl( QByteArray & s ) {
-		s = s.toLower();
-	}
-
 	inline QStringList uniqueList() {
 		Q_ASSERT( QCoreApplication::instance() != NULL );
 		std::list< QByteArray > uniList = QImageReader::supportedImageFormats().toStdList();
 
-		std::for_each( uniList.begin(), uniList.end(), tl );
+		std::for_each( uniList.begin(), uniList.end(), []( QByteArray & s )->void {
+			s = s.toLower();
+		} );
 		uniList.sort();
 		uniList.unique();
 
