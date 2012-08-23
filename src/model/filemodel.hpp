@@ -23,6 +23,7 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QUrl>
+#include <QtCore/QMetaType>
 
 #include <functional>
 #include <memory>
@@ -72,5 +73,7 @@ signals:
 
 }
 } // end namespace
+
+Q_DECLARE_METATYPE( QIODevice * )
 
 #endif
