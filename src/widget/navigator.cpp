@@ -52,11 +52,12 @@ void Navigator::Private::viewImage( const QModelIndex & current, const QModelInd
 void Navigator::Private::onFinished( int id, QMovie * movie ) {
 	QMovie * tmp = this->ui.preview->movie();
 
-	this->ui.preview->setMovie( movie );
-	movie->start();
+	movie->jumpToNextFrame();
 	QSize size = movie->frameRect().size();
 	size.scale( this->ui.preview->size(), Qt::KeepAspectRatio );
 	movie->setScaledSize( size );
+	this->ui.preview->setMovie( movie );
+	movie->start();
 
 	if( tmp ) {
 		tmp->deleteLater();
