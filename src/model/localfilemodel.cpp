@@ -20,7 +20,6 @@
  */
 #include "global.hpp"
 #include "localfilemodel.hpp"
-#include "imagewrapper.hpp"
 
 namespace KomiX {
 namespace model {

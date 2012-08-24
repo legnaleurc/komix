@@ -21,7 +21,6 @@
 #include "exception.hpp"
 #include "filecontroller_p.hpp"
 #include "global.hpp"
-#include "imagewrapper.hpp"
 
 #include <QtCore/QFileInfo>
 

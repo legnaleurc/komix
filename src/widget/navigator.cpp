@@ -21,7 +21,6 @@
 #include "global.hpp"
 #include "navigator_p.hpp"
 #include "filecontroller.hpp"
-#include "imagewrapper.hpp"
 #include "deviceloader.hpp"
 
 using KomiX::widget::Navigator;
