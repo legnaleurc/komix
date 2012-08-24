@@ -484,10 +484,18 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 			emit this->scaled( 10 );
 		}
 	} else {
+#ifdef Q_OS_MAC
+		if( event->orientation() == Qt::Horizontal ) {
+			this->moveBy( QPointF( delta, 0 ) );
+		} else {
+			this->moveBy( QPointF( 0, delta ) );
+		}
+#else
 		if( delta < 0 ) {
 			this->p_->controller->next();
 		} else if( delta > 0 ) {
 			this->p_->controller->prev();
 		}
+#endif
 	}
 }

@@ -33,12 +33,19 @@ group_sources("${CMAKE_SOURCE_DIR}/src")
 source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_UIC_HEADERS} ${KOMIX_QM_FILES})
 source_group("Resource Files" REGULAR_EXPRESSION .*\\.rc)
 
+set_source_files_properties("image/logo.icns" PROPERTIES
+	MACOSX_PACKAGE_LOCATION "Resources")
+set(MACOSX_BUNDLE_ICON_FILE "logo.icns")
+
 set(KOMIX_COMPILE_UNITS ${KOMIX_SOURCES} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_QM_FILES} ${KOMIX_UIC_HEADERS})
 
 if(WIN32)
 	add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_COMPILE_UNITS})
 	set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "/MP /Zc:wchar_t-")
+elseif(APPLE)
+	add_executable(komix MACOSX_BUNDLE "image/logo.icns" ${KOMIX_COMPILE_UNITS})
+	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 else()
 	add_executable(komix ${KOMIX_COMPILE_UNITS})
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
@@ -52,7 +59,10 @@ foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
 	list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE "${QT_Q${f}_PLUGIN_RELEASE}")
 endforeach()
 include(InstallRequiredSystemLibraries)
-install(TARGETS komix RUNTIME DESTINATION "bin" COMPONENT "Runtime")
+install(TARGETS komix
+	RUNTIME DESTINATION "bin"
+        BUNDLE DESTINATION "."
+	COMPONENT "Runtime")
 install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG} DESTINATION "plugins/imageformats" CONFIGURATIONS "Debug" "RelWithDebInfo" COMPONENT "Runtime")
 install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE} DESTINATION "plugins/imageformats" CONFIGURATIONS "Release" "MinSizeRel" COMPONENT "Runtime")
 if(APPLE OR WIN32)
