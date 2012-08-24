@@ -30,14 +30,13 @@ namespace KomiX {
 class AsynchronousLoader: public QObject, public QRunnable {
 	Q_OBJECT
 public:
-	AsynchronousLoader( int id, QIODevice * device );
+	AsynchronousLoader( QIODevice * device );
 
 protected:
-	int getID() const;
 	QIODevice * getDevice() const;
 
 signals:
-	void finished( int id, const QByteArray & data );
+	void finished( const QByteArray & data );
 
 private:
 	class Private;

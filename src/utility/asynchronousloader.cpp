@@ -24,9 +24,8 @@ namespace KomiX {
 
 class AsynchronousLoader::Private {
 public:
-	Private( int id, QIODevice * device );
+	Private( QIODevice * device );
 
-	int id;
 	QIODevice * device;
 };
 
@@ -34,19 +33,14 @@ public:
 
 using KomiX::AsynchronousLoader;
 
-AsynchronousLoader::Private::Private( int id, QIODevice * device ):
-id( id ),
+AsynchronousLoader::Private::Private( QIODevice * device ):
 device( device ) {
 }
 
-AsynchronousLoader::AsynchronousLoader( int id, QIODevice * device ):
+AsynchronousLoader::AsynchronousLoader( QIODevice * device ):
 QObject(),
 QRunnable(),
-p_( new Private( id, device ) ) {
-}
-
-int AsynchronousLoader::getID() const {
-	return this->p_->id;
+p_( new Private( device ) ) {
 }
 
 QIODevice * AsynchronousLoader::getDevice() const {

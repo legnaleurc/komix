@@ -26,7 +26,7 @@
 namespace KomiX {
 class BlockDeviceLoader: public AsynchronousLoader {
 public:
-	BlockDeviceLoader( int id, QIODevice * device );
+	BlockDeviceLoader( QIODevice * device );
 
 	virtual void run();
 };

@@ -45,7 +45,6 @@ device( device ) {
 void DeviceLoader::Private::read( QIODevice * device ) {
 	QImageReader iin( device );
 	if( iin.supportsAnimation() ) {
-		// QMovie
 		device->seek( 0 );
 		QMovie * movie = new QMovie( device );
 		device->setParent( movie );
@@ -57,7 +56,7 @@ void DeviceLoader::Private::read( QIODevice * device ) {
 	}
 }
 
-void DeviceLoader::Private::onFinished( int id, const QByteArray & data ) {
+void DeviceLoader::Private::onFinished( const QByteArray & data ) {
 	QBuffer * buffer = new QBuffer;
 	buffer->setData( data );
 	buffer->open( QIODevice::ReadOnly );
@@ -76,18 +75,18 @@ void DeviceLoader::start() const {
 	AsynchronousLoader * loader = nullptr;
 	if( this->p_->device->isSequential() ) {
 		// character device, async operation
-		loader = new CharacterDeviceLoader( this->p_->id, this->p_->device );
+		loader = new CharacterDeviceLoader( this->p_->device );
 	} else if( this->p_->device->size() >= MAX_DEVICE_SIZE ) {
 		// large block device, async operation
-		loader = new BlockDeviceLoader( this->p_->id, this->p_->device );
+		loader = new BlockDeviceLoader( this->p_->device );
 	} else {
 		// small block device, read directly
 		// NOTE
 		// somehow QFile will lost file name information while looping QMovie
 		// so we must wrap with a QBuffer
-		this->p_->onFinished( this->p_->id, this->p_->device->readAll() );
+		this->p_->onFinished( this->p_->device->readAll() );
 		return;
 	}
-	this->p_->connect( loader, SIGNAL( finished( int, const QByteArray & ) ), SLOT( onFinished( int, const QByteArray & ) ) );
+	this->p_->connect( loader, SIGNAL( finished( const QByteArray & ) ), SLOT( onFinished( const QByteArray & ) ) );
 	QThreadPool::globalInstance()->start( loader );
 }

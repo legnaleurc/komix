@@ -28,7 +28,7 @@
 namespace KomiX {
 class CharacterDeviceLoader: public AsynchronousLoader {
 public:
-	CharacterDeviceLoader( int id, QIODevice * device );
+	CharacterDeviceLoader( QIODevice * device );
 
 	virtual void run();
 

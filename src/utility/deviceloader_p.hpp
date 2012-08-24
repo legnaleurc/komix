@@ -32,7 +32,7 @@ public:
 	void read( QIODevice * device );
 
 public slots:
-	void onFinished( int id, const QByteArray & data );
+	void onFinished( const QByteArray & data );
 
 signals:
 	void finished( int id, const QPixmap & pixmap );

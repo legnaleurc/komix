@@ -42,8 +42,8 @@ void CharacterDeviceLoader::Private::onReadFinished() {
 	emit this->finished();
 }
 
-CharacterDeviceLoader::CharacterDeviceLoader( int id, QIODevice * device ):
-AsynchronousLoader( id, device ),
+CharacterDeviceLoader::CharacterDeviceLoader( QIODevice * device ):
+AsynchronousLoader( device ),
 p_( new Private( this ) ) {
 	this->p_->connect( device, SIGNAL( readyRead() ), SLOT( onReadyRead() ) );
 	this->p_->connect( device, SIGNAL( readChannelFinished() ), SLOT( onReadFinished() ) );
@@ -54,5 +54,5 @@ void CharacterDeviceLoader::run() {
 	wait.connect( this->p_.get(), SIGNAL( finished() ), SLOT( quit() ) );
 	wait.exec();
 
-	emit this->finished( this->getID(), this->p_->buffer.data() );
+	emit this->finished( this->p_->buffer.data() );
 }
