@@ -50,8 +50,6 @@ public:
 	explicit ImageView( QWidget * parent );
 
 	void initialize( FileController * controller );
-	void moveTo( Direction d );
-	void slideTo( Direction d );
 	void moveBy( QPointF delta = QPointF() );
 	bool open( const QUrl & uri );
 	void scale( double ratio );

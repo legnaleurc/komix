@@ -27,6 +27,7 @@
 using KomiX::widget::ImageView;
 using KomiX::widget::Direction;
 using KomiX::FileController;
+using KomiX::ViewState;
 
 ImageView::Private::Private( ImageView * owner ):
 QObject(),
@@ -44,7 +45,105 @@ pressEndPosition(),
 pressStartPosition(),
 scaleMode( Custom ),
 vpRect(),
-vpState() {
+vpState(),
+trState( new ViewState( [this]()->QLineF {
+	return QLineF( QPointF( 0.0, 0.0 ), this->vpRect.topRight() - this->imgRect.topRight() );
+} ) ),
+brState( new ViewState( [this]()->QLineF {
+	return QLineF( QPointF( 0.0, 0.0 ), this->vpRect.bottomRight() - this->imgRect.bottomRight() );
+} ) ),
+tlState( new ViewState( [this]()->QLineF {
+	return QLineF( QPointF( 0.0, 0.0 ), this->vpRect.topLeft() - this->imgRect.topLeft() );
+} ) ),
+blState( new ViewState( [this]()->QLineF {
+	return QLineF( QPointF( 0.0, 0.0 ), this->vpRect.bottomLeft() - this->imgRect.bottomLeft() );
+} ) ),
+tState( new ViewState( [this]()->QLineF {
+	return QLineF( 0.0, 0.0, 0.0, this->vpRect.top() - this->imgRect.top() );
+} ) ),
+bState( new ViewState( [this]()->QLineF {
+	return QLineF( 0.0, 0.0, 0.0, this->vpRect.bottom() - this->imgRect.bottom() );
+} ) ),
+rState( new ViewState( [this]()->QLineF {
+	return QLineF( 0.0, 0.0, this->vpRect.right() - this->imgRect.right(), 0.0 );
+} ) ),
+lState( new ViewState( [this]()->QLineF {
+	return QLineF( 0.0, 0.0, this->vpRect.left() - this->imgRect.left(), 0.0 );
+} ) ),
+cState( new ViewState( []()->QLineF {
+	return QLineF();
+} ) ),
+currentState() {
+	this->addTransition( this->trState->next(), this->brState );
+	this->trState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
+	this->trState->previous().connect( std::bind( &ImageView::end, this->owner ) );
+	this->addTransition( this->trState->last(), this->blState );
+	this->addTransition( this->trState->narrower(), this->tState );
+	this->addTransition( this->trState->lower(), this->rState );
+
+	this->addTransition( this->brState->next(), this->tlState );
+	this->addTransition( this->brState->previous(), this->trState );
+	this->addTransition( this->brState->first(), this->trState );
+	this->addTransition( this->brState->last(), this->blState );
+	this->addTransition( this->brState->narrower(), this->bState );
+	this->addTransition( this->brState->lower(), this->rState );
+
+	this->addTransition( this->tlState->next(), this->blState );
+	this->addTransition( this->tlState->previous(), this->brState );
+	this->addTransition( this->tlState->first(), this->trState );
+	this->addTransition( this->tlState->last(), this->blState );
+	this->addTransition( this->tlState->narrower(), this->tState );
+	this->addTransition( this->tlState->lower(), this->lState );
+
+	this->blState->next().connect( std::bind( &ImageView::nextPage, this->owner ) );
+	this->blState->next().connect( std::bind( &ImageView::begin, this->owner ) );
+	this->addTransition( this->blState->previous(), this->tlState );
+	this->addTransition( this->blState->first(), this->trState );
+	this->addTransition( this->blState->narrower(), this->bState );
+	this->addTransition( this->blState->lower(), this->lState );
+
+	this->addTransition( this->tState->next(), this->bState );
+	this->tState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
+	this->tState->previous().connect( std::bind( &ImageView::end, this->owner ) );
+	this->addTransition( this->tState->last(), this->bState );
+	this->addTransition( this->tState->wider(), this->trState );
+	this->addTransition( this->tState->lower(), this->cState );
+
+	this->bState->next().connect( std::bind( &ImageView::nextPage, this->owner ) );
+	this->bState->next().connect( std::bind( &ImageView::begin, this->owner ) );
+	this->addTransition( this->bState->previous(), this->tState );
+	this->addTransition( this->bState->first(), this->tState );
+	this->addTransition( this->bState->wider(), this->brState );
+	this->addTransition( this->bState->lower(), this->cState );
+
+	this->addTransition( this->rState->next(), this->lState );
+	this->rState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
+	this->rState->previous().connect( std::bind( &ImageView::end, this->owner ) );
+	this->addTransition( this->rState->last(), this->lState );
+	this->addTransition( this->rState->narrower(), this->cState );
+	this->addTransition( this->rState->higher(), this->trState );
+
+	this->lState->next().connect( std::bind( &ImageView::nextPage, this->owner ) );
+	this->lState->next().connect( std::bind( &ImageView::begin, this->owner ) );
+	this->addTransition( this->lState->previous(), this->rState );
+	this->addTransition( this->lState->first(), this->rState );
+	this->addTransition( this->lState->narrower(), this->cState );
+	this->addTransition( this->lState->higher(), this->tlState );
+
+	this->cState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
+	this->cState->previous().connect( std::bind( &ImageView::end, this->owner ) );
+	this->cState->next().connect( std::bind( &ImageView::nextPage, this->owner ) );
+	this->cState->next().connect( std::bind( &ImageView::begin, this->owner ) );
+	this->addTransition( this->cState->wider(), this->rState );
+	this->addTransition( this->cState->higher(), this->tState );
+
+	this->currentState = this->cState;
+}
+
+void ImageView::Private::addTransition( boost::signals2::signal< void () > & signal, std::shared_ptr< ViewState > state ) {
+	signal.connect( [this, state]()->void {
+		this->currentState = state;
+	} );
 }
 
 void ImageView::Private::addImage( QIODevice * image ) {
@@ -97,10 +196,11 @@ void ImageView::Private::animeStateChanged( QAbstractAnimation::State newState, 
 }
 
 void ImageView::Private::moveBy( const QPointF & delta ) {
-	if( this->image ) {
-		this->image->moveBy( delta.x(), delta.y() );
-		this->imgRect.translate( delta );
+	if( !this->image ) {
+		return;
 	}
+	this->image->moveBy( delta.x(), delta.y() );
+	this->imgRect.translate( delta );
 }
 
 void ImageView::Private::updateScaling() {
@@ -188,6 +288,20 @@ void ImageView::Private::setupAnimation( int msDuration, double dx, double dy ) 
 	this->anime->setEndValue( this->image->pos() + QPointF( dx, dy ) );
 }
 
+void ImageView::Private::moveTo( Direction d ) {
+	this->anime->stop();
+	QLineF v = this->getMotionVector( d );
+	this->moveBy( v.p2() );
+}
+
+void ImageView::Private::slideTo( Direction d ) {
+	this->anime->stop();
+	QLineF v = this->getMotionVector( d );
+	int t = v.length() / this->pixelInterval * this->msInterval;
+	this->setupAnimation( t, v.dx(), v.dy() );
+	this->anime->start();
+}
+
 ImageView::ImageView( QWidget * parent ):
 QGraphicsView( parent ),
 p_( new Private( this ) ) {
@@ -217,20 +331,6 @@ bool ImageView::open( const QUrl & uri ) {
 	return this->p_->controller->open( uri );
 }
 
-void ImageView::moveTo( Direction d ) {
-	this->p_->anime->stop();
-	QLineF v = this->p_->getMotionVector( d );
-	this->p_->moveBy( v.p2() );
-}
-
-void ImageView::slideTo( Direction d ) {
-	this->p_->anime->stop();
-	QLineF v = this->p_->getMotionVector( d );
-	int t = v.length() / this->p_->pixelInterval * this->p_->msInterval;
-	this->p_->setupAnimation( t, v.dx(), v.dy() );
-	this->p_->anime->start();
-}
-
 void ImageView::moveBy( QPointF delta ) {
 	delta /= this->p_->imgRatio;
 	if( this->p_->anime ) {
@@ -241,13 +341,19 @@ void ImageView::moveBy( QPointF delta ) {
 }
 
 void ImageView::begin() {
-	this->p_->vpState = TopRight;
-	this->moveTo( this->p_->vpState );
+	this->p_->currentState->first()();
+	auto mv = this->p_->currentState->getMotionVector();
+	if( !mv.isNull() ) {
+		this->p_->moveBy( mv.p2() );
+	}
 }
 
 void ImageView::end() {
-	this->p_->vpState = BottomLeft;
-	this->moveTo( this->p_->vpState );
+	this->p_->currentState->last()();
+	auto mv = this->p_->currentState->getMotionVector();
+	if( !mv.isNull() ) {
+		this->p_->moveBy( mv.p2() );
+	}
 }
 
 void ImageView::fitHeight() {
@@ -300,6 +406,18 @@ void ImageView::scale( double ratio ) {
 	this->p_->updateViewportRectangle();
 	this->moveBy();
 	this->p_->imgRatio *= ratio;
+
+	// update state
+	if( this->p_->imgRect.width() > this->p_->vpRect.width() ) {
+		this->p_->currentState->wider()();
+	} else {
+		this->p_->currentState->narrower()();
+	}
+	if( this->p_->imgRect.height() > this->p_->vpRect.height() ) {
+		this->p_->currentState->higher()();
+	} else {
+		this->p_->currentState->lower()();
+	}
 }
 
 void ImageView::showControlPanel() {
@@ -308,74 +426,35 @@ void ImageView::showControlPanel() {
 
 void ImageView::smoothMove() {
 	if( !this->p_->image ) {
+		// do nothing if no image
 		return;
 	}
+	// stop all animations
 	this->p_->anime->stop();
-	switch( this->p_->vpState ) {
-	case TopRight:
-		this->p_->vpState = BottomRight;
-		if( this->p_->imgRect.bottom() > this->p_->vpRect.bottom() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothMove();
-		}
-		break;
-	case BottomRight:
-		this->p_->vpState = TopLeft;
-		if( this->p_->imgRect.left() < this->p_->vpRect.left() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothMove();
-		}
-		break;
-	case TopLeft:
-		this->p_->vpState = BottomLeft;
-		if( this->p_->imgRect.bottom() > this->p_->vpRect.bottom() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothMove();
-		}
-		break;
-	case BottomLeft:
-		this->p_->controller->next();
-		break;
+
+	this->p_->currentState->next()();
+	auto mv = this->p_->currentState->getMotionVector();
+	if( !mv.isNull() ) {
+		int t = mv.length() * this->p_->msInterval / this->p_->pixelInterval;
+		this->p_->setupAnimation( t, mv.dx(), mv.dy() );
+		this->p_->anime->start();
 	}
 }
 
 void ImageView::smoothReversingMove() {
 	if( !this->p_->image ) {
+		// do nothing if no image
 		return;
 	}
+	// stop all animations
 	this->p_->anime->stop();
-	switch( this->p_->vpState ) {
-	case BottomLeft:
-		this->p_->vpState = TopLeft;
-		if( this->p_->imgRect.top() < this->p_->vpRect.top() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothReversingMove();
-		}
-		break;
-	case TopLeft:
-		this->p_->vpState = BottomRight;
-		if( this->p_->imgRect.right() > this->p_->vpRect.right() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothReversingMove();
-		}
-		break;
-	case BottomRight:
-		this->p_->vpState = TopRight;
-		if( this->p_->imgRect.top() < this->p_->vpRect.top() ) {
-			this->slideTo( this->p_->vpState );
-		} else {
-			this->smoothReversingMove();
-		}
-		break;
-	case TopRight:
-		this->p_->controller->prev();
-		this->end();
-		break;
+
+	this->p_->currentState->previous()();
+	auto mv = this->p_->currentState->getMotionVector();
+	if( !mv.isNull() ) {
+		int t = mv.length() * this->p_->msInterval / this->p_->pixelInterval;
+		this->p_->setupAnimation( t, mv.dx(), mv.dy() );
+		this->p_->anime->start();
 	}
 }
 

@@ -25,6 +25,7 @@
 #include "scalewidget.hpp"
 #include "filecontroller.hpp"
 #include "imageitem.hpp"
+#include "viewstate.hpp"
 
 #include <QtCore/QPropertyAnimation>
 
@@ -44,12 +45,15 @@ public:
 	explicit Private( ImageView * owner );
 
 	void setImage( const QList< QIODevice * > & images );
+	void moveTo( Direction d );
+	void slideTo( Direction d );
 	void moveBy( const QPointF & );
 	void updateScaling();
 	void updateViewportRectangle();
 	QLineF getMotionVector( Direction );
 	QLineF getMotionVector( double, double );
 	void setupAnimation( int, double, double );
+	void addTransition( boost::signals2::signal< void () > & signal, std::shared_ptr< ViewState > state );
 
 public slots:
 	void addImage( QIODevice * image );
@@ -72,6 +76,16 @@ public:
 	ScaleMode scaleMode;
 	QRectF vpRect;
 	Direction vpState;
+	std::shared_ptr< ViewState > trState;
+	std::shared_ptr< ViewState > brState;
+	std::shared_ptr< ViewState > tlState;
+	std::shared_ptr< ViewState > blState;
+	std::shared_ptr< ViewState > tState;
+	std::shared_ptr< ViewState > bState;
+	std::shared_ptr< ViewState > rState;
+	std::shared_ptr< ViewState > lState;
+	std::shared_ptr< ViewState > cState;
+	std::shared_ptr< ViewState > currentState;
 };
 
 }

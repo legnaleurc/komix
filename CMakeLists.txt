@@ -9,6 +9,9 @@ set(QT_USE_QTSVG TRUE)
 find_package(Qt4 4.6 REQUIRED)
 include(${QT_USE_FILE})
 
+find_package(Boost REQUIRED signals)
+include_directories(${Boost_INCLUDE_DIRS})
+
 set(KOMIX_VERSION_MAJOR 0)
 set(KOMIX_VERSION_MINOR 1)
 set(KOMIX_VERSION_PATCH 60)
@@ -51,7 +54,7 @@ else()
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 endif()
 
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES})
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${Boost_LIBRARIES})
 
 # install
 foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
