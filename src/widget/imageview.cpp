@@ -435,6 +435,10 @@ void ImageView::keyPressEvent( QKeyEvent * event ) {
 }
 
 void ImageView::mouseMoveEvent( QMouseEvent * event ) {
+	if( !this->p_->image ) {
+		return;
+	}
+
 	if( event->buttons() & Qt::LeftButton ) {	// left drag event
 		// change cursor icon
 		if( this->p_->image->cursor().shape() == Qt::BlankCursor ) {
@@ -452,6 +456,10 @@ void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 }
 
 void ImageView::mousePressEvent( QMouseEvent * event ) {
+	if( !this->p_->image ) {
+		return;
+	}
+
 	this->p_->pressStartPosition = event->pos();
 	this->p_->pressEndPosition = event->pos();
 
@@ -461,6 +469,10 @@ void ImageView::mousePressEvent( QMouseEvent * event ) {
 }
 
 void ImageView::mouseReleaseEvent( QMouseEvent * event ) {
+	if( !this->p_->image ) {
+		return;
+	}
+
 	if( event->button() == Qt::LeftButton ) {
 		if( this->p_->pressStartPosition == event->pos() ) {
 			this->smoothMove();
