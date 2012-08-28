@@ -232,7 +232,7 @@ void ImageView::Private::scale( double ratio ) {
 void ImageView::Private::updateScaling() {
 	switch( this->scaleMode ) {
 	case Custom:
-		this->owner->scale( 1.0 );
+		this->scale( 1.0 );
 		break;
 	case Width:
 		this->owner->fitWidth();
