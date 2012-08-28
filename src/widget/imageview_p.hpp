@@ -22,7 +22,6 @@
 #define KOMIX_WIDGET_IMAGEVIEW_P_HPP
 
 #include "imageview.hpp"
-#include "scalewidget.hpp"
 #include "filecontroller.hpp"
 #include "imageitem.hpp"
 #include "viewstate.hpp"
@@ -68,7 +67,6 @@ public:
 	QRectF imgRect;
 	int msInterval;
 	QList< QIODevice * > pageBuffer;
-	ScaleWidget * panel;
 	int pixelInterval;
 	QPoint pressEndPosition;
 	QPoint pressStartPosition;

@@ -38,7 +38,6 @@ imgRatio( 1.0 ),
 imgRect(),
 msInterval( 1 ),
 pageBuffer(),
-panel( new ScaleWidget( owner ) ),
 pixelInterval( 1 ),
 pressEndPosition(),
 pressStartPosition(),
@@ -285,12 +284,6 @@ QGraphicsView( parent ),
 p_( new Private( this ) ) {
 	this->setScene( new QGraphicsScene( this ) );
 	this->p_->vpRect = this->mapToScene( this->viewport()->rect() ).boundingRect();
-
-	this->p_->panel->connect( this, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
-	this->connect( this->p_->panel, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
-	this->connect( this->p_->panel, SIGNAL( fitHeight() ), SLOT( fitHeight() ) );
-	this->connect( this->p_->panel, SIGNAL( fitWidth() ), SLOT( fitWidth() ) );
-	this->connect( this->p_->panel, SIGNAL( fitWindow() ), SLOT( fitWindow() ) );
 }
 
 void ImageView::setPaused( bool paused ) {
@@ -368,10 +361,6 @@ void ImageView::scale( int pcRatio ) {
 
 	this->scale( pcRatio / 100.0 / this->p_->imgRatio );
 	this->p_->scaleMode = Private::Custom;
-}
-
-void ImageView::showControlPanel() {
-	this->p_->panel->show();
 }
 
 void ImageView::smoothMove() {

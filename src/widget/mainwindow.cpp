@@ -44,12 +44,27 @@ QObject(),
 owner( owner ),
 ui(),
 controller( new FileController( this ) ),
+scaler( new ScaleWidget( owner ) ),
 navigator( new Navigator( this->controller, owner ) ),
 preference( new Preference( owner ) ),
 trayIcon( new QSystemTrayIcon( QIcon( ":/image/logo.svg" ), owner ) ),
 about( new AboutWidget( owner ) ),
 dumpState( Qt::WindowNoState ) {
+	this->ui.setupUi( this->owner );
+
+	this->ui.graphicsView->initialize( this->controller );
+
+	this->setupMenuBar();
+	this->setupCentralWidget();
+	this->initTrayIcon();
+
 	this->connect( this->controller, SIGNAL( errorOccured( const QString & ) ), SLOT( popupError( const QString & ) ) );
+
+	this->scaler->connect( this->ui.graphicsView, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
+	this->ui.graphicsView->connect( this->scaler, SIGNAL( scaled( int ) ), SLOT( scale( int ) ) );
+	this->ui.graphicsView->connect( this->scaler, SIGNAL( fitHeight() ), SLOT( fitHeight() ) );
+	this->ui.graphicsView->connect( this->scaler, SIGNAL( fitWidth() ), SLOT( fitWidth() ) );
+	this->ui.graphicsView->connect( this->scaler, SIGNAL( fitWindow() ), SLOT( fitWindow() ) );
 }
 
 void MainWindow::Private::setupMenuBar() {
@@ -95,7 +110,7 @@ void MainWindow::Private::setupViewMenu() {
 	this->connect( this->ui.action_Hide_Window, SIGNAL( triggered() ), SLOT( toggleSystemTray() ) );
 
 	this->owner->addAction( this->ui.action_Scale_Image );
-	this->ui.graphicsView->connect( this->ui.action_Scale_Image, SIGNAL( triggered() ), SLOT( showControlPanel() ) );
+	this->scaler->connect( this->ui.action_Scale_Image, SIGNAL( triggered() ), SLOT( show() ) );
 }
 
 void MainWindow::Private::setupGoMenu() {
@@ -182,13 +197,6 @@ void MainWindow::Private::showNavigator() {
 MainWindow::MainWindow( QWidget * parent, Qt::WindowFlags f ) :
 QMainWindow( parent, f ),
 p_( new Private( this ) ) {
-	this->p_->ui.setupUi( this );
-
-	this->p_->ui.graphicsView->initialize( this->p_->controller );
-
-	this->p_->setupMenuBar();
-	this->p_->setupCentralWidget();
-	this->p_->initTrayIcon();
 }
 
 /**

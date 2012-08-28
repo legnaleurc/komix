@@ -25,6 +25,7 @@
 #include "mainwindow.hpp"
 #include "preference.hpp"
 #include "navigator.hpp"
+#include "scalewidget.hpp"
 #include "filecontroller.hpp"
 #include "ui_mainwindow.h"
 
@@ -59,6 +60,7 @@ public:
 	MainWindow * owner;
 	Ui::MainWindow ui;
 	FileController * controller;
+	ScaleWidget * scaler;
 	Navigator * navigator;
 	Preference * preference;
 	QSystemTrayIcon * trayIcon;

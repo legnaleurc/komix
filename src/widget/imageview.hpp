@@ -52,7 +52,6 @@ public slots:
 	void nextPage();
 	void previousPage();
 	void scale( int pcRatio );
-	void showControlPanel();
 	void smoothMove();
 	void smoothReversingMove();
 
