@@ -45,6 +45,7 @@ public:
 	explicit Private( ImageView * owner );
 
 	void setImage( const QList< QIODevice * > & images );
+	void scale( double ratio );
 	void moveBy( const QPointF & );
 	void fromViewportMoveBy( QPointF delta = QPointF() );
 	void updateScaling();

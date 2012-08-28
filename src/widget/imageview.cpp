@@ -210,6 +210,26 @@ void ImageView::Private::fromViewportMoveBy( QPointF delta ) {
 	this->moveBy( v.p2() );
 }
 
+void ImageView::Private::scale( double ratio ) {
+	this->owner->scale( ratio, ratio );
+	this->updateViewportRectangle();
+	// will move to center
+	this->fromViewportMoveBy();
+	this->imgRatio *= ratio;
+
+	// update state
+	if( this->imgRect.width() > this->vpRect.width() ) {
+		this->currentState->wider()();
+	} else {
+		this->currentState->narrower()();
+	}
+	if( this->imgRect.height() > this->vpRect.height() ) {
+		this->currentState->higher()();
+	} else {
+		this->currentState->lower()();
+	}
+}
+
 void ImageView::Private::updateScaling() {
 	switch( this->scaleMode ) {
 	case Custom:
@@ -348,26 +368,6 @@ void ImageView::scale( int pcRatio ) {
 
 	this->scale( pcRatio / 100.0 / this->p_->imgRatio );
 	this->p_->scaleMode = Private::Custom;
-}
-
-void ImageView::scale( double ratio ) {
-	this->scale( ratio, ratio );
-	this->p_->updateViewportRectangle();
-	// will move to center
-	this->p_->fromViewportMoveBy();
-	this->p_->imgRatio *= ratio;
-
-	// update state
-	if( this->p_->imgRect.width() > this->p_->vpRect.width() ) {
-		this->p_->currentState->wider()();
-	} else {
-		this->p_->currentState->narrower()();
-	}
-	if( this->p_->imgRect.height() > this->p_->vpRect.height() ) {
-		this->p_->currentState->higher()();
-	} else {
-		this->p_->currentState->lower()();
-	}
 }
 
 void ImageView::showControlPanel() {
