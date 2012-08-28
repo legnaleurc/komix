@@ -504,9 +504,9 @@ void ImageView::wheelEvent( QWheelEvent * event ) {
 	} else {
 #ifdef Q_OS_MAC
 		if( event->orientation() == Qt::Horizontal ) {
-			this->moveBy( QPointF( delta, 0 ) );
+			this->p_->fromViewportMoveBy( QPointF( delta, 0 ) );
 		} else {
-			this->moveBy( QPointF( 0, delta ) );
+			this->p_->fromViewportMoveBy( QPointF( 0, delta ) );
 		}
 #else
 		if( delta < 0 ) {
