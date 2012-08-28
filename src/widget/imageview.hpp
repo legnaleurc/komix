@@ -31,17 +31,6 @@ class FileController;
 
 namespace widget {
 
-enum Direction {
-	Top,
-	Bottom,
-	Left,
-	Right,
-	TopRight,
-	BottomRight,
-	TopLeft,
-	BottomLeft
-};
-
 class ImageView : public QGraphicsView {
 	Q_OBJECT
 	using QGraphicsView::scale;
@@ -50,7 +39,6 @@ public:
 	explicit ImageView( QWidget * parent );
 
 	void initialize( FileController * controller );
-	void moveBy( QPointF delta = QPointF() );
 	bool open( const QUrl & uri );
 	void scale( double ratio );
 	void setPaused( bool paused );

@@ -45,13 +45,11 @@ public:
 	explicit Private( ImageView * owner );
 
 	void setImage( const QList< QIODevice * > & images );
-	void moveTo( Direction d );
-	void slideTo( Direction d );
 	void moveBy( const QPointF & );
+	void fromViewportMoveBy( QPointF delta = QPointF() );
 	void updateScaling();
 	void updateViewportRectangle();
-	QLineF getMotionVector( Direction );
-	QLineF getMotionVector( double, double );
+	QLineF normalizeMotionVector( double, double );
 	void setupAnimation( int, double, double );
 	void addTransition( boost::signals2::signal< void () > & signal, std::shared_ptr< ViewState > state );
 
@@ -75,7 +73,6 @@ public:
 	QPoint pressStartPosition;
 	ScaleMode scaleMode;
 	QRectF vpRect;
-	Direction vpState;
 	std::shared_ptr< ViewState > trState;
 	std::shared_ptr< ViewState > brState;
 	std::shared_ptr< ViewState > tlState;

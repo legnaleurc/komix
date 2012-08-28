@@ -25,7 +25,6 @@
 #include <QtGui/QDropEvent>
 
 using KomiX::widget::ImageView;
-using KomiX::widget::Direction;
 using KomiX::FileController;
 using KomiX::ViewState;
 
@@ -45,7 +44,6 @@ pressEndPosition(),
 pressStartPosition(),
 scaleMode( Custom ),
 vpRect(),
-vpState(),
 trState( new ViewState( [this]()->QLineF {
 	return QLineF( QPointF( 0.0, 0.0 ), this->vpRect.topRight() - this->imgRect.topRight() );
 } ) ),
@@ -203,6 +201,15 @@ void ImageView::Private::moveBy( const QPointF & delta ) {
 	this->imgRect.translate( delta );
 }
 
+void ImageView::Private::fromViewportMoveBy( QPointF delta ) {
+	delta /= this->imgRatio;
+	if( this->anime ) {
+		this->anime->stop();
+	}
+	QLineF v = this->normalizeMotionVector( delta.x(), delta.y() );
+	this->moveBy( v.p2() );
+}
+
 void ImageView::Private::updateScaling() {
 	switch( this->scaleMode ) {
 	case Custom:
@@ -226,42 +233,7 @@ void ImageView::Private::updateViewportRectangle() {
 	this->vpRect = this->owner->mapToScene( this->owner->viewport()->rect() ).boundingRect();
 }
 
-QLineF ImageView::Private::getMotionVector( Direction d ) {
-	double dx = 0.0, dy = 0.0;
-	switch( d ) {
-		case Top:
-			dy = this->vpRect.top() - this->imgRect.top();
-			break;
-		case Bottom:
-			dy = this->vpRect.bottom() - this->imgRect.bottom();
-			break;
-		case Left:
-			dx = this->vpRect.left() - this->imgRect.left();
-			break;
-		case Right:
-			dx = this->vpRect.right() - this->imgRect.right();
-			break;
-		case TopRight:
-			dx = this->vpRect.right() - this->imgRect.right();
-			dy = this->vpRect.top() - this->imgRect.top();
-			break;
-		case BottomRight:
-			dx = this->vpRect.right() - this->imgRect.right();
-			dy = this->vpRect.bottom() - this->imgRect.bottom();
-			break;
-		case TopLeft:
-			dx = this->vpRect.left() - this->imgRect.left();
-			dy = this->vpRect.top() - this->imgRect.top();
-			break;
-		case BottomLeft:
-			dx = this->vpRect.left() - this->imgRect.left();
-			dy = this->vpRect.bottom() - this->imgRect.bottom();
-			break;
-	}
-	return this->getMotionVector( dx, dy );
-}
-
-QLineF ImageView::Private::getMotionVector( double dx, double dy ) {
+QLineF ImageView::Private::normalizeMotionVector( double dx, double dy ) {
 	QRectF req = this->imgRect.translated( dx, dy );
 	// horizontal
 	if( this->imgRect.width() < this->vpRect.width() ) {
@@ -286,20 +258,6 @@ void ImageView::Private::setupAnimation( int msDuration, double dx, double dy ) 
 	this->anime->setDuration( msDuration );
 	this->anime->setStartValue( this->image->pos() );
 	this->anime->setEndValue( this->image->pos() + QPointF( dx, dy ) );
-}
-
-void ImageView::Private::moveTo( Direction d ) {
-	this->anime->stop();
-	QLineF v = this->getMotionVector( d );
-	this->moveBy( v.p2() );
-}
-
-void ImageView::Private::slideTo( Direction d ) {
-	this->anime->stop();
-	QLineF v = this->getMotionVector( d );
-	int t = v.length() / this->pixelInterval * this->msInterval;
-	this->setupAnimation( t, v.dx(), v.dy() );
-	this->anime->start();
 }
 
 ImageView::ImageView( QWidget * parent ):
@@ -329,15 +287,6 @@ void ImageView::initialize( FileController * controller ) {
 
 bool ImageView::open( const QUrl & uri ) {
 	return this->p_->controller->open( uri );
-}
-
-void ImageView::moveBy( QPointF delta ) {
-	delta /= this->p_->imgRatio;
-	if( this->p_->anime ) {
-		this->p_->anime->stop();
-	}
-	QLineF v = this->p_->getMotionVector( delta.x(), delta.y() );
-	this->p_->moveBy( v.p2() );
 }
 
 void ImageView::begin() {
@@ -404,7 +353,8 @@ void ImageView::scale( int pcRatio ) {
 void ImageView::scale( double ratio ) {
 	this->scale( ratio, ratio );
 	this->p_->updateViewportRectangle();
-	this->moveBy();
+	// will move to center
+	this->p_->fromViewportMoveBy();
 	this->p_->imgRatio *= ratio;
 
 	// update state
@@ -483,13 +433,13 @@ void ImageView::dropEvent( QDropEvent * event ) {
 
 void ImageView::keyPressEvent( QKeyEvent * event ) {
 	if( event->key() == Qt::Key_Up ) {
-		this->moveBy( QPoint( 0, 10 ) );
+		this->p_->fromViewportMoveBy( QPoint( 0, 10 ) );
 	} else if( event->key() == Qt::Key_Down ) {
-		this->moveBy( QPoint( 0, -10 ) );
+		this->p_->fromViewportMoveBy( QPoint( 0, -10 ) );
 	} else if( event->key() == Qt::Key_Left ) {
-		this->moveBy( QPoint( 10, 0 ) );
+		this->p_->fromViewportMoveBy( QPoint( 10, 0 ) );
 	} else if( event->key() == Qt::Key_Right ) {
-		this->moveBy( QPoint( -10, 0 ) );
+		this->p_->fromViewportMoveBy( QPoint( -10, 0 ) );
 	} else {
 		// nothing
 	}
@@ -503,7 +453,7 @@ void ImageView::mouseMoveEvent( QMouseEvent * event ) {
 		}
 
 		QPoint delta = event->pos() - this->p_->pressEndPosition;
-		this->moveBy( delta );
+		this->p_->fromViewportMoveBy( delta );
 		this->p_->pressEndPosition = event->pos();	// update end point
 	} else {
 		if( this->p_->image->cursor().shape() == Qt::BlankCursor ) {
