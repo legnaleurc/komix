@@ -28,6 +28,10 @@ public:
 	boost::signals2::signal< void () > previous;
 	boost::signals2::signal< void () > first;
 	boost::signals2::signal< void () > last;
+	boost::signals2::signal< void () > top;
+	boost::signals2::signal< void () > bottom;
+	boost::signals2::signal< void () > right;
+	boost::signals2::signal< void () > left;
 	boost::signals2::signal< void () > wider;
 	boost::signals2::signal< void () > narrower;
 	boost::signals2::signal< void () > higher;
@@ -60,6 +64,22 @@ boost::signals2::signal< void () > & ViewState::first() {
 
 boost::signals2::signal< void () > & ViewState::last() {
 	return this->p_->last;
+}
+
+boost::signals2::signal< void () > & ViewState::top() {
+	return this->p_->top;
+}
+
+boost::signals2::signal< void () > & ViewState::bottom() {
+	return this->p_->bottom;
+}
+
+boost::signals2::signal< void () > & ViewState::right() {
+	return this->p_->right;
+}
+
+boost::signals2::signal< void () > & ViewState::left() {
+	return this->p_->left;
 }
 
 boost::signals2::signal< void () > & ViewState::wider() {

@@ -75,6 +75,8 @@ currentState() {
 	this->trState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
 	this->trState->previous().connect( std::bind( &ImageView::end, this->owner ) );
 	this->addTransition( this->trState->last(), this->blState );
+	this->addTransition( this->trState->bottom(), this->brState );
+	this->addTransition( this->trState->left(), this->tlState );
 	this->addTransition( this->trState->narrower(), this->tState );
 	this->addTransition( this->trState->lower(), this->rState );
 
@@ -82,6 +84,8 @@ currentState() {
 	this->addTransition( this->brState->previous(), this->trState );
 	this->addTransition( this->brState->first(), this->trState );
 	this->addTransition( this->brState->last(), this->blState );
+	this->addTransition( this->brState->top(), this->trState );
+	this->addTransition( this->brState->left(), this->blState );
 	this->addTransition( this->brState->narrower(), this->bState );
 	this->addTransition( this->brState->lower(), this->rState );
 
@@ -89,6 +93,8 @@ currentState() {
 	this->addTransition( this->tlState->previous(), this->brState );
 	this->addTransition( this->tlState->first(), this->trState );
 	this->addTransition( this->tlState->last(), this->blState );
+	this->addTransition( this->tlState->bottom(), this->blState );
+	this->addTransition( this->tlState->right(), this->trState );
 	this->addTransition( this->tlState->narrower(), this->tState );
 	this->addTransition( this->tlState->lower(), this->lState );
 
@@ -96,6 +102,8 @@ currentState() {
 	this->blState->next().connect( std::bind( &ImageView::begin, this->owner ) );
 	this->addTransition( this->blState->previous(), this->tlState );
 	this->addTransition( this->blState->first(), this->trState );
+	this->addTransition( this->blState->top(), this->tlState );
+	this->addTransition( this->blState->right(), this->brState );
 	this->addTransition( this->blState->narrower(), this->bState );
 	this->addTransition( this->blState->lower(), this->lState );
 
@@ -103,6 +111,7 @@ currentState() {
 	this->tState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
 	this->tState->previous().connect( std::bind( &ImageView::end, this->owner ) );
 	this->addTransition( this->tState->last(), this->bState );
+	this->addTransition( this->tState->bottom(), this->bState );
 	this->addTransition( this->tState->wider(), this->trState );
 	this->addTransition( this->tState->lower(), this->cState );
 
@@ -110,6 +119,7 @@ currentState() {
 	this->bState->next().connect( std::bind( &ImageView::begin, this->owner ) );
 	this->addTransition( this->bState->previous(), this->tState );
 	this->addTransition( this->bState->first(), this->tState );
+	this->addTransition( this->bState->top(), this->tState );
 	this->addTransition( this->bState->wider(), this->brState );
 	this->addTransition( this->bState->lower(), this->cState );
 
@@ -117,6 +127,7 @@ currentState() {
 	this->rState->previous().connect( std::bind( &ImageView::previousPage, this->owner ) );
 	this->rState->previous().connect( std::bind( &ImageView::end, this->owner ) );
 	this->addTransition( this->rState->last(), this->lState );
+	this->addTransition( this->rState->left(), this->lState );
 	this->addTransition( this->rState->narrower(), this->cState );
 	this->addTransition( this->rState->higher(), this->trState );
 
@@ -124,6 +135,7 @@ currentState() {
 	this->lState->next().connect( std::bind( &ImageView::begin, this->owner ) );
 	this->addTransition( this->lState->previous(), this->rState );
 	this->addTransition( this->lState->first(), this->rState );
+	this->addTransition( this->lState->right(), this->rState );
 	this->addTransition( this->lState->narrower(), this->cState );
 	this->addTransition( this->lState->higher(), this->tlState );
 
@@ -198,6 +210,19 @@ void ImageView::Private::moveBy( const QPointF & delta ) {
 	}
 	this->image->moveBy( delta.x(), delta.y() );
 	this->imgRect.translate( delta );
+
+	auto img = this->imgRect.center();
+	auto vp = this->vpRect.center();
+	if( vp.x() < img.x() ) {
+		this->currentState->left()();
+	} else {
+		this->currentState->right()();
+	}
+	if( vp.y() > img.y() ) {
+		this->currentState->bottom()();
+	} else {
+		this->currentState->top()();
+	}
 }
 
 void ImageView::Private::fromViewportMoveBy( QPointF delta ) {
