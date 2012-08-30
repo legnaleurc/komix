@@ -344,12 +344,12 @@ void ImageView::end() {
 }
 
 void ImageView::fitHeight() {
-	this->scale( this->p_->vpRect.height() / this->p_->imgRect.height() );
+	this->p_->scale( this->p_->vpRect.height() / this->p_->imgRect.height() );
 	this->p_->scaleMode = Private::Height;
 }
 
 void ImageView::fitWidth() {
-	this->scale( this->p_->vpRect.width() / this->p_->imgRect.width() );
+	this->p_->scale( this->p_->vpRect.width() / this->p_->imgRect.width() );
 	this->p_->scaleMode = Private::Width;
 }
 
@@ -384,7 +384,7 @@ void ImageView::scale( int pcRatio ) {
 		return;
 	}
 
-	this->scale( pcRatio / 100.0 / this->p_->imgRatio );
+	this->p_->scale( pcRatio / 100.0 / this->p_->imgRatio );
 	this->p_->scaleMode = Private::Custom;
 }
 
