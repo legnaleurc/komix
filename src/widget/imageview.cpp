@@ -242,12 +242,12 @@ void ImageView::Private::scale( double ratio ) {
 	this->imgRatio *= ratio;
 
 	// update state
-	if( this->imgRect.width() > this->vpRect.width() ) {
+	if( this->imgRect.width() > this->vpRect.width() && !qFuzzyCompare( this->imgRect.width(), this->vpRect.width() ) ) {
 		this->currentState->wider()();
 	} else {
 		this->currentState->narrower()();
 	}
-	if( this->imgRect.height() > this->vpRect.height() ) {
+	if( this->imgRect.height() > this->vpRect.height() && !qFuzzyCompare( this->imgRect.height(), this->vpRect.height() ) ) {
 		this->currentState->higher()();
 	} else {
 		this->currentState->lower()();
