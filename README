@@ -6,14 +6,14 @@ Building Dependency:
 		http://www.cmake.org/
 	Qt toolkit >= 4.5:
 		http://qt.nokia.com/
-	Single Application (Qt Solutions):
-		http://qt.nokia.com/products/appdev/add-on-products/catalog/4/Utilities/qtsingleapplication/
+	Boost (with Signals2):
+		http://www.boost.org/
 
 Toolchain:
 	Unix-like:
-		g++ >= 4
-	Windows (XP or Vista or 7):
-		Visual C++ >= Express 2005
+		g++ >= 4.5
+	Windows (XP or later):
+		Visual C++ >= Express 2010
 
 How to Build:
 	Unix-like:
@@ -25,4 +25,4 @@ How to Build:
 		Please use cmake-gui to configure and generate VC solution file
 
 Author:
-	legnaleurc@gmail.com (legnaleurc)
+	legnaleurc@gmail.com (Wei Cheng Pan)
