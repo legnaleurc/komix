@@ -165,6 +165,9 @@ void ImageView::Private::addImage( QIODevice * image ) {
 }
 
 void ImageView::Private::onImageChanged() {
+	if( this->image->boundingRect().isNull() ) {
+		return;
+	}
 	this->owner->scene()->setSceneRect( this->image->boundingRect() );
 	this->image->setPos( 0.0, 0.0 );
 	this->imgRect = this->image->sceneBoundingRect();
