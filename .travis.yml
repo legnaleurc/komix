@@ -2,6 +2,7 @@ language: cpp
 compiler:
   - gcc
 before_script:
+  - sudo apt-get install libboost-signals-dev
   - cmake .
 script:
   make
