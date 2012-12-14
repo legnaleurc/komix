@@ -59,9 +59,9 @@ target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${Boost_LIB
 # install
 include(InstallRequiredSystemLibraries)
 install(TARGETS komix
+	COMPONENT "Runtime"
 	RUNTIME DESTINATION "bin"
-        BUNDLE DESTINATION "."
-	COMPONENT "Runtime")
+	BUNDLE DESTINATION ".")
 if(APPLE)
 	set(KOMIX_PLUGINS_INSTALL_DIR "komix.app/Contents/PlugIns")
 elseif(WIN32)
