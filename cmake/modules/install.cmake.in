@@ -16,17 +16,22 @@
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 if(APPLE)
-	set(APPS "${CMAKE_INSTALL_PREFIX}/KomiX.app")
-	set(QT_CONF_FILE "${CMAKE_INSTALL_PREFIX}/KomiX.app/Contents/Resources/qt.conf")
+	set(APPS "${CMAKE_INSTALL_PREFIX}/komix.app")
+	set(QT_CONF_FILE "${CMAKE_INSTALL_PREFIX}/komix.app/Contents/Resources/qt.conf")
+	file(GLOB_RECURSE LIBS "@KOMIX_PLUGINS_INSTALL_DIR@/imageformats/*.dylib")
+
+	file(WRITE "${QT_CONF_FILE}" "[Paths]
+	Plugins = PlugIns
+	")
 elseif(WIN32)
 	set(APPS "${CMAKE_INSTALL_PREFIX}/bin/KomiX.exe")
 	set(QT_CONF_FILE "${CMAKE_INSTALL_PREFIX}/bin/qt.conf")
-endif()
+	file(GLOB_RECURSE LIBS "${CMAKE_INSTALL_PREFIX}/plugins/imageformats/*.dll")
 
-file(WRITE "${QT_CONF_FILE}" "[Paths]
-Prefix = ..
-")
-file(GLOB_RECURSE LIBS "${CMAKE_INSTALL_PREFIX}/plugins/imageformats/*.dll")
+	file(WRITE "${QT_CONF_FILE}" "[Paths]
+	Prefix = ..
+	")
+endif()
 
 include(BundleUtilities)
 set(BU_CHMOD_BUNDLE_ITEMS TRUE)

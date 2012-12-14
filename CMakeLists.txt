@@ -57,18 +57,24 @@ endif()
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${Boost_LIBRARIES})
 
 # install
-foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
-	list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG "${QT_Q${f}_PLUGIN_DEBUG}")
-	list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE "${QT_Q${f}_PLUGIN_RELEASE}")
-endforeach()
 include(InstallRequiredSystemLibraries)
 install(TARGETS komix
 	RUNTIME DESTINATION "bin"
         BUNDLE DESTINATION "."
 	COMPONENT "Runtime")
-install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG} DESTINATION "plugins/imageformats" CONFIGURATIONS "Debug" "RelWithDebInfo" COMPONENT "Runtime")
-install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE} DESTINATION "plugins/imageformats" CONFIGURATIONS "Release" "MinSizeRel" COMPONENT "Runtime")
+if(APPLE)
+	set(KOMIX_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/komix.app/Contents/PlugIns")
+elseif(WIN32)
+	set(KOMIX_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins")
+endif()
 if(APPLE OR WIN32)
+	foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
+		list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG "${QT_Q${f}_PLUGIN_DEBUG}")
+		list(APPEND KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE "${QT_Q${f}_PLUGIN_RELEASE}")
+	endforeach()
+	install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG} DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/imageformats" CONFIGURATIONS "Debug" "RelWithDebInfo" COMPONENT "Runtime")
+	install(FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE} DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/imageformats" CONFIGURATIONS "Release" "MinSizeRel" COMPONENT "Runtime")
+
 	configure_file("${CMAKE_SOURCE_DIR}/cmake/modules/install.cmake.in" "${CMAKE_BINARY_DIR}/install.cmake" @ONLY)
 	install(SCRIPT "${CMAKE_BINARY_DIR}/install.cmake" COMPONENT Runtime)
 endif()
