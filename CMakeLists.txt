@@ -63,9 +63,9 @@ install(TARGETS komix
         BUNDLE DESTINATION "."
 	COMPONENT "Runtime")
 if(APPLE)
-	set(KOMIX_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/komix.app/Contents/PlugIns")
+	set(KOMIX_PLUGINS_INSTALL_DIR "komix.app/Contents/PlugIns")
 elseif(WIN32)
-	set(KOMIX_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins")
+	set(KOMIX_PLUGINS_INSTALL_DIR "plugins")
 endif()
 if(APPLE OR WIN32)
 	foreach(f "GIF" "ICO" "JPEG" "MNG" "SVG" "TGA" "TIFF")
