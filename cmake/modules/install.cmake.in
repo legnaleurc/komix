@@ -21,16 +21,16 @@ if(APPLE)
 	file(GLOB_RECURSE LIBS "${CMAKE_INSTALL_PREFIX}/@KOMIX_PLUGINS_INSTALL_DIR@/imageformats/*.dylib")
 
 	file(WRITE "${QT_CONF_FILE}" "[Paths]
-	Plugins = PlugIns
-	")
+Plugins = PlugIns
+")
 elseif(WIN32)
 	set(APPS "${CMAKE_INSTALL_PREFIX}/bin/KomiX.exe")
 	set(QT_CONF_FILE "${CMAKE_INSTALL_PREFIX}/bin/qt.conf")
 	file(GLOB_RECURSE LIBS "${CMAKE_INSTALL_PREFIX}/plugins/imageformats/*.dll")
 
 	file(WRITE "${QT_CONF_FILE}" "[Paths]
-	Prefix = ..
-	")
+Prefix = ..
+")
 endif()
 
 include(BundleUtilities)
