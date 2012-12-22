@@ -1,6 +1,8 @@
 KomiX
 =====
 
+|build status|_
+
 This is a comic viewer.
 
 License
@@ -31,8 +33,10 @@ Wei Cheng Pan <legnaleurc@gmail.com>
 
 .. _Boost: http://www.boost.org/
 .. _Boost.Signals2: http://www.boost.org/libs/signals2/
+.. _build status: https://travis-ci.org/legnaleurc/komix
 .. _CMake: http://www.cmake.org/
 .. _GNU Compiler Collection: http://gcc.gnu.org/
 .. _LLVM Clang: http://clang.llvm.org/
 .. _Qt toolkit: http://qt.nokia.com/
 .. _Microsoft Visual C++: http://www.microsoft.com/visualstudio/eng/products/visual-studio-2010-express
+.. |build status| image:: https://travis-ci.org/legnaleurc/komix.png
