@@ -32,56 +32,56 @@ namespace KomiX {
 namespace widget {
 
 class ImageView::Private: public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	enum ScaleMode {
-		Custom,
-		Width,
-		Height,
-		Window
-	};
+    enum ScaleMode {
+        Custom,
+        Width,
+        Height,
+        Window
+    };
 
-	explicit Private( ImageView * owner );
+    explicit Private( ImageView * owner );
 
-	void setImage( const QList< QIODevice * > & images );
-	void scale( double ratio );
-	void moveBy( const QPointF & );
-	void fromViewportMoveBy( QPointF delta = QPointF() );
-	void updateScaling();
-	void updateViewportRectangle();
-	QLineF normalizeMotionVector( double, double );
-	void setupAnimation( int, double, double );
-	void addTransition( boost::signals2::signal< void () > & signal, std::shared_ptr< ViewState > state );
+    void setImage( const QList< QIODevice * > & images );
+    void scale( double ratio );
+    void moveBy( const QPointF & );
+    void fromViewportMoveBy( QPointF delta = QPointF() );
+    void updateScaling();
+    void updateViewportRectangle();
+    QLineF normalizeMotionVector( double, double );
+    void setupAnimation( int, double, double );
+    void addTransition( boost::signals2::signal< void () > & signal, std::shared_ptr< ViewState > state );
 
 public slots:
-	void addImage( QIODevice * image );
-	void animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State );
-	void onImageChanged();
+    void addImage( QIODevice * image );
+    void animeStateChanged( QAbstractAnimation::State, QAbstractAnimation::State );
+    void onImageChanged();
 
 public:
-	ImageView * owner;
-	ImageItem * image;
-	QPropertyAnimation * anime;
-	FileController * controller;
-	double imgRatio;
-	QRectF imgRect;
-	int msInterval;
-	QList< QIODevice * > pageBuffer;
-	int pixelInterval;
-	QPoint pressEndPosition;
-	QPoint pressStartPosition;
-	ScaleMode scaleMode;
-	QRectF vpRect;
-	std::shared_ptr< ViewState > trState;
-	std::shared_ptr< ViewState > brState;
-	std::shared_ptr< ViewState > tlState;
-	std::shared_ptr< ViewState > blState;
-	std::shared_ptr< ViewState > tState;
-	std::shared_ptr< ViewState > bState;
-	std::shared_ptr< ViewState > rState;
-	std::shared_ptr< ViewState > lState;
-	std::shared_ptr< ViewState > cState;
-	std::shared_ptr< ViewState > currentState;
+    ImageView * owner;
+    ImageItem * image;
+    QPropertyAnimation * anime;
+    FileController * controller;
+    double imgRatio;
+    QRectF imgRect;
+    int msInterval;
+    QList< QIODevice * > pageBuffer;
+    int pixelInterval;
+    QPoint pressEndPosition;
+    QPoint pressStartPosition;
+    ScaleMode scaleMode;
+    QRectF vpRect;
+    std::shared_ptr< ViewState > trState;
+    std::shared_ptr< ViewState > brState;
+    std::shared_ptr< ViewState > tlState;
+    std::shared_ptr< ViewState > blState;
+    std::shared_ptr< ViewState > tState;
+    std::shared_ptr< ViewState > bState;
+    std::shared_ptr< ViewState > rState;
+    std::shared_ptr< ViewState > lState;
+    std::shared_ptr< ViewState > cState;
+    std::shared_ptr< ViewState > currentState;
 };
 
 }

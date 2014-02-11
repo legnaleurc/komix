@@ -21,7 +21,7 @@
 #ifndef KOMIX_WIDGET_SCALEWIDGET_HPP
 #define KOMIX_WIDGET_SCALEWIDGET_HPP
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include <memory>
 
@@ -35,33 +35,33 @@ namespace widget {
  * change this widget to option widget.
  */
 class ScaleWidget: public QWidget {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	explicit ScaleWidget( QWidget * parent );
+    /**
+     * @brief default constructor
+     * @param parent parent widget
+     */
+    explicit ScaleWidget( QWidget * parent );
 
 public slots:
-	/// to move slider
-	void scale( int ratio );
+    /// to move slider
+    void scale( int ratio );
 
 signals:
-	void fitHeight();
-	void fitWidth();
-	void fitWindow();
-	/**
-	 * @brief scale event
-	 * @param ratio scalar ratio
-	 *
-	 * The ratio means percents, so 100 actually means 100%.
-	 */
-	void scaled( int ratio );
+    void fitHeight();
+    void fitWidth();
+    void fitWindow();
+    /**
+     * @brief scale event
+     * @param ratio scalar ratio
+     *
+     * The ratio means percents, so 100 actually means 100%.
+     */
+    void scaled( int ratio );
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr< Private > p_;
 };
 
 }

@@ -21,30 +21,30 @@
 #ifndef KOMIX_MODEL_ARCHIVE_ARCHIVEHOOK_HPP
 #define KOMIX_MODEL_ARCHIVE_ARCHIVEHOOK_HPP
 
-#include <QtGui/QAction>
+#include <QtWidgets/QAction>
 
 namespace KomiX {
-	namespace model {
-		namespace archive {
+namespace model {
+namespace archive {
 
-			/// Private menu hook
-			class ArchiveHook : public QAction {
-				Q_OBJECT
-			public:
-				/// Constructor
-				ArchiveHook( QWidget * parent );
+/// Private menu hook
+class ArchiveHook : public QAction {
+    Q_OBJECT
+public:
+    /// Constructor
+    ArchiveHook( QWidget * parent );
 
-			signals:
-				/// emitted when user opened a url
-				void opened( const QUrl & name );
+signals:
+    /// emitted when user opened a url
+    void opened( const QUrl & name );
 
-			private slots:
-				void helper_();
-				void cleanup_();
-			};
+private slots:
+    void helper_();
+    void cleanup_();
+};
 
-		}
-	}
+}
+}
 } // end of namespace
 
 #endif

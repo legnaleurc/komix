@@ -21,29 +21,29 @@
 #ifndef KOMIX_MODEL_DIRECTORY_DIRECTORYHOOK_HPP
 #define KOMIX_MODEL_DIRECTORY_DIRECTORYHOOK_HPP
 
-#include <QtGui/QAction>
+#include <QtWidgets/QAction>
 
 class QUrl;
 
 namespace KomiX {
-	namespace model {
-		namespace directory {
+namespace model {
+namespace directory {
 
-			/// Private menu hook
-			class DirectoryHook : public QAction {
-				Q_OBJECT
-			public:
-				/// Constructor
-				DirectoryHook( QWidget * parent );
-			signals:
-				/// emitted when user opened a url
-				void opened( const QUrl & url );
-			private slots:
-				void helper_();
-			};
+/// Private menu hook
+class DirectoryHook : public QAction {
+    Q_OBJECT
+public:
+    /// Constructor
+    DirectoryHook( QWidget * parent );
+signals:
+    /// emitted when user opened a url
+    void opened( const QUrl & url );
+private slots:
+    void helper_();
+};
 
-		}
-	}
+}
+}
 } // end of namespace
 
 #endif

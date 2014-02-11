@@ -5,16 +5,15 @@ project(KomiX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(KomiXUtilities)
 
-set(QT_USE_QTSVG TRUE)
-find_package(Qt4 4.6 REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
-find_package(Boost REQUIRED signals)
+find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(KOMIX_VERSION_MAJOR 0)
-set(KOMIX_VERSION_MINOR 1)
-set(KOMIX_VERSION_PATCH 80)
+set(KOMIX_VERSION_MINOR 2)
+set(KOMIX_VERSION_PATCH 0)
 set(KOMIX_VERSION "${KOMIX_VERSION_MAJOR}.${KOMIX_VERSION_MINOR}.${KOMIX_VERSION_PATCH}")
 add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION} -DKOMIX_VERSION_MAJOR=${KOMIX_VERSION_MAJOR} -DKOMIX_VERSION_MINOR=${KOMIX_VERSION_MINOR} -DKOMIX_VERSION_PATCH=${KOMIX_VERSION_PATCH})
 
@@ -23,22 +22,20 @@ include_directories(${CMAKE_BINARY_DIR})
 file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
 file(GLOB_RECURSE KOMIX_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} src/*.hpp)
 file(GLOB_RECURSE KOMIX_FORMS RELATIVE ${CMAKE_SOURCE_DIR} src/*.ui)
-file(GLOB_RECURSE KOMIX_TRANSLATIONS RELATIVE ${CMAKE_SOURCE_DIR} translations/*.ts)
+#file(GLOB_RECURSE KOMIX_TRANSLATIONS RELATIVE ${CMAKE_SOURCE_DIR} translations/*.ts)
 set(KOMIX_RESOURCES komix.qrc)
-find_moc_headers(KOMIX_MOC_HEADERS ${KOMIX_HEADERS})
 
-qt4_wrap_cpp(KOMIX_MOC_SOURCES ${KOMIX_MOC_HEADERS})
-qt4_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
-qt4_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
-qt4_add_translation(KOMIX_QM_FILES ${KOMIX_TRANSLATIONS})
+qt5_add_resources(KOMIX_RCC_RESOURCES ${KOMIX_RESOURCES})
+qt5_wrap_ui(KOMIX_UIC_HEADERS ${KOMIX_FORMS})
+#qt4_add_translation(KOMIX_QM_FILES ${KOMIX_TRANSLATIONS})
 
 group_sources("${CMAKE_SOURCE_DIR}/src")
 source_group("Generated Files" FILES ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_UIC_HEADERS} ${KOMIX_QM_FILES})
 source_group("Resource Files" REGULAR_EXPRESSION .*\\.rc)
 
-set_source_files_properties("image/logo.icns" PROPERTIES
-	MACOSX_PACKAGE_LOCATION "Resources")
-set(MACOSX_BUNDLE_ICON_FILE "logo.icns")
+#set_source_files_properties("image/logo.icns" PROPERTIES
+#	MACOSX_PACKAGE_LOCATION "Resources")
+#set(MACOSX_BUNDLE_ICON_FILE "logo.icns")
 
 set(KOMIX_COMPILE_UNITS ${KOMIX_SOURCES} ${KOMIX_HEADERS} ${KOMIX_MOC_SOURCES} ${KOMIX_RCC_RESOURCES} ${KOMIX_QM_FILES} ${KOMIX_UIC_HEADERS})
 
@@ -46,15 +43,16 @@ if(WIN32)
 	add_executable(komix WIN32 komix.rc ${KOMIX_HEADERS} ${KOMIX_COMPILE_UNITS})
 	set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "/MP /Zc:wchar_t-")
-elseif(APPLE)
-	add_executable(komix MACOSX_BUNDLE "image/logo.icns" ${KOMIX_COMPILE_UNITS})
-	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x -stdlib=libc++" LINK_FLAGS "-stdlib=libc++")
+#elseif(APPLE)
+#	add_executable(komix MACOSX_BUNDLE "image/logo.icns" ${KOMIX_COMPILE_UNITS})
+#	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x -stdlib=libc++" LINK_FLAGS "-stdlib=libc++")
 else()
 	add_executable(komix ${KOMIX_COMPILE_UNITS})
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 endif()
 
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${QT_LIBRARIES} ${Boost_LIBRARIES})
+qt5_use_modules(komix Widgets)
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${Boost_LIBRARIES})
 
 # install
 include(InstallRequiredSystemLibraries)

@@ -29,10 +29,10 @@ namespace widget {
 
 class AboutWidget::Private {
 public:
-	Private( AboutWidget * owner );
+    Private( AboutWidget * owner );
 
-	AboutWidget * owner;
-	Ui::AboutWidget ui;
+    AboutWidget * owner;
+    Ui::AboutWidget ui;
 };
 
 }

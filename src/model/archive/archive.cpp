@@ -28,37 +28,37 @@ namespace archive {
 
 // one-shot action
 QDir createTmpDir() {
-	qsrand( qApp->applicationPid() );
-	QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
-	QDir tmpDir( QDir::temp() );
-	if( !tmpDir.mkdir( tmpPath ) ) {
-		qWarning( "can not make temp dir" );
-		// tmpDir will remain to tmp dir
-	} else {
-		tmpDir.cd( tmpPath );
-	}
-	return tmpDir;
+    qsrand( qApp->applicationPid() );
+    QString tmpPath( QString( "komix_%1" ).arg( qrand() ) );
+    QDir tmpDir( QDir::temp() );
+    if( !tmpDir.mkdir( tmpPath ) ) {
+        qWarning( "can not make temp dir" );
+        // tmpDir will remain to tmp dir
+    } else {
+        tmpDir.cd( tmpPath );
+    }
+    return tmpDir;
 }
 
 const QDir & getTmpDir() {
-	static QDir tmp = createTmpDir();
-	return tmp;
+    static QDir tmp = createTmpDir();
+    return tmp;
 }
 
 int delTree( const QDir & dir ) {
-	int sum = 0;
-	QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
-	foreach( QFileInfo e, entry ) {
-		if( e.isDir() ) {
-			sum += delTree( e.absoluteFilePath() );
-		} else {
-			if( QFile::remove( e.absoluteFilePath() ) ) {
-				++sum;
-			}
-		}
-	}
-	dir.rmdir( dir.absolutePath() );
-	return sum + 1;
+    int sum = 0;
+    QFileInfoList entry = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
+    foreach( QFileInfo e, entry ) {
+        if( e.isDir() ) {
+            sum += delTree( e.absoluteFilePath() );
+        } else {
+            if( QFile::remove( e.absoluteFilePath() ) ) {
+                ++sum;
+            }
+        }
+    }
+    dir.rmdir( dir.absolutePath() );
+    return sum + 1;
 }
 
 }

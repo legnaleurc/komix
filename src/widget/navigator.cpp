@@ -37,74 +37,74 @@ selection( NULL ) {
 }
 
 void Navigator::Private::openHelper() {
-	this->controller->open( this->ui.list->currentIndex() );
-	this->owner->accept();
+    this->controller->open( this->ui.list->currentIndex() );
+    this->owner->accept();
 }
 
 void Navigator::Private::viewImage( const QModelIndex & current, const QModelIndex & /* previous */ ) {
-	QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
-	DeviceLoader * loader = new DeviceLoader( -1, device );
-	this->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
-	this->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
-	loader->start();
+    QIODevice * device = current.data( Qt::UserRole ).value< QIODevice * >();
+    DeviceLoader * loader = new DeviceLoader( -1, device );
+    this->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
+    this->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+    loader->start();
 }
 
 void Navigator::Private::onFinished( int id, QMovie * movie ) {
-	QMovie * tmp = this->ui.preview->movie();
+    QMovie * tmp = this->ui.preview->movie();
 
-	movie->jumpToNextFrame();
-	QSize size = movie->frameRect().size();
-	size.scale( this->ui.preview->size(), Qt::KeepAspectRatio );
-	movie->setScaledSize( size );
-	this->ui.preview->setMovie( movie );
-	movie->start();
+    movie->jumpToNextFrame();
+    QSize size = movie->frameRect().size();
+    size.scale( this->ui.preview->size(), Qt::KeepAspectRatio );
+    movie->setScaledSize( size );
+    this->ui.preview->setMovie( movie );
+    movie->start();
 
-	if( tmp ) {
-		tmp->deleteLater();
-	}
+    if( tmp ) {
+        tmp->deleteLater();
+    }
 }
 
 void Navigator::Private::onFinished( int id, const QPixmap & pixmap ) {
-	QMovie * tmp = this->ui.preview->movie();
+    QMovie * tmp = this->ui.preview->movie();
 
-	this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
+    this->ui.preview->setPixmap( pixmap.scaled( this->ui.preview->size(), Qt::KeepAspectRatio ) );
 
-	if( tmp ) {
-		tmp->deleteLater();
-	}
+    if( tmp ) {
+        tmp->deleteLater();
+    }
 }
 
 Navigator::Navigator( FileController * controller, QWidget * parent ) :
 QDialog( parent ),
 p_( new Private( controller, this ) ) {
-	this->p_->ui.setupUi( this );
-	this->p_->ui.list->setFixedSize( 160, 480 );
-	this->p_->ui.preview->setFixedSize( 480, 480 );
-	this->p_->ui.preview->setAlignment( Qt::AlignCenter );
+    this->p_->ui.setupUi( this );
+    this->p_->ui.list->setFixedSize( 160, 480 );
+    this->p_->ui.preview->setFixedSize( 480, 480 );
+    this->p_->ui.preview->setAlignment( Qt::AlignCenter );
 
-	this->connect( this->p_->ui.buttons, SIGNAL( rejected() ), SLOT( reject() ) );
-	this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
+    this->connect( this->p_->ui.buttons, SIGNAL( rejected() ), SLOT( reject() ) );
+    this->p_->connect( this->p_->ui.buttons, SIGNAL( accepted() ), SLOT( openHelper() ) );
 }
 
 void Navigator::setModel( std::shared_ptr< KomiX::model::FileModel > model ) {
-	if( this->p_->selection ) {
-		this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this->p_.get(), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
-	}
-	this->p_->model = model;
-	this->p_->ui.list->setModel( this->p_->model.get() );
-	this->p_->selection = this->p_->ui.list->selectionModel();
-	this->p_->connect( this->p_->selection, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+    if( this->p_->selection ) {
+        this->p_->selection->disconnect( SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this->p_.get(), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
+    }
+    this->p_->model = model;
+    this->p_->ui.list->setModel( this->p_->model.get() );
+    this->p_->selection = this->p_->ui.list->selectionModel();
+    this->p_->connect( this->p_->selection, SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), SLOT( viewImage( const QModelIndex &, const QModelIndex & ) ) );
 }
 
 void Navigator::setCurrentIndex( const QModelIndex & index ) {
-	this->p_->ui.list->setCurrentIndex( index );
+    this->p_->ui.list->setCurrentIndex( index );
 }
 
 void Navigator::setVisible( bool visible ) {
-	// pause movie for performance
-	QMovie * movie = this->p_->ui.preview->movie();
-	if( movie ) {
-		movie->setPaused( !visible );
-	}
-	this->QDialog::setVisible( visible );
+    // pause movie for performance
+    QMovie * movie = this->p_->ui.preview->movie();
+    if( movie ) {
+        movie->setPaused( !visible );
+    }
+    this->QDialog::setVisible( visible );
 }

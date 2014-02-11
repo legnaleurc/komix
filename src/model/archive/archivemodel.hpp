@@ -35,24 +35,24 @@ namespace archive {
  */
 class ArchiveModel: public LocalFileModel {
 public:
-	/// Check if 7-zip existed
-	static bool IsRunnable();
-	/// Check if temporary directory is prepared
-	static bool IsPrepared();
+    /// Check if 7-zip existed
+    static bool IsRunnable();
+    /// Check if temporary directory is prepared
+    static bool IsPrepared();
 
-	/**
-	 * @brief Constructor with given fileinfo
-	 * @param root top-level file
-	 */
-	ArchiveModel( const QFileInfo & root );
+    /**
+     * @brief Constructor with given fileinfo
+     * @param root top-level file
+     */
+    ArchiveModel( const QFileInfo & root );
 
 protected:
-	virtual void doInitialize();
+    virtual void doInitialize();
 
 private:
-	friend class ArchiveHook;
-	class Private;
-	std::shared_ptr< Private > p_;
+    friend class ArchiveHook;
+    class Private;
+    std::shared_ptr< Private > p_;
 };
 
 /// get supported archive formats

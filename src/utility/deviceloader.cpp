@@ -43,50 +43,50 @@ device( device ) {
 }
 
 void DeviceLoader::Private::read( QIODevice * device ) {
-	QImageReader iin( device );
-	if( iin.supportsAnimation() ) {
-		device->seek( 0 );
-		QMovie * movie = new QMovie( device );
-		device->setParent( movie );
-		emit this->finished( this->id, movie );
-	} else {
-		QPixmap pixmap = QPixmap::fromImageReader( &iin );
-		device->deleteLater();
-		emit this->finished( this->id, pixmap );
-	}
+    QImageReader iin( device );
+    if( iin.supportsAnimation() ) {
+        device->seek( 0 );
+        QMovie * movie = new QMovie( device );
+        device->setParent( movie );
+        emit this->finished( this->id, movie );
+    } else {
+        QPixmap pixmap = QPixmap::fromImageReader( &iin );
+        device->deleteLater();
+        emit this->finished( this->id, pixmap );
+    }
 }
 
 void DeviceLoader::Private::onFinished( const QByteArray & data ) {
-	QBuffer * buffer = new QBuffer;
-	buffer->setData( data );
-	buffer->open( QIODevice::ReadOnly );
-	this->read( buffer );
-	this->device->deleteLater();
+    QBuffer * buffer = new QBuffer;
+    buffer->setData( data );
+    buffer->open( QIODevice::ReadOnly );
+    this->read( buffer );
+    this->device->deleteLater();
 }
 
 DeviceLoader::DeviceLoader( int id, QIODevice * device ):
 QObject(),
 p_( new Private( id, device ) ) {
-	this->connect( this->p_.get(), SIGNAL( finished( int, QMovie * ) ), SIGNAL( finished( int, QMovie * ) ) );
-	this->connect( this->p_.get(), SIGNAL( finished( int, const QPixmap & ) ), SIGNAL( finished( int, const QPixmap & ) ) );
+    this->connect( this->p_.get(), SIGNAL( finished( int, QMovie * ) ), SIGNAL( finished( int, QMovie * ) ) );
+    this->connect( this->p_.get(), SIGNAL( finished( int, const QPixmap & ) ), SIGNAL( finished( int, const QPixmap & ) ) );
 }
 
 void DeviceLoader::start() const {
-	AsynchronousLoader * loader = nullptr;
-	if( this->p_->device->isSequential() ) {
-		// character device, async operation
-		loader = new CharacterDeviceLoader( this->p_->device );
-	} else if( this->p_->device->size() >= MAX_DEVICE_SIZE ) {
-		// large block device, async operation
-		loader = new BlockDeviceLoader( this->p_->device );
-	} else {
-		// small block device, read directly
-		// NOTE
-		// somehow QFile will lost file name information while looping QMovie
-		// so we must wrap with a QBuffer
-		this->p_->onFinished( this->p_->device->readAll() );
-		return;
-	}
-	this->p_->connect( loader, SIGNAL( finished( const QByteArray & ) ), SLOT( onFinished( const QByteArray & ) ) );
-	QThreadPool::globalInstance()->start( loader );
+    AsynchronousLoader * loader = nullptr;
+    if( this->p_->device->isSequential() ) {
+        // character device, async operation
+        loader = new CharacterDeviceLoader( this->p_->device );
+    } else if( this->p_->device->size() >= MAX_DEVICE_SIZE ) {
+        // large block device, async operation
+        loader = new BlockDeviceLoader( this->p_->device );
+    } else {
+        // small block device, read directly
+        // NOTE
+        // somehow QFile will lost file name information while looping QMovie
+        // so we must wrap with a QBuffer
+        this->p_->onFinished( this->p_->device->readAll() );
+        return;
+    }
+    this->p_->connect( loader, SIGNAL( finished( const QByteArray & ) ), SLOT( onFinished( const QByteArray & ) ) );
+    QThreadPool::globalInstance()->start( loader );
 }

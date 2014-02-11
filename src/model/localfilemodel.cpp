@@ -26,10 +26,10 @@ namespace model {
 
 class LocalFileModel::Private {
 public:
-	Private( const QDir & root );
+    Private( const QDir & root );
 
-	QDir root;
-	QStringList files;
+    QDir root;
+    QStringList files;
 };
 
 }
@@ -48,84 +48,84 @@ p_( new Private( root ) ) {
 }
 
 void LocalFileModel::doInitialize() {
-	emit this->ready();
+    emit this->ready();
 }
 
 void LocalFileModel::setRoot( const QDir & root ) {
-	this->p_->root = root;
-	this->p_->files = root.entryList( SupportedFormatsFilter(), QDir::Files );
+    this->p_->root = root;
+    this->p_->files = root.entryList( SupportedFormatsFilter(), QDir::Files );
 }
 
 QModelIndex LocalFileModel::index( const QUrl & url ) const {
-	int row = this->p_->files.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
-	return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
+    int row = this->p_->files.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
+    return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
 }
 
 
 QModelIndex LocalFileModel::index( int row, int column, const QModelIndex & parent ) const {
-	if( !parent.isValid() ) {
-		// query from root
-		if( column == 0 && row >= 0 && row < this->p_->files.size() ) {
-			return createIndex( row, 0, row );
-		} else {
-			return QModelIndex();
-		}
-	} else {
-		// other node has no child
-		return QModelIndex();
-	}
+    if( !parent.isValid() ) {
+        // query from root
+        if( column == 0 && row >= 0 && row < this->p_->files.size() ) {
+            return createIndex( row, 0, row );
+        } else {
+            return QModelIndex();
+        }
+    } else {
+        // other node has no child
+        return QModelIndex();
+    }
 }
 
 QModelIndex LocalFileModel::parent( const QModelIndex & child ) const {
-	if( !child.isValid() ) {
-		// root has no parent
-		return QModelIndex();
-	} else {
-		if( child.column() == 0 && child.row() >= 0 && child.row() < this->p_->files.size() ) {
-			return QModelIndex();
-		} else {
-			return QModelIndex();
-		}
-	}
+    if( !child.isValid() ) {
+        // root has no parent
+        return QModelIndex();
+    } else {
+        if( child.column() == 0 && child.row() >= 0 && child.row() < this->p_->files.size() ) {
+            return QModelIndex();
+        } else {
+            return QModelIndex();
+        }
+    }
 }
 
 int LocalFileModel::rowCount( const QModelIndex & parent ) const {
-	if( !parent.isValid() ) {
-		// root row size
-		return this->p_->files.size();
-	} else {
-		// others are leaf
-		return 0;
-	}
+    if( !parent.isValid() ) {
+        // root row size
+        return this->p_->files.size();
+    } else {
+        // others are leaf
+        return 0;
+    }
 }
 
 int LocalFileModel::columnCount( const QModelIndex & /*parent*/ ) const {
-	return 1;
+    return 1;
 }
 
 QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
-	if( !index.isValid() ) {
-		return QVariant();
-	}
-	switch( index.column() ) {
-	case 0:
-		if( index.row() >= 0 && index.row() < this->p_->files.size() ) {
-			switch( role ) {
-			case Qt::DisplayRole:
-				return this->p_->files[index.row()];
-			case Qt::UserRole:
-			{
-				QIODevice * fin = new QFile( this->p_->root.filePath( this->p_->files[index.row()] ) );
-				fin->open( QIODevice::ReadOnly );
-				return QVariant::fromValue( fin );
-			}
-			default:
-				return QVariant();
-			}
-		} else {
-			return QVariant();
-		}
-	default:
-		return QVariant();
-	}
+    if( !index.isValid() ) {
+        return QVariant();
+    }
+    switch( index.column() ) {
+    case 0:
+        if( index.row() >= 0 && index.row() < this->p_->files.size() ) {
+            switch( role ) {
+            case Qt::DisplayRole:
+                return this->p_->files[index.row()];
+            case Qt::UserRole:
+            {
+                QIODevice * fin = new QFile( this->p_->root.filePath( this->p_->files[index.row()] ) );
+                fin->open( QIODevice::ReadOnly );
+                return QVariant::fromValue( fin );
+            }
+            default:
+                return QVariant();
+            }
+        } else {
+            return QVariant();
+        }
+    default:
+        return QVariant();
+    }
 }

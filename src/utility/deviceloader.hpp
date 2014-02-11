@@ -29,19 +29,19 @@
 
 namespace KomiX {
 class DeviceLoader: public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	DeviceLoader( int id, QIODevice * device );
+    DeviceLoader( int id, QIODevice * device );
 
-	void start() const;
+    void start() const;
 
 signals:
-	void finished( int id, const QPixmap & pixmap );
-	void finished( int id, QMovie * movie );
+    void finished( int id, const QPixmap & pixmap );
+    void finished( int id, QMovie * movie );
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr< Private > p_;
 };
 }
 

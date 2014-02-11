@@ -24,9 +24,9 @@ namespace KomiX {
 
 class AsynchronousLoader::Private {
 public:
-	Private( QIODevice * device );
+    Private( QIODevice * device );
 
-	QIODevice * device;
+    QIODevice * device;
 };
 
 }
@@ -44,5 +44,5 @@ p_( new Private( device ) ) {
 }
 
 QIODevice * AsynchronousLoader::getDevice() const {
-	return this->p_->device;
+    return this->p_->device;
 }

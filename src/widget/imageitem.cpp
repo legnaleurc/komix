@@ -21,9 +21,9 @@
 #include "imageitem_p.hpp"
 #include "deviceloader.hpp"
 
-#include <QtGui/QGraphicsProxyWidget>
-#include <QtGui/QGraphicsPixmapItem>
-#include <QtGui/QLabel>
+#include <QtWidgets/QGraphicsProxyWidget>
+#include <QtWidgets/QGraphicsPixmapItem>
+#include <QtWidgets/QLabel>
 
 using KomiX::widget::ImageItem;
 
@@ -35,50 +35,50 @@ movie( nullptr ) {
 }
 
 void ImageItem::Private::onFinished( int id, QMovie * movie ) {
-	QLabel * label = new QLabel;
-	label->setMovie( movie );
-	movie->setParent( label );
-	movie->start();
-	label->resize( movie->frameRect().size() );
-	QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
-	item->setWidget( label );
+    QLabel * label = new QLabel;
+    label->setMovie( movie );
+    movie->setParent( label );
+    movie->start();
+    label->resize( movie->frameRect().size() );
+    QGraphicsProxyWidget * item = new QGraphicsProxyWidget( this->owner );
+    item->setWidget( label );
 
-	this->movie = movie;
-	this->item = item;
-	emit this->changed();
+    this->movie = movie;
+    this->item = item;
+    emit this->changed();
 }
 
 void ImageItem::Private::onFinished( int id, const QPixmap & pixmap ) {
-	QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
-	item->setTransformationMode( Qt::SmoothTransformation );
+    QGraphicsPixmapItem * item = new QGraphicsPixmapItem( pixmap, this->owner );
+    item->setTransformationMode( Qt::SmoothTransformation );
 
-	this->item = item;
-	emit this->changed();
+    this->item = item;
+    emit this->changed();
 }
 
 ImageItem::ImageItem( const QList< QIODevice * > & devices ):
 QGraphicsObject(),
 p_( new Private( this ) ) {
-	this->connect( this->p_.get(), SIGNAL( changed() ), SIGNAL( changed() ) );
-	foreach( QIODevice * device, devices ) {
-		DeviceLoader * loader = new DeviceLoader( -1, device );
-		this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
-		this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
-		loader->start();
-	}
+    this->connect( this->p_.get(), SIGNAL( changed() ), SIGNAL( changed() ) );
+    foreach( QIODevice * device, devices ) {
+        DeviceLoader * loader = new DeviceLoader( -1, device );
+        this->p_->connect( loader, SIGNAL( finished( int, QMovie * ) ), SLOT( onFinished( int, QMovie * ) ) );
+        this->p_->connect( loader, SIGNAL( finished( int, const QPixmap & ) ), SLOT( onFinished( int, const QPixmap & ) ) );
+        loader->start();
+    }
 }
 
 void ImageItem::setPaused( bool paused ) {
-	if( this->p_->movie ) {
-		this->p_->movie->setPaused( paused );
-	}
+    if( this->p_->movie ) {
+        this->p_->movie->setPaused( paused );
+    }
 }
 
 QRectF ImageItem::boundingRect() const {
-	if( !this->p_->item ) {
-		return QRectF();
-	}
-	return this->p_->item->boundingRect();
+    if( !this->p_->item ) {
+        return QRectF();
+    }
+    return this->p_->item->boundingRect();
 }
 
 void ImageItem::paint( QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/ ) {

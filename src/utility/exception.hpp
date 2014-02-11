@@ -32,20 +32,20 @@ namespace exception {
 
 class Exception: public std::exception {
 public:
-	explicit Exception( int code );
-	explicit Exception( const char * msg );
-	explicit Exception( const wchar_t * msg );
-	explicit Exception( const std::string & msg );
-	explicit Exception( const std::wstring & msg );
-	explicit Exception( const QString & msg );
-	virtual ~Exception() throw();
+    explicit Exception( int code );
+    explicit Exception( const char * msg );
+    explicit Exception( const wchar_t * msg );
+    explicit Exception( const std::string & msg );
+    explicit Exception( const std::wstring & msg );
+    explicit Exception( const QString & msg );
+    virtual ~Exception() throw();
 
-	virtual const char * what() const throw();
-	const QString & getMessage() const;
+    virtual const char * what() const throw();
+    const QString & getMessage() const;
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr< Private > p_;
 };
 
 }

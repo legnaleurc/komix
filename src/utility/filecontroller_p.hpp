@@ -26,23 +26,23 @@
 namespace KomiX {
 
 class FileController::Private: public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit Private( FileController * owner );
+    explicit Private( FileController * owner );
 
-	void fromIndex( const QModelIndex & );
+    void fromIndex( const QModelIndex & );
 
 public slots:
-	void onModelReady();
+    void onModelReady();
 
 signals:
-	void imageLoaded( QIODevice * device );
+    void imageLoaded( QIODevice * device );
 
 public:
-	FileController * owner;
-	int index;
-	QUrl openingURL;
-	std::shared_ptr< model::FileModel > model;
+    FileController * owner;
+    int index;
+    QUrl openingURL;
+    std::shared_ptr< model::FileModel > model;
 };
 
 }

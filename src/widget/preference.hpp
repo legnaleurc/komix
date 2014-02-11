@@ -21,7 +21,7 @@
 #ifndef KOMIX_WIDGET_PREFERENCE_HPP
 #define KOMIX_WIDGET_PREFERENCE_HPP
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 #include <memory>
 
@@ -32,20 +32,20 @@ namespace widget {
  * @brief preference widget
  */
 class Preference: public QDialog {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	/// constructor
-	explicit Preference( QWidget * parent );
+    /// constructor
+    explicit Preference( QWidget * parent );
 
 public slots:
-	/// Override from QDialog, won't hide dialog
-	virtual void accept();
-	/// Override from QDialog
-	virtual void reject();
+    /// Override from QDialog, won't hide dialog
+    virtual void accept();
+    /// Override from QDialog
+    virtual void reject();
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr< Private > p_;
 };
 
 }

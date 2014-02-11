@@ -23,15 +23,15 @@
 namespace {
 
 bool check( const QUrl & url ) {
-	if( url.scheme() == "file" ) {
-		QFileInfo fi( url.toLocalFile() );
-		return fi.isDir();
-	}
-	return false;
+    if( url.scheme() == "file" ) {
+        QFileInfo fi( url.toLocalFile() );
+        return fi.isDir();
+    }
+    return false;
 }
 
 std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
-	return std::shared_ptr<  KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
+    return std::shared_ptr<  KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
 }
 
 static const bool registered = KomiX::model::FileModel::registerModel( check, create );

@@ -35,26 +35,26 @@ owner( owner ),
 index( 0 ),
 openingURL(),
 model( NULL ) {
-	this->owner->connect( this, SIGNAL( imageLoaded( QIODevice * ) ), SIGNAL( imageLoaded( QIODevice * ) ) );
+    this->owner->connect( this, SIGNAL( imageLoaded( QIODevice * ) ), SIGNAL( imageLoaded( QIODevice * ) ) );
 }
 
 void FileController::Private::onModelReady() {
-	if( this->owner->isEmpty() ) {
-		return;
-	}
-	QModelIndex first = this->model->index( this->openingURL );
-	if( first.isValid() ) {
-		this->index = first.row();
-	} else {
-		first = this->model->index( 0, 0 );
-		this->index = 0;
-	}
-	this->fromIndex( first );
+    if( this->owner->isEmpty() ) {
+        return;
+    }
+    QModelIndex first = this->model->index( this->openingURL );
+    if( first.isValid() ) {
+        this->index = first.row();
+    } else {
+        first = this->model->index( 0, 0 );
+        this->index = 0;
+    }
+    this->fromIndex( first );
 }
 
 void FileController::Private::fromIndex( const QModelIndex & index ) {
-	QIODevice * image = index.data( Qt::UserRole ).value< QIODevice * >();
-	emit this->imageLoaded( image );
+    QIODevice * image = index.data( Qt::UserRole ).value< QIODevice * >();
+    emit this->imageLoaded( image );
 }
 
 FileController::FileController( QObject * parent ):
@@ -63,63 +63,63 @@ p_( new Private( this ) ) {
 }
 
 bool FileController::open( const QUrl & url ) {
-	try {
-		this->p_->model = FileModel::createModel( url );
-		this->p_->connect( this->p_->model.get(), SIGNAL( ready() ), SLOT( onModelReady() ) );
-		this->connect( this->p_->model.get(), SIGNAL( error( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
-		this->p_->openingURL = url;
-		this->p_->model->initialize();
-	} catch( exception::Exception & e ) {
-		emit errorOccured( e.getMessage() );
-		return false;
-	}
-	return true;
+    try {
+        this->p_->model = FileModel::createModel( url );
+        this->p_->connect( this->p_->model.get(), SIGNAL( ready() ), SLOT( onModelReady() ) );
+        this->connect( this->p_->model.get(), SIGNAL( error( const QString & ) ), SIGNAL( errorOccured( const QString & ) ) );
+        this->p_->openingURL = url;
+        this->p_->model->initialize();
+    } catch( exception::Exception & e ) {
+        emit errorOccured( e.getMessage() );
+        return false;
+    }
+    return true;
 }
 
 void FileController::open( const QModelIndex & index ) {
-	if( !this->isEmpty() ) {
-		this->p_->index = index.row();
-		this->p_->fromIndex( index );
-	}
+    if( !this->isEmpty() ) {
+        this->p_->index = index.row();
+        this->p_->fromIndex( index );
+    }
 }
 
 QModelIndex FileController::getCurrentIndex() const {
-	if( !this->isEmpty() ) {
-		return this->p_->model->index( this->p_->index, 0 );
-	} else {
-		return QModelIndex();
-	}
+    if( !this->isEmpty() ) {
+        return this->p_->model->index( this->p_->index, 0 );
+    } else {
+        return QModelIndex();
+    }
 }
 
 void FileController::next() {
-	if( !this->isEmpty() ) {
-		++this->p_->index;
-		if( this->p_->index >= this->p_->model->rowCount() ) {
-			this->p_->index = 0;
-		}
-		QModelIndex item = this->p_->model->index( this->p_->index, 0 );
-		this->p_->fromIndex( item );
-	}
+    if( !this->isEmpty() ) {
+        ++this->p_->index;
+        if( this->p_->index >= this->p_->model->rowCount() ) {
+            this->p_->index = 0;
+        }
+        QModelIndex item = this->p_->model->index( this->p_->index, 0 );
+        this->p_->fromIndex( item );
+    }
 }
 
 void FileController::prev() {
-	if( !this->isEmpty() ) {
-		--this->p_->index;
-		if( this->p_->index < 0 ) {
-			this->p_->index = this->p_->model->rowCount() - 1;
-		}
-		QModelIndex item = this->p_->model->index( this->p_->index, 0 );
-		this->p_->fromIndex( item );
-	}
+    if( !this->isEmpty() ) {
+        --this->p_->index;
+        if( this->p_->index < 0 ) {
+            this->p_->index = this->p_->model->rowCount() - 1;
+        }
+        QModelIndex item = this->p_->model->index( this->p_->index, 0 );
+        this->p_->fromIndex( item );
+    }
 }
 
 bool FileController::isEmpty() const {
-	if( !this->p_->model ) {
-		return true;
-	}
-	return this->p_->model->rowCount() == 0;
+    if( !this->p_->model ) {
+        return true;
+    }
+    return this->p_->model->rowCount() == 0;
 }
 
 std::shared_ptr< KomiX::model::FileModel > FileController::getModel() const {
-	return this->p_->model;
+    return this->p_->model;
 }

@@ -27,5 +27,5 @@ AsynchronousLoader( device ) {
 }
 
 void BlockDeviceLoader::run() {
-	emit this->finished( this->getDevice()->readAll() );
+    emit this->finished( this->getDevice()->readAll() );
 }

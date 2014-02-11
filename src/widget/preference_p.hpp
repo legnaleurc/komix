@@ -28,19 +28,19 @@ namespace KomiX {
 namespace widget {
 
 class Preference::Private: public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit Private( Preference * owner );
+    explicit Private( Preference * owner );
 
-	void loadSettings();
-	void saveSettings();
+    void loadSettings();
+    void saveSettings();
 
 public slots:
-	void dispatch( QAbstractButton * );
+    void dispatch( QAbstractButton * );
 
 public:
-	Preference * owner;
-	Ui::Preference ui;
+    Preference * owner;
+    Ui::Preference ui;
 };
 
 }

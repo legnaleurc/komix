@@ -27,10 +27,10 @@ namespace exception {
 
 class Exception::Private {
 public:
-	Private();
-	explicit Private( const QString & msg );
+    Private();
+    explicit Private( const QString & msg );
 
-	QString msg;
+    QString msg;
 };
 
 }
@@ -46,12 +46,12 @@ Exception::Private::Private( const QString & msg ): msg( msg ) {
 
 Exception::Exception( int code ): p_( new Private ) {
 #ifdef _MSC_VER
-	wchar_t tmp[1024];
-	errno_t ret = _wcserror_s( tmp, code );
-	assert( ret == 0 || !"invalid errno" );
-	this->p_->msg.fromWCharArray( tmp );
+    wchar_t tmp[1024];
+    errno_t ret = _wcserror_s( tmp, code );
+    assert( ret == 0 || !"invalid errno" );
+    this->p_->msg.fromWCharArray( tmp );
 #else
-	this->p_->msg.fromLocal8Bit( strerror( code ) );
+    this->p_->msg.fromLocal8Bit( strerror( code ) );
 #endif
 }
 
@@ -88,12 +88,12 @@ Exception::~Exception() throw() {
  * @note encode as UTF-8
  */
 const char * Exception::what() const throw() {
-	return this->p_->msg.toLocal8Bit().constData();
+    return this->p_->msg.toLocal8Bit().constData();
 }
 
 /**
  * @brief Get message for Qt
  */
 const QString & Exception::getMessage() const {
-	return this->p_->msg;
+    return this->p_->msg;
 }
