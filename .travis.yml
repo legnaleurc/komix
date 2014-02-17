@@ -2,7 +2,9 @@ language: cpp
 compiler:
   - gcc
 before_script:
-  - sudo apt-get install libboost-signals-dev
+  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install qtbase5-dev libboost-signals-dev
   - cmake .
 script:
   make
