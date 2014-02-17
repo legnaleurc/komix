@@ -2,12 +2,20 @@ cmake_minimum_required(VERSION 2.8)
 
 project(KomiX)
 
+message(STATUS ${CMAKE_PREFIX_PATH})
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(KomiXUtilities)
+if(ANDROID)
+    set(LIBRARY_OUTPUT_PATH_ROOT "${CMAKE_BINARY_PATH}")
+endif()
 
 find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
+if(ANDROID)
+    list(APPEND CMAKE_FIND_ROOT_PATH "${ANDROID_BOOST}")
+endif()
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -52,7 +60,7 @@ else()
 endif()
 
 qt5_use_modules(komix Widgets)
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES})
 
 # install
 include(InstallRequiredSystemLibraries)
