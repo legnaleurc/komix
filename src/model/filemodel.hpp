@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QUrl>
 #include <QtCore/QMetaType>
+#include <QtCore/QIODevice>
 
 #include <functional>
 #include <memory>
