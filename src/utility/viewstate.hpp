@@ -23,7 +23,9 @@
 
 #include <QtCore/QLineF>
 
+#ifndef Q_MOC_RUN
 #include <boost/signals2.hpp>
+#endif
 
 #include <functional>
 #include <memory>
