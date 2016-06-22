@@ -22,9 +22,9 @@
 #define KOMIX_MODEL_FILEMODEL_HPP
 
 #include <QtCore/QAbstractItemModel>
-#include <QtCore/QUrl>
-#include <QtCore/QMetaType>
 #include <QtCore/QIODevice>
+#include <QtCore/QMetaType>
+#include <QtCore/QUrl>
 
 #include <functional>
 #include <memory>
@@ -37,30 +37,30 @@ namespace model {
  *
  * Describe how to retrive files.
  */
-class FileModel: public QAbstractItemModel {
+class FileModel : public QAbstractItemModel {
     Q_OBJECT
 public:
     /// Functor of key comparsion
-    typedef std::function< bool ( const QUrl & ) > KeyFunctor;
+    typedef std::function<bool(const QUrl &)> KeyFunctor;
     /// Functor of model creation
-    typedef std::function< std::shared_ptr< FileModel > ( const QUrl & ) > ValueFunctor;
+    typedef std::function<std::shared_ptr<FileModel>(const QUrl &)> ValueFunctor;
 
     /**
      * @brief Create concrete model
      * @param url opening url
      */
-    static std::shared_ptr< FileModel > createModel( const QUrl & url );
+    static std::shared_ptr<FileModel> createModel(const QUrl & url);
     /**
      * @brief Register model
      * @param key compare function
      * @param value create function
      * @return always true
      */
-    static bool registerModel( const KeyFunctor & key, const ValueFunctor & value );
+    static bool registerModel(const KeyFunctor & key, const ValueFunctor & value);
 
     using QAbstractItemModel::index;
     /// Query the index @p url in the model
-    virtual QModelIndex index( const QUrl & url ) const = 0;
+    virtual QModelIndex index(const QUrl & url) const = 0;
 
     void initialize();
 
@@ -68,13 +68,12 @@ protected:
     virtual void doInitialize() = 0;
 
 signals:
-    void error( const QString & msg );
+    void error(const QString & msg);
     void ready();
 };
-
 }
 } // end namespace
 
-Q_DECLARE_METATYPE( QIODevice * )
+Q_DECLARE_METATYPE(QIODevice *)
 
 #endif

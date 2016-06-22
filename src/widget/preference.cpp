@@ -25,48 +25,47 @@
 
 using KomiX::widget::Preference;
 
-Preference::Private::Private( Preference * owner ):
-QObject(),
-owner( owner ),
-ui() {
+Preference::Private::Private(Preference * owner)
+    : QObject()
+    , owner(owner)
+    , ui() {
 }
 
-void Preference::Private::dispatch( QAbstractButton * button ) {
-    switch( this->ui.buttons->buttonRole( button ) ) {
-    case QDialogButtonBox::RejectRole:
-        this->owner->reject();
-        break;
-    case QDialogButtonBox::ApplyRole:
-        this->owner->accept();
-        break;
-    case QDialogButtonBox::AcceptRole:
-        this->owner->accept();
-        this->owner->hide();
-        break;
-    default:
-        ;
+void Preference::Private::dispatch(QAbstractButton * button) {
+    switch (this->ui.buttons->buttonRole(button)) {
+        case QDialogButtonBox::RejectRole:
+            this->owner->reject();
+            break;
+        case QDialogButtonBox::ApplyRole:
+            this->owner->accept();
+            break;
+        case QDialogButtonBox::AcceptRole:
+            this->owner->accept();
+            this->owner->hide();
+            break;
+        default:;
     }
 }
 
 void Preference::Private::loadSettings() {
     QSettings ini;
 
-    this->ui.pixelInterval->setValue( ini.value( "pixel_interval", 1 ).toInt() );
-    this->ui.msInterval->setValue( ini.value( "ms_interval", 1 ).toInt() );
+    this->ui.pixelInterval->setValue(ini.value("pixel_interval", 1).toInt());
+    this->ui.msInterval->setValue(ini.value("ms_interval", 1).toInt());
 }
 
 void Preference::Private::saveSettings() {
     QSettings ini;
 
-    ini.setValue( "pixel_interval", this->ui.pixelInterval->value() );
-    ini.setValue( "ms_interval", this->ui.msInterval->value() );
+    ini.setValue("pixel_interval", this->ui.pixelInterval->value());
+    ini.setValue("ms_interval", this->ui.msInterval->value());
 }
 
-Preference::Preference( QWidget * parent ):
-QDialog( parent ),
-p_( new Private( this ) ) {
-    this->p_->ui.setupUi( this );
-    this->p_->connect( this->p_->ui.buttons, SIGNAL( clicked( QAbstractButton * ) ), SLOT( dispatch( QAbstractButton * ) ) );
+Preference::Preference(QWidget * parent)
+    : QDialog(parent)
+    , p_(new Private(this)) {
+    this->p_->ui.setupUi(this);
+    this->p_->connect(this->p_->ui.buttons, SIGNAL(clicked(QAbstractButton *)), SLOT(dispatch(QAbstractButton *)));
 
     this->p_->loadSettings();
 }

@@ -21,28 +21,27 @@
 #ifndef KOMIX_WIDGET_MAINWINDOW_HPP
 #define KOMIX_WIDGET_MAINWINDOW_HPP
 
-#include <QtWidgets/QMainWindow>
 #include <QtCore/QUrl>
+#include <QtWidgets/QMainWindow>
 
 #include <memory>
 
 namespace KomiX {
 namespace widget {
 
-class MainWindow: public QMainWindow {
+class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    explicit MainWindow( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags f = 0);
 
 public slots:
-    void open( const QUrl & url );
-    void open( const QString & localFile );
+    void open(const QUrl & url);
+    void open(const QString & localFile);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end namespace
 

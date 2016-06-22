@@ -30,13 +30,12 @@ namespace widget {
 
 class AboutWidget : public QWidget {
 public:
-    explicit AboutWidget( QWidget * parent );
+    explicit AboutWidget(QWidget * parent);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 }
 

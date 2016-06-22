@@ -18,18 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "global.hpp"
 #include "singlemodel.hpp"
+#include "global.hpp"
 
 namespace {
 
-bool check( const QUrl & url ) {
-    if( url.scheme() == "file" ) {
-        QFileInfo fi( url.toLocalFile() );
-        if( !fi.isDir() ) {
+bool check(const QUrl & url) {
+    if (url.scheme() == "file") {
+        QFileInfo fi(url.toLocalFile());
+        if (!fi.isDir()) {
             QString suffix = fi.suffix().toLower();
-            foreach( QString ext, KomiX::SupportedFormats() ) {
-                if( suffix == ext ) {
+            foreach (QString ext, KomiX::SupportedFormats()) {
+                if (suffix == ext) {
                     return true;
                 }
             }
@@ -38,15 +38,16 @@ bool check( const QUrl & url ) {
     return false;
 }
 
-std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
-    return std::shared_ptr< KomiX::model::FileModel >( new KomiX::model::single::SingleModel( QFileInfo( url.toLocalFile() ) ) );
+std::shared_ptr<KomiX::model::FileModel> create(const QUrl & url) {
+    return std::shared_ptr<KomiX::model::FileModel>(new KomiX::model::single::SingleModel(QFileInfo(url.toLocalFile())));
 }
 
-static const bool registered = KomiX::model::FileModel::registerModel( check, create );
+static const bool registered = KomiX::model::FileModel::registerModel(check, create);
 
 } // end of namespace
 
 using namespace KomiX::model::single;
 
-SingleModel::SingleModel( const QFileInfo & root ) : LocalFileModel( root.dir() ) {
+SingleModel::SingleModel(const QFileInfo & root)
+    : LocalFileModel(root.dir()) {
 }

@@ -36,11 +36,11 @@ class ImageView : public QGraphicsView {
     using QGraphicsView::scale;
 
 public:
-    explicit ImageView( QWidget * parent );
+    explicit ImageView(QWidget * parent);
 
-    void initialize( FileController * controller );
-    bool open( const QUrl & uri );
-    void setPaused( bool paused );
+    void initialize(FileController * controller);
+    bool open(const QUrl & uri);
+    void setPaused(bool paused);
 
 public slots:
     void begin();
@@ -51,42 +51,41 @@ public slots:
     void loadSettings();
     void nextPage();
     void previousPage();
-    void scale( int pcRatio );
+    void scale(int pcRatio);
     void smoothMove();
     void smoothReversingMove();
 
 signals:
-    void fileDropped( const QUrl & uri );
+    void fileDropped(const QUrl & uri);
     void middleClicked();
-    void scaled( int ratio );
+    void scaled(int ratio);
 
 protected:
     /// overrided method
-    virtual void dragEnterEvent( QDragEnterEvent * );
+    virtual void dragEnterEvent(QDragEnterEvent *);
     /// overrided method
-    virtual void dragMoveEvent( QDragMoveEvent * );
+    virtual void dragMoveEvent(QDragMoveEvent *);
     /// overrided method
-    virtual void dropEvent( QDropEvent * );
+    virtual void dropEvent(QDropEvent *);
     /// overrided method
-    virtual void keyPressEvent( QKeyEvent * );
+    virtual void keyPressEvent(QKeyEvent *);
     /// overrided method
-    virtual void mouseMoveEvent( QMouseEvent * );
+    virtual void mouseMoveEvent(QMouseEvent *);
     /// overrided method
-    virtual void mousePressEvent( QMouseEvent * );
+    virtual void mousePressEvent(QMouseEvent *);
     /// overrided method
-    virtual void mouseReleaseEvent( QMouseEvent * );
+    virtual void mouseReleaseEvent(QMouseEvent *);
     /// overrided method
-    virtual void resizeEvent( QResizeEvent * );
+    virtual void resizeEvent(QResizeEvent *);
     /// overrided method
-    virtual bool viewportEvent( QEvent * );
+    virtual bool viewportEvent(QEvent *);
     /// overrided method
-    virtual void wheelEvent( QWheelEvent * );
+    virtual void wheelEvent(QWheelEvent *);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 }
 

@@ -26,27 +26,28 @@
 
 namespace {
 
-QAction * hookHelper( QWidget * parent ) {
-    return new KomiX::model::directory::DirectoryHook( parent );
+QAction * hookHelper(QWidget * parent) {
+    return new KomiX::model::directory::DirectoryHook(parent);
 }
 
-const bool registered = KomiX::registerFileMenuHook( hookHelper );
+const bool registered = KomiX::registerFileMenuHook(hookHelper);
 
 } // end of namespace
 
 using namespace KomiX::model::directory;
 
-DirectoryHook::DirectoryHook( QWidget * parent ) : QAction( parent ) {
-    setText( tr( "Open &Directory" ) );
-    setShortcut( tr( "Ctrl+D" ) );
+DirectoryHook::DirectoryHook(QWidget * parent)
+    : QAction(parent) {
+    setText(tr("Open &Directory"));
+    setShortcut(tr("Ctrl+D"));
 
-    connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
-    connect( this, SIGNAL( opened( const QUrl & ) ), parent, SLOT( open( const QUrl & ) ) );
+    connect(this, SIGNAL(triggered()), this, SLOT(helper_()));
+    connect(this, SIGNAL(opened(const QUrl &)), parent, SLOT(open(const QUrl &)));
 }
 
 void DirectoryHook::helper_() {
-    QString path = QFileDialog::getExistingDirectory( this->parentWidget(), tr( "Open dicrectory" ), QDir::homePath() );
-    if( !path.isEmpty() ) {
-        emit opened( QUrl::fromLocalFile( path ) );
+    QString path = QFileDialog::getExistingDirectory(this->parentWidget(), tr("Open dicrectory"), QDir::homePath());
+    if (!path.isEmpty()) {
+        emit opened(QUrl::fromLocalFile(path));
     }
 }

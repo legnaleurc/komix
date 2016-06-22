@@ -22,25 +22,27 @@
 
 using KomiX::widget::AboutWidget;
 
-AboutWidget::Private::Private( AboutWidget * owner ):
-owner( owner ),
-ui() {
+AboutWidget::Private::Private(AboutWidget * owner)
+    : owner(owner)
+    , ui() {
 }
 
-AboutWidget::AboutWidget( QWidget * parent ):
-QWidget( parent, Qt::Dialog ),
-p_( new Private( this ) ) {
-    this->p_->ui.setupUi( this );
+AboutWidget::AboutWidget(QWidget * parent)
+    : QWidget(parent, Qt::Dialog)
+    , p_(new Private(this)) {
+    this->p_->ui.setupUi(this);
 
-    this->p_->ui.info->setText( tr(
-        "<h1>%1</h1>"
-        "Version: %2<br/>"
-        "<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>"
-    ).arg( QApplication::applicationName() ).arg( QApplication::applicationVersion() ) );
+    this->p_->ui.info->setText(tr(
+                                   "<h1>%1</h1>"
+                                   "Version: %2<br/>"
+                                   "<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>")
+                                   .arg(QApplication::applicationName())
+                                   .arg(QApplication::applicationVersion()));
 
-    this->p_->ui.aboutMessage->setText( tr(
-        "<h4>%1 - A comics viewer</h4>"
-        "(c) 2008-2010 %2<br/>"
-        "License: GPLv3 or later<br/>"
-    ).arg( QApplication::applicationName() ).arg( QApplication::organizationName() ) );
+    this->p_->ui.aboutMessage->setText(tr(
+                                           "<h4>%1 - A comics viewer</h4>"
+                                           "(c) 2008-2010 %2<br/>"
+                                           "License: GPLv3 or later<br/>")
+                                           .arg(QApplication::applicationName())
+                                           .arg(QApplication::organizationName()));
 }

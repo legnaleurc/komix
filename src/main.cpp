@@ -38,25 +38,25 @@
  *
  * Accept all arguments as url.
  */
-int main( int argc, char * argv[] ) {
-    QApplication app( argc, argv );
-    QApplication::setWindowIcon( QIcon( ":/image/logo.svg" ) );
-    QApplication::setOrganizationName( "FoolproofProject" );
-    QApplication::setApplicationName( "KomiX" );
-    QApplication::setApplicationVersion( X(KOMIX_VERSION) );
+int main(int argc, char * argv[]) {
+    QApplication app(argc, argv);
+    QApplication::setWindowIcon(QIcon(":/image/logo.svg"));
+    QApplication::setOrganizationName("FoolproofProject");
+    QApplication::setApplicationName("KomiX");
+    QApplication::setApplicationVersion(X(KOMIX_VERSION));
 
-    QStringList args( QApplication::arguments() );
+    QStringList args(QApplication::arguments());
 
     // QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
 
-    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
     KomiX::widget::MainWindow mainWindow;
-    mainWindow.setWindowTitle( QApplication::applicationName() );
-    mainWindow.resize( 800, 600 );
+    mainWindow.setWindowTitle(QApplication::applicationName());
+    mainWindow.resize(800, 600);
 
-    if( args.length() > 1 ) {
-        mainWindow.open( args.at( 1 ) );
+    if (args.length() > 1) {
+        mainWindow.open(args.at(1));
     }
 
     mainWindow.show();

@@ -24,23 +24,22 @@ namespace KomiX {
 
 class AsynchronousLoader::Private {
 public:
-    Private( QIODevice * device );
+    Private(QIODevice * device);
 
     QIODevice * device;
 };
-
 }
 
 using KomiX::AsynchronousLoader;
 
-AsynchronousLoader::Private::Private( QIODevice * device ):
-device( device ) {
+AsynchronousLoader::Private::Private(QIODevice * device)
+    : device(device) {
 }
 
-AsynchronousLoader::AsynchronousLoader( QIODevice * device ):
-QObject(),
-QRunnable(),
-p_( new Private( device ) ) {
+AsynchronousLoader::AsynchronousLoader(QIODevice * device)
+    : QObject()
+    , QRunnable()
+    , p_(new Private(device)) {
 }
 
 QIODevice * AsynchronousLoader::getDevice() const {

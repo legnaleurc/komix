@@ -45,20 +45,19 @@ public:
      * @brief default constructor
      * @param parent parent widget
      */
-    Navigator( FileController * controller, QWidget * parent );
+    Navigator(FileController * controller, QWidget * parent);
 
     /// set current using model
-    void setModel( std::shared_ptr< model::FileModel > model );
+    void setModel(std::shared_ptr<model::FileModel> model);
     /// set current model index
-    void setCurrentIndex( const QModelIndex & index );
+    void setCurrentIndex(const QModelIndex & index);
 
-    virtual void setVisible( bool visible );
+    virtual void setVisible(bool visible);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end namespace
 

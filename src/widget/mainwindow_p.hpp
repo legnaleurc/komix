@@ -22,21 +22,21 @@
 #define KOMIX_WIDGET_MAINWINDOW_P_HPP
 
 #include "aboutwidget.hpp"
-#include "mainwindow.hpp"
-#include "preference.hpp"
-#include "navigator.hpp"
-#include "scalewidget.hpp"
 #include "filecontroller.hpp"
+#include "mainwindow.hpp"
+#include "navigator.hpp"
+#include "preference.hpp"
+#include "scalewidget.hpp"
 #include "ui_mainwindow.h"
 
 #include <QtWidgets/QSystemTrayIcon>
 
 namespace KomiX {
 namespace widget {
-class MainWindow::Private: public QObject {
+class MainWindow::Private : public QObject {
     Q_OBJECT
 public:
-    Private( MainWindow * owner );
+    Private(MainWindow * owner);
 
     void initTrayIcon();
     void setupCentralWidget();
@@ -49,8 +49,8 @@ public:
 
 public slots:
     void showNavigator();
-    void systemTrayHelper( QSystemTrayIcon::ActivationReason reason );
-    void popupError( const QString & errMsg );
+    void systemTrayHelper(QSystemTrayIcon::ActivationReason reason);
+    void popupError(const QString & errMsg);
     /// toggle full-screen mode
     void toggleFullScreen();
     /// toggle minimize system tray

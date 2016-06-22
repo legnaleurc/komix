@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "archivehook.hpp"
-#include "archivemodel.hpp"
 #include "archive.hpp"
+#include "archivemodel.hpp"
 #include "global.hpp"
 
 #include <QtCore/QCoreApplication>
@@ -29,16 +29,16 @@
 namespace {
 
 inline QString archiveList() {
-    QStringList tmp( QObject::tr( "All Supported Archives ( %1 )" ).arg( KomiX::model::archive::ArchiveFormatsFilter().join( " " ) ) );
+    QStringList tmp(QObject::tr("All Supported Archives ( %1 )").arg(KomiX::model::archive::ArchiveFormatsFilter().join(" ")));
     tmp << KomiX::model::archive::ArchiveFormatsFilter();
-    return tmp.join( ";;" );
+    return tmp.join(";;");
 }
 
-QAction * hookHelper( QWidget * parent ) {
-    return new KomiX::model::archive::ArchiveHook( parent );
+QAction * hookHelper(QWidget * parent) {
+    return new KomiX::model::archive::ArchiveHook(parent);
 }
 
-static const bool registered = KomiX::registerFileMenuHook( hookHelper );
+static const bool registered = KomiX::registerFileMenuHook(hookHelper);
 
 inline const QString & archiveFilter() {
     static QString af = archiveList();
@@ -49,24 +49,25 @@ inline const QString & archiveFilter() {
 
 using namespace KomiX::model::archive;
 
-ArchiveHook::ArchiveHook( QWidget * parent ) : QAction( parent ) {
-    setText( tr( "Open &Archive" ) );
-    setShortcut( tr( "Ctrl+A" ) );
+ArchiveHook::ArchiveHook(QWidget * parent)
+    : QAction(parent) {
+    setText(tr("Open &Archive"));
+    setShortcut(tr("Ctrl+A"));
 
-    connect( this, SIGNAL( triggered() ), this, SLOT( helper_() ) );
-    connect( this, SIGNAL( opened( const QUrl & ) ), parent, SLOT( open( const QUrl & ) ) );
+    connect(this, SIGNAL(triggered()), this, SLOT(helper_()));
+    connect(this, SIGNAL(opened(const QUrl &)), parent, SLOT(open(const QUrl &)));
 
     // cleanup temporary dir on exit
-    this->connect( qApp, SIGNAL( aboutToQuit() ), SLOT( cleanup_() ) );
+    this->connect(qApp, SIGNAL(aboutToQuit()), SLOT(cleanup_()));
 }
 
 void ArchiveHook::helper_() {
-    QString path = QFileDialog::getOpenFileName( this->parentWidget(), tr( "Open archive" ), QDir::homePath(), archiveFilter() );
-    if( !path.isEmpty() ) {
-        emit opened( QUrl::fromLocalFile( path ) );
+    QString path = QFileDialog::getOpenFileName(this->parentWidget(), tr("Open archive"), QDir::homePath(), archiveFilter());
+    if (!path.isEmpty()) {
+        emit opened(QUrl::fromLocalFile(path));
     }
 }
 
 void ArchiveHook::cleanup_() {
-    delTree( getTmpDir() );
+    delTree(getTmpDir());
 }

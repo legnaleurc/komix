@@ -28,14 +28,14 @@
 namespace KomiX {
 namespace widget {
 
-class ImageItem::Private: public QObject {
+class ImageItem::Private : public QObject {
     Q_OBJECT
 public:
-    explicit Private( ImageItem * owner );
+    explicit Private(ImageItem * owner);
 
 public slots:
-    void onFinished( int id, QMovie * movie );
-    void onFinished( int id, const QPixmap & pixmap );
+    void onFinished(int id, QMovie * movie);
+    void onFinished(int id, const QPixmap & pixmap);
 
 signals:
     void changed();
@@ -45,7 +45,6 @@ public:
     QGraphicsItem * item;
     QMovie * movie;
 };
-
 }
 }
 

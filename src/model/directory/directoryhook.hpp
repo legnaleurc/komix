@@ -34,14 +34,13 @@ class DirectoryHook : public QAction {
     Q_OBJECT
 public:
     /// Constructor
-    DirectoryHook( QWidget * parent );
+    DirectoryHook(QWidget * parent);
 signals:
     /// emitted when user opened a url
-    void opened( const QUrl & url );
+    void opened(const QUrl & url);
 private slots:
     void helper_();
 };
-
 }
 }
 } // end of namespace

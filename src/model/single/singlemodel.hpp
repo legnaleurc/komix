@@ -33,9 +33,8 @@ namespace single {
 class SingleModel : public LocalFileModel {
 public:
     /// Constructor open @p root as image
-    SingleModel( const QFileInfo & root );
+    SingleModel(const QFileInfo & root);
 };
-
 }
 }
 } //end of namespace

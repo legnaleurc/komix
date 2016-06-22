@@ -30,14 +30,14 @@
 namespace KomiX {
 namespace exception {
 
-class Exception: public std::exception {
+class Exception : public std::exception {
 public:
-    explicit Exception( int code );
-    explicit Exception( const char * msg );
-    explicit Exception( const wchar_t * msg );
-    explicit Exception( const std::string & msg );
-    explicit Exception( const std::wstring & msg );
-    explicit Exception( const QString & msg );
+    explicit Exception(int code);
+    explicit Exception(const char * msg);
+    explicit Exception(const wchar_t * msg);
+    explicit Exception(const std::string & msg);
+    explicit Exception(const std::wstring & msg);
+    explicit Exception(const QString & msg);
     virtual ~Exception() throw();
 
     virtual const char * what() const throw();
@@ -45,9 +45,8 @@ public:
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end of namespace
 

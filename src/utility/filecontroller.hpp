@@ -34,14 +34,14 @@ namespace KomiX {
  *
  * This class is used to provide a generic open image action.
  */
-class FileController: public QObject {
+class FileController : public QObject {
     Q_OBJECT
 public:
     /**
      * @brief default constructor
      * @param parent parent widget
      */
-    FileController( QObject * parent );
+    FileController(QObject * parent);
 
     /**
      * @brief open a url
@@ -51,13 +51,13 @@ public:
      *
      * It will emit getImage( const QPixmap & ) if necessary.
      */
-    bool open( const QUrl & url );
+    bool open(const QUrl & url);
 
     /// check if there has openable files.
     bool isEmpty() const;
 
     /// get current model
-    std::shared_ptr< model::FileModel > getModel() const;
+    std::shared_ptr<model::FileModel> getModel() const;
     /// get current index
     QModelIndex getCurrentIndex() const;
 
@@ -82,23 +82,23 @@ public slots:
      *
      * If successful, signal imageLoaded is emitted.
      */
-    void open( const QModelIndex & index );
+    void open(const QModelIndex & index);
 
 signals:
     /**
      * @brief get image
      * @param image image
      */
-    void imageLoaded( QIODevice * device );
+    void imageLoaded(QIODevice * device);
     /**
      * @brief Some error occured
      * @param errMsg error message
      */
-    void errorOccured( const QString & errMsg );
+    void errorOccured(const QString & errMsg);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
 
 } // end of KomiX

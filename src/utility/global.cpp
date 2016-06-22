@@ -20,65 +20,63 @@
  */
 #include "global.hpp"
 
-#include <QString>
-#include <QImageReader>
-#include <QtGlobal>
 #include <QCoreApplication>
+#include <QImageReader>
+#include <QString>
+#include <QtGlobal>
 
 #include <algorithm>
 
 namespace {
 
-    inline QStringList uniqueList() {
-        Q_ASSERT( QCoreApplication::instance() != NULL );
-        std::list< QByteArray > uniList = QImageReader::supportedImageFormats().toStdList();
+inline QStringList uniqueList() {
+    Q_ASSERT(QCoreApplication::instance() != NULL);
+    std::list<QByteArray> uniList = QImageReader::supportedImageFormats().toStdList();
 
-        std::for_each( uniList.begin(), uniList.end(), []( QByteArray & s )->void {
-            s = s.toLower();
-        } );
-        uniList.sort();
-        uniList.unique();
+    std::for_each(uniList.begin(), uniList.end(), [](QByteArray & s) -> void {
+        s = s.toLower();
+    });
+    uniList.sort();
+    uniList.unique();
 
-        QStringList result;
+    QStringList result;
 
-        std::copy( uniList.begin(), uniList.end(), std::back_inserter( result ) );
-        return result;
-    }
+    std::copy(uniList.begin(), uniList.end(), std::back_inserter(result));
+    return result;
+}
 
-    std::list< KomiX::FileMenuHook > & fileMenuHooks() {
-        static std::list< KomiX::FileMenuHook > hooks;
-        return hooks;
-    }
-
+std::list<KomiX::FileMenuHook> & fileMenuHooks() {
+    static std::list<KomiX::FileMenuHook> hooks;
+    return hooks;
+}
 }
 
 namespace KomiX {
 
-    const std::list< FileMenuHook > & getFileMenuHooks() {
-        return fileMenuHooks();
-    }
+const std::list<FileMenuHook> & getFileMenuHooks() {
+    return fileMenuHooks();
+}
 
-    bool registerFileMenuHook( FileMenuHook hook ) {
-        fileMenuHooks().push_back( hook );
-        return true;
-    }
+bool registerFileMenuHook(FileMenuHook hook) {
+    fileMenuHooks().push_back(hook);
+    return true;
+}
 
-    const QStringList & SupportedFormats() {
-        static QStringList sf = uniqueList();
-        return sf;
-    }
+const QStringList & SupportedFormats() {
+    static QStringList sf = uniqueList();
+    return sf;
+}
 
-    const QStringList & SupportedFormatsFilter() {
-        static QStringList sff = toNameFilter( KomiX::SupportedFormats() );
-        return sff;
-    }
+const QStringList & SupportedFormatsFilter() {
+    static QStringList sff = toNameFilter(KomiX::SupportedFormats());
+    return sff;
+}
 
-    QStringList toNameFilter( const QStringList & exts ) {
-        QStringList tmp;
-        foreach( QString str, exts ) {
-            tmp << str.prepend( "*." );
-        }
-        return tmp;
+QStringList toNameFilter(const QStringList & exts) {
+    QStringList tmp;
+    foreach (QString str, exts) {
+        tmp << str.prepend("*.");
     }
-
+    return tmp;
+}
 }

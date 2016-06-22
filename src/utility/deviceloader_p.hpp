@@ -24,19 +24,19 @@
 #include "deviceloader.hpp"
 
 namespace KomiX {
-class DeviceLoader::Private: public QObject {
+class DeviceLoader::Private : public QObject {
     Q_OBJECT
 public:
-    Private( int id, QIODevice * device );
+    Private(int id, QIODevice * device);
 
-    void read( QIODevice * device );
+    void read(QIODevice * device);
 
 public slots:
-    void onFinished( const QByteArray & data );
+    void onFinished(const QByteArray & data);
 
 signals:
-    void finished( int id, const QPixmap & pixmap );
-    void finished( int id, QMovie * movie );
+    void finished(int id, const QPixmap & pixmap);
+    void finished(int id, QMovie * movie);
 
 public:
     int id;

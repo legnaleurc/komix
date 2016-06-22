@@ -18,55 +18,53 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "global.hpp"
 #include "localfilemodel.hpp"
+#include "global.hpp"
 
 namespace KomiX {
 namespace model {
 
 class LocalFileModel::Private {
 public:
-    Private( const QDir & root );
+    Private(const QDir & root);
 
     QDir root;
     QStringList files;
 };
-
 }
 }
 
 using KomiX::model::LocalFileModel;
 
-LocalFileModel::Private::Private( const QDir & root ):
-root( root ),
-files( root.entryList( SupportedFormatsFilter(), QDir::Files ) ) {
+LocalFileModel::Private::Private(const QDir & root)
+    : root(root)
+    , files(root.entryList(SupportedFormatsFilter(), QDir::Files)) {
 }
 
-LocalFileModel::LocalFileModel( const QDir & root ):
-FileModel(),
-p_( new Private( root ) ) {
+LocalFileModel::LocalFileModel(const QDir & root)
+    : FileModel()
+    , p_(new Private(root)) {
 }
 
 void LocalFileModel::doInitialize() {
     emit this->ready();
 }
 
-void LocalFileModel::setRoot( const QDir & root ) {
+void LocalFileModel::setRoot(const QDir & root) {
     this->p_->root = root;
-    this->p_->files = root.entryList( SupportedFormatsFilter(), QDir::Files );
+    this->p_->files = root.entryList(SupportedFormatsFilter(), QDir::Files);
 }
 
-QModelIndex LocalFileModel::index( const QUrl & url ) const {
-    int row = this->p_->files.indexOf( QFileInfo( url.toLocalFile() ).fileName() );
-    return ( row < 0 ) ? QModelIndex() : createIndex( row, 0, row );
+QModelIndex LocalFileModel::index(const QUrl & url) const {
+    int row = this->p_->files.indexOf(QFileInfo(url.toLocalFile()).fileName());
+    return (row < 0) ? QModelIndex() : createIndex(row, 0, row);
 }
 
-
-QModelIndex LocalFileModel::index( int row, int column, const QModelIndex & parent ) const {
-    if( !parent.isValid() ) {
+QModelIndex LocalFileModel::index(int row, int column, const QModelIndex & parent) const {
+    if (!parent.isValid()) {
         // query from root
-        if( column == 0 && row >= 0 && row < this->p_->files.size() ) {
-            return createIndex( row, 0, row );
+        if (column == 0 && row >= 0 && row < this->p_->files.size()) {
+            return createIndex(row, 0, row);
         } else {
             return QModelIndex();
         }
@@ -76,12 +74,12 @@ QModelIndex LocalFileModel::index( int row, int column, const QModelIndex & pare
     }
 }
 
-QModelIndex LocalFileModel::parent( const QModelIndex & child ) const {
-    if( !child.isValid() ) {
+QModelIndex LocalFileModel::parent(const QModelIndex & child) const {
+    if (!child.isValid()) {
         // root has no parent
         return QModelIndex();
     } else {
-        if( child.column() == 0 && child.row() >= 0 && child.row() < this->p_->files.size() ) {
+        if (child.column() == 0 && child.row() >= 0 && child.row() < this->p_->files.size()) {
             return QModelIndex();
         } else {
             return QModelIndex();
@@ -89,8 +87,8 @@ QModelIndex LocalFileModel::parent( const QModelIndex & child ) const {
     }
 }
 
-int LocalFileModel::rowCount( const QModelIndex & parent ) const {
-    if( !parent.isValid() ) {
+int LocalFileModel::rowCount(const QModelIndex & parent) const {
+    if (!parent.isValid()) {
         // root row size
         return this->p_->files.size();
     } else {
@@ -99,33 +97,32 @@ int LocalFileModel::rowCount( const QModelIndex & parent ) const {
     }
 }
 
-int LocalFileModel::columnCount( const QModelIndex & /*parent*/ ) const {
+int LocalFileModel::columnCount(const QModelIndex & /*parent*/) const {
     return 1;
 }
 
-QVariant LocalFileModel::data( const QModelIndex & index, int role ) const {
-    if( !index.isValid() ) {
+QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
+    if (!index.isValid()) {
         return QVariant();
     }
-    switch( index.column() ) {
-    case 0:
-        if( index.row() >= 0 && index.row() < this->p_->files.size() ) {
-            switch( role ) {
-            case Qt::DisplayRole:
-                return this->p_->files[index.row()];
-            case Qt::UserRole:
-            {
-                QIODevice * fin = new QFile( this->p_->root.filePath( this->p_->files[index.row()] ) );
-                fin->open( QIODevice::ReadOnly );
-                return QVariant::fromValue( fin );
-            }
-            default:
+    switch (index.column()) {
+        case 0:
+            if (index.row() >= 0 && index.row() < this->p_->files.size()) {
+                switch (role) {
+                    case Qt::DisplayRole:
+                        return this->p_->files[index.row()];
+                    case Qt::UserRole: {
+                        QIODevice * fin = new QFile(this->p_->root.filePath(this->p_->files[index.row()]));
+                        fin->open(QIODevice::ReadOnly);
+                        return QVariant::fromValue(fin);
+                    }
+                    default:
+                        return QVariant();
+                }
+            } else {
                 return QVariant();
             }
-        } else {
+        default:
             return QVariant();
-        }
-    default:
-        return QVariant();
     }
 }

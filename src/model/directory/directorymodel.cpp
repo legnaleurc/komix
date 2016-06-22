@@ -22,23 +22,24 @@
 
 namespace {
 
-bool check( const QUrl & url ) {
-    if( url.scheme() == "file" ) {
-        QFileInfo fi( url.toLocalFile() );
+bool check(const QUrl & url) {
+    if (url.scheme() == "file") {
+        QFileInfo fi(url.toLocalFile());
         return fi.isDir();
     }
     return false;
 }
 
-std::shared_ptr< KomiX::model::FileModel > create( const QUrl & url ) {
-    return std::shared_ptr<  KomiX::model::FileModel >( new KomiX::model::directory::DirectoryModel( QFileInfo( url.toLocalFile() ) ) );
+std::shared_ptr<KomiX::model::FileModel> create(const QUrl & url) {
+    return std::shared_ptr<KomiX::model::FileModel>(new KomiX::model::directory::DirectoryModel(QFileInfo(url.toLocalFile())));
 }
 
-static const bool registered = KomiX::model::FileModel::registerModel( check, create );
+static const bool registered = KomiX::model::FileModel::registerModel(check, create);
 
 } // end of namespace
 
 using namespace KomiX::model::directory;
 
-DirectoryModel::DirectoryModel( const QFileInfo & root ): LocalFileModel( root.absoluteFilePath() ) {
+DirectoryModel::DirectoryModel(const QFileInfo & root)
+    : LocalFileModel(root.absoluteFilePath()) {
 }

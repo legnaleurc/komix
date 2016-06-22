@@ -34,14 +34,13 @@ class SingleHook : public QAction {
     Q_OBJECT
 public:
     /// Constructor
-    SingleHook( QWidget * parent );
+    SingleHook(QWidget * parent);
 signals:
     /// emitted when user opened a url
-    void opened( const QUrl & url );
+    void opened(const QUrl & url);
 private slots:
     void helper_();
 };
-
 }
 }
 } // end of namespace

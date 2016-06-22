@@ -31,11 +31,11 @@ namespace widget {
 /**
  * @brief preference widget
  */
-class Preference: public QDialog {
+class Preference : public QDialog {
     Q_OBJECT
 public:
     /// constructor
-    explicit Preference( QWidget * parent );
+    explicit Preference(QWidget * parent);
 
 public slots:
     /// Override from QDialog, won't hide dialog
@@ -45,9 +45,8 @@ public slots:
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end of namespace
 

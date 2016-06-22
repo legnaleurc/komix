@@ -27,23 +27,22 @@
 namespace KomiX {
 namespace widget {
 
-class ScaleWidget::Private: public QObject {
+class ScaleWidget::Private : public QObject {
     Q_OBJECT
 public:
-    explicit Private( ScaleWidget * owner );
+    explicit Private(ScaleWidget * owner);
 
 public slots:
     void valueHelper();
 
 signals:
-    void scaled( int );
+    void scaled(int);
 
 public:
     ScaleWidget * owner;
     Ui::ScaleWidget ui;
     QButtonGroup * modes;
 };
-
 }
 }
 

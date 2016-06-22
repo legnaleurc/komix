@@ -33,7 +33,7 @@ namespace archive {
  * Supported file formats: 7z, zip, rar, tar.gz, tar.bz2.
  * Do not support password.
  */
-class ArchiveModel: public LocalFileModel {
+class ArchiveModel : public LocalFileModel {
 public:
     /// Check if 7-zip existed
     static bool IsRunnable();
@@ -44,7 +44,7 @@ public:
      * @brief Constructor with given fileinfo
      * @param root top-level file
      */
-    ArchiveModel( const QFileInfo & root );
+    ArchiveModel(const QFileInfo & root);
 
 protected:
     virtual void doInitialize();
@@ -52,7 +52,7 @@ protected:
 private:
     friend class ArchiveHook;
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
 
 /// get supported archive formats
@@ -63,8 +63,7 @@ const QStringList & ArchiveFormatsFilter();
  * @brief check if archive is supported
  * @param path file path
  */
-bool isArchiveSupported( const QString & path );
-
+bool isArchiveSupported(const QString & path);
 }
 }
 } // end of namespace

@@ -29,10 +29,10 @@
 
 namespace KomiX {
 
-class CharacterDeviceLoader::Private: public QObject {
+class CharacterDeviceLoader::Private : public QObject {
     Q_OBJECT
 public:
-    explicit Private( CharacterDeviceLoader * owner );
+    explicit Private(CharacterDeviceLoader * owner);
 
 public slots:
     void onReadyRead();
@@ -45,7 +45,6 @@ public:
     CharacterDeviceLoader * owner;
     QBuffer buffer;
 };
-
 }
 
 #endif

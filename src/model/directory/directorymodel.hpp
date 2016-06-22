@@ -33,9 +33,8 @@ namespace directory {
 class DirectoryModel : public LocalFileModel {
 public:
     /// Constructor open @p root as top-level directory
-    DirectoryModel( const QFileInfo & root );
+    DirectoryModel(const QFileInfo & root);
 };
-
 }
 }
 } // end of namespace

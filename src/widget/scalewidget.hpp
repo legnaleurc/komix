@@ -34,18 +34,18 @@ namespace widget {
  * This widget is simple ... too simple. Maybe I'll
  * change this widget to option widget.
  */
-class ScaleWidget: public QWidget {
+class ScaleWidget : public QWidget {
     Q_OBJECT
 public:
     /**
      * @brief default constructor
      * @param parent parent widget
      */
-    explicit ScaleWidget( QWidget * parent );
+    explicit ScaleWidget(QWidget * parent);
 
 public slots:
     /// to move slider
-    void scale( int ratio );
+    void scale(int ratio);
 
 signals:
     void fitHeight();
@@ -57,13 +57,12 @@ signals:
      *
      * The ratio means percents, so 100 actually means 100%.
      */
-    void scaled( int ratio );
+    void scaled(int ratio);
 
 private:
     class Private;
-    std::shared_ptr< Private > p_;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end namespace
 
