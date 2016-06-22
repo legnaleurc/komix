@@ -6,6 +6,6 @@ compiler:
 before_script:
   - sudo apt-get update -qq
   - sudo apt-get install qtbase5-dev libboost-signals-dev
-  - cmake .
 script:
-  make
+  - cmake .
+  - make
