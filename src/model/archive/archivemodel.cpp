@@ -132,6 +132,7 @@ void ArchiveModel::Private::extract( const QString & aFilePath, const char * onF
     QProcess * p = new QProcess;
     this->connect( p, SIGNAL( finished( int ) ), onFinished );
     this->connect( p, SIGNAL( finished( int ) ), SLOT( cleanup( int ) ) );
+    qDebug() << (arguments( this->hash ) << aFilePath);
     p->start( sevenZip(), ( arguments( this->hash ) << aFilePath ),  QIODevice::ReadOnly );
 }
 
@@ -195,7 +196,12 @@ void ArchiveModel::doInitialize() {
         return;
     }
 
-    this->p_->extract( this->p_->root.absoluteFilePath(), SLOT( checkTwo( int ) ) );
+    auto origPath = this->p_->root.absoluteFilePath();
+    auto ext = this->p_->root.completeSuffix();
+    auto linkPath = getTmpDir().absoluteFilePath(QString("%1.%2").arg(this->p_->hash).arg(ext));
+    QFile::link(origPath, linkPath);
+
+    this->p_->extract( linkPath, SLOT( checkTwo( int ) ) );
 }
 
 namespace KomiX {
