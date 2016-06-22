@@ -2,20 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 
 project(KomiX)
 
-message(STATUS ${CMAKE_PREFIX_PATH})
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(KomiXUtilities)
-if(ANDROID)
-    set(LIBRARY_OUTPUT_PATH_ROOT "${CMAKE_BINARY_PATH}")
-endif()
 
+find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
-if(ANDROID)
-    list(APPEND CMAKE_FIND_ROOT_PATH "${ANDROID_BOOST}")
-endif()
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -59,14 +52,13 @@ else()
 	set_target_properties(komix PROPERTIES COMPILE_FLAGS "-std=c++0x")
 endif()
 
-qt5_use_modules(komix Widgets)
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES})
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${Boost_LIBRARIES} Qt5::Core Qt5::Widgets)
 
 # install
 include(InstallRequiredSystemLibraries)
 install(TARGETS komix
 	COMPONENT "Runtime"
-	RUNTIME DESTINATION "bin"
+	RUNTIME DESTINATION "komix.app/Contents/MacOS"
 	BUNDLE DESTINATION ".")
 if(APPLE)
 	set(KOMIX_PLUGINS_INSTALL_DIR "komix.app/Contents/PlugIns")
