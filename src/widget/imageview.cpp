@@ -468,17 +468,17 @@ bool ImageView::viewportEvent(QEvent * event) {
                 continue;
             }
             auto pg = static_cast<QPinchGesture *>(*it);
-            if (pg->state() != Qt::GestureUpdated) {
-                continue;
-            }
-            auto delta = pg->scaleFactor() - pg->lastScaleFactor();
-            if (qAbs(delta) < 0.005) {
-                continue;
-            }
-            if (delta >= 0) {
-                emit this->scaled(10);
+            if (pg->state() == Qt::GestureStarted) {
+                emit this->scaleStarted();
+            } else if (pg->state() == Qt::GestureFinished) {
+                emit this->scaleFinished();
             } else {
-                emit this->scaled(-10);
+                auto changeFlags = pg->changeFlags();
+                if (!(changeFlags & QPinchGesture::ScaleFactorChanged)) {
+                    continue;
+                }
+                auto factor = pg->totalScaleFactor();
+                emit this->scaledBy(factor);
             }
         }
         return true;

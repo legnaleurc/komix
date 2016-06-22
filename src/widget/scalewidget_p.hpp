@@ -42,6 +42,7 @@ public:
     ScaleWidget * owner;
     Ui::ScaleWidget ui;
     QButtonGroup * modes;
+    qreal currentFactor;
 };
 }
 }

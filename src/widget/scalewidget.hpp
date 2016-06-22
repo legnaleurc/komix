@@ -46,6 +46,9 @@ public:
 public slots:
     /// to move slider
     void scale(int ratio);
+    void scaleBy(qreal ratio);
+    void startScaling();
+    void finishScaling();
 
 signals:
     void fitHeight();

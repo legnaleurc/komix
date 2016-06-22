@@ -61,6 +61,9 @@ MainWindow::Private::Private(MainWindow * owner)
     this->connect(this->controller, SIGNAL(errorOccured(const QString &)), SLOT(popupError(const QString &)));
 
     this->scaler->connect(this->ui.graphicsView, SIGNAL(scaled(int)), SLOT(scale(int)));
+    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaledBy(qreal)), SLOT(scaleBy(qreal)));
+    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaleStarted()), SLOT(startScaling()));
+    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaleFinished()), SLOT(finishScaling()));
     this->ui.graphicsView->connect(this->scaler, SIGNAL(scaled(int)), SLOT(scale(int)));
     this->ui.graphicsView->connect(this->scaler, SIGNAL(fitHeight()), SLOT(fitHeight()));
     this->ui.graphicsView->connect(this->scaler, SIGNAL(fitWidth()), SLOT(fitWidth()));

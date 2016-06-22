@@ -40,7 +40,8 @@ ScaleWidget::Private::Private(ScaleWidget * owner)
     : QObject()
     , owner(owner)
     , ui()
-    , modes(new QButtonGroup(owner)) {
+    , modes(new QButtonGroup(owner))
+    , currentFactor(0.0) {
     this->owner->connect(this, SIGNAL(scaled(int)), SIGNAL(scaled(int)));
 }
 
@@ -80,4 +81,22 @@ void ScaleWidget::scale(int ratio) {
     } else {
         this->p_->ui.scaleSlider->setValue(100);
     }
+}
+
+void ScaleWidget::scaleBy(qreal ratio) {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->ui.scaleSlider->setValue(this->p_->currentFactor * ratio);
+}
+
+void ScaleWidget::startScaling() {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->currentFactor = this->p_->ui.scaleSlider->value();
+}
+
+void ScaleWidget::finishScaling() {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->currentFactor = 0.0;
 }

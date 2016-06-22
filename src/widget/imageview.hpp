@@ -59,6 +59,9 @@ signals:
     void fileDropped(const QUrl & uri);
     void middleClicked();
     void scaled(int ratio);
+    void scaledBy(qreal ratio);
+    void scaleStarted();
+    void scaleFinished();
 
 protected:
     /// overrided method
