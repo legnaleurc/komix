@@ -103,6 +103,8 @@ inline QString getSevenZip () {
 #ifdef Q_OS_WIN32
     auto pf = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
     paths << QString("%1/7-Zip").arg(pf);
+#else
+    paths << "/usr/local/bin";
 #endif
     auto path = QStandardPaths::findExecutable("7z", paths);
     return path;
