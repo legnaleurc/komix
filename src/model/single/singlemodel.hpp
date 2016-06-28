@@ -24,20 +24,19 @@
 #include "localfilemodel.hpp"
 
 namespace KomiX {
-	namespace model {
-		namespace single {
+namespace model {
+namespace single {
 
-			/**
-			 * @brief The model to open single file
-			 */
-			class SingleModel : public LocalFileModel {
-			public:
-				/// Constructor open @p root as image
-				SingleModel( const QFileInfo & root );
-			};
-
-		}
-	}
+/**
+ * @brief The model to open single file
+ */
+class SingleModel : public LocalFileModel {
+public:
+    /// Constructor open @p root as image
+    SingleModel(const QFileInfo & root);
+};
+}
+}
 } //end of namespace
 
 #endif

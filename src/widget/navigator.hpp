@@ -23,7 +23,7 @@
 
 #include "filemodel.hpp"
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 #include <memory>
 
@@ -41,24 +41,23 @@ namespace widget {
  */
 class Navigator : public QDialog {
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	Navigator( FileController * controller, QWidget * parent );
+    /**
+     * @brief default constructor
+     * @param parent parent widget
+     */
+    Navigator(FileController * controller, QWidget * parent);
 
-	/// set current using model
-	void setModel( std::shared_ptr< model::FileModel > model );
-	/// set current model index
-	void setCurrentIndex( const QModelIndex & index );
+    /// set current using model
+    void setModel(std::shared_ptr<model::FileModel> model);
+    /// set current model index
+    void setCurrentIndex(const QModelIndex & index);
 
-	virtual void setVisible( bool visible );
+    virtual void setVisible(bool visible);
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end namespace
 

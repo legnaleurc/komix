@@ -34,30 +34,29 @@ namespace KomiX {
 
 class ViewState {
 public:
-	explicit ViewState( std::function< QLineF () > gmv );
+    explicit ViewState(std::function<QLineF()> gmv);
 
-	QLineF getMotionVector() const;
+    QLineF getMotionVector() const;
 
-	boost::signals2::signal< void () > & next();
-	boost::signals2::signal< void () > & previous();
-	boost::signals2::signal< void () > & first();
-	boost::signals2::signal< void () > & last();
-	boost::signals2::signal< void () > & top();
-	boost::signals2::signal< void () > & bottom();
-	boost::signals2::signal< void () > & right();
-	boost::signals2::signal< void () > & left();
-	boost::signals2::signal< void () > & wider();
-	boost::signals2::signal< void () > & narrower();
-	boost::signals2::signal< void () > & higher();
-	boost::signals2::signal< void () > & lower();
+    boost::signals2::signal<void()> & next();
+    boost::signals2::signal<void()> & previous();
+    boost::signals2::signal<void()> & first();
+    boost::signals2::signal<void()> & last();
+    boost::signals2::signal<void()> & top();
+    boost::signals2::signal<void()> & bottom();
+    boost::signals2::signal<void()> & right();
+    boost::signals2::signal<void()> & left();
+    boost::signals2::signal<void()> & wider();
+    boost::signals2::signal<void()> & narrower();
+    boost::signals2::signal<void()> & higher();
+    boost::signals2::signal<void()> & lower();
 
 private:
-	ViewState( const ViewState & );
-	ViewState & operator =( const ViewState & );
-	class Private;
-	std::shared_ptr< Private > p_;
+    ViewState(const ViewState &);
+    ViewState & operator=(const ViewState &);
+    class Private;
+    std::shared_ptr<Private> p_;
 };
-
 }
 
 #endif

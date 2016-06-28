@@ -21,7 +21,7 @@
 #ifndef KOMIX_WIDGET_ABOUTWIDGET_HPP
 #define KOMIX_WIDGET_ABOUTWIDGET_HPP
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include <memory>
 
@@ -30,13 +30,12 @@ namespace widget {
 
 class AboutWidget : public QWidget {
 public:
-	explicit AboutWidget( QWidget * parent );
+    explicit AboutWidget(QWidget * parent);
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
-
 }
 }
 

@@ -24,35 +24,35 @@
 
 using KomiX::CharacterDeviceLoader;
 
-CharacterDeviceLoader::Private::Private( CharacterDeviceLoader * owner ):
-QObject(),
-owner( owner ),
-buffer() {
-	this->buffer.open( QIODevice::ReadWrite );
+CharacterDeviceLoader::Private::Private(CharacterDeviceLoader * owner)
+    : QObject()
+    , owner(owner)
+    , buffer() {
+    this->buffer.open(QIODevice::ReadWrite);
 }
 
 void CharacterDeviceLoader::Private::onReadyRead() {
-	this->buffer.write( this->owner->getDevice()->readAll() );
+    this->buffer.write(this->owner->getDevice()->readAll());
 }
 
 void CharacterDeviceLoader::Private::onReadFinished() {
-	this->buffer.write( this->owner->getDevice()->readAll() );
-	this->owner->getDevice()->deleteLater();
-	this->buffer.seek( 0 );
-	emit this->finished();
+    this->buffer.write(this->owner->getDevice()->readAll());
+    this->owner->getDevice()->deleteLater();
+    this->buffer.seek(0);
+    emit this->finished();
 }
 
-CharacterDeviceLoader::CharacterDeviceLoader( QIODevice * device ):
-AsynchronousLoader( device ),
-p_( new Private( this ) ) {
-	this->p_->connect( device, SIGNAL( readyRead() ), SLOT( onReadyRead() ) );
-	this->p_->connect( device, SIGNAL( readChannelFinished() ), SLOT( onReadFinished() ) );
+CharacterDeviceLoader::CharacterDeviceLoader(QIODevice * device)
+    : AsynchronousLoader(device)
+    , p_(new Private(this)) {
+    this->p_->connect(device, SIGNAL(readyRead()), SLOT(onReadyRead()));
+    this->p_->connect(device, SIGNAL(readChannelFinished()), SLOT(onReadFinished()));
 }
 
 void CharacterDeviceLoader::run() {
-	QEventLoop wait;
-	wait.connect( this->p_.get(), SIGNAL( finished() ), SLOT( quit() ) );
-	wait.exec();
+    QEventLoop wait;
+    wait.connect(this->p_.get(), SIGNAL(finished()), SLOT(quit()));
+    wait.exec();
 
-	emit this->finished( this->p_->buffer.data() );
+    emit this->finished(this->p_->buffer.data());
 }

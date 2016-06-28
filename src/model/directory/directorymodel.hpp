@@ -24,20 +24,19 @@
 #include "localfilemodel.hpp"
 
 namespace KomiX {
-	namespace model {
-		namespace directory {
+namespace model {
+namespace directory {
 
-			/**
-			 * @brief The model to open directory
-			 */
-			class DirectoryModel : public LocalFileModel {
-			public:
-				/// Constructor open @p root as top-level directory
-				DirectoryModel( const QFileInfo & root );
-			};
-
-		}
-	}
+/**
+ * @brief The model to open directory
+ */
+class DirectoryModel : public LocalFileModel {
+public:
+    /// Constructor open @p root as top-level directory
+    DirectoryModel(const QFileInfo & root);
+};
+}
+}
 } // end of namespace
 
 #endif

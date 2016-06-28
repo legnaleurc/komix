@@ -21,29 +21,29 @@
 #ifndef KOMIX_WIDGET_IMAGEITEM_HPP
 #define KOMIX_WIDGET_IMAGEITEM_HPP
 
-#include <QtGui/QGraphicsObject>
+#include <QtWidgets/QGraphicsObject>
 
 #include <memory>
 
 namespace KomiX {
 namespace widget {
-class ImageItem: public QGraphicsObject {
-	Q_OBJECT
-	Q_PROPERTY( QPointF pos READ pos WRITE setPos )
+class ImageItem : public QGraphicsObject {
+    Q_OBJECT
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 public:
-	explicit ImageItem( const QList< QIODevice * > & devices );
+    explicit ImageItem(const QList<QIODevice *> & devices);
 
-	virtual QRectF boundingRect() const;
-	virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-	void setPaused( bool paused );
+    void setPaused(bool paused);
 
 signals:
-	void changed();
+    void changed();
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
 }
 }

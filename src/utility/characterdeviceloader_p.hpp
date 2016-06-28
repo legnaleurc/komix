@@ -29,23 +29,22 @@
 
 namespace KomiX {
 
-class CharacterDeviceLoader::Private: public QObject {
-	Q_OBJECT
+class CharacterDeviceLoader::Private : public QObject {
+    Q_OBJECT
 public:
-	explicit Private( CharacterDeviceLoader * owner );
+    explicit Private(CharacterDeviceLoader * owner);
 
 public slots:
-	void onReadyRead();
-	void onReadFinished();
+    void onReadyRead();
+    void onReadFinished();
 
 signals:
-	void finished();
+    void finished();
 
 public:
-	CharacterDeviceLoader * owner;
-	QBuffer buffer;
+    CharacterDeviceLoader * owner;
+    QBuffer buffer;
 };
-
 }
 
 #endif

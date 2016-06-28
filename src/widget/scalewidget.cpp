@@ -20,64 +20,83 @@
  */
 #include "scalewidget_p.hpp"
 
-#include <QtGui/QButtonGroup>
+#include <QtWidgets/QButtonGroup>
 
 namespace {
 
 /// native enum
 enum ScaleMode {
-	Custom,
-	Width,
-	Height,
-	Window
+    Custom,
+    Width,
+    Height,
+    Window
 };
 
 } // end of namespace
 
 using KomiX::widget::ScaleWidget;
 
-ScaleWidget::Private::Private( ScaleWidget * owner ):
-QObject(),
-owner( owner ),
-ui(),
-modes( new QButtonGroup( owner ) ){
-	this->owner->connect( this, SIGNAL( scaled( int ) ), SIGNAL( scaled( int ) ) );
+ScaleWidget::Private::Private(ScaleWidget * owner)
+    : QObject()
+    , owner(owner)
+    , ui()
+    , modes(new QButtonGroup(owner))
+    , currentFactor(0.0) {
+    this->owner->connect(this, SIGNAL(scaled(int)), SIGNAL(scaled(int)));
 }
 
 void ScaleWidget::Private::valueHelper() {
-	emit this->scaled( this->ui.scaleSlider->value() );
+    emit this->scaled(this->ui.scaleSlider->value());
 }
 
-ScaleWidget::ScaleWidget( QWidget * parent ):
-QWidget( parent, Qt::Dialog ),
-p_( new Private( this ) ) {
-	this->p_->ui.setupUi( this );
+ScaleWidget::ScaleWidget(QWidget * parent)
+    : QWidget(parent, Qt::Dialog)
+    , p_(new Private(this)) {
+    this->p_->ui.setupUi(this);
 
-	this->p_->modes->addButton( this->p_->ui.custom );
-	this->p_->modes->setId( this->p_->ui.custom, Custom );
-	this->p_->connect( this->p_->ui.custom, SIGNAL( clicked() ), SLOT( valueHelper() ) );
+    this->p_->modes->addButton(this->p_->ui.custom);
+    this->p_->modes->setId(this->p_->ui.custom, Custom);
+    this->p_->connect(this->p_->ui.custom, SIGNAL(clicked()), SLOT(valueHelper()));
 
-	this->p_->modes->addButton( this->p_->ui.width );
-	this->p_->modes->setId( this->p_->ui.width, Width );
-	this->connect( this->p_->ui.width, SIGNAL( clicked() ), SIGNAL( fitWidth() ) );
+    this->p_->modes->addButton(this->p_->ui.width);
+    this->p_->modes->setId(this->p_->ui.width, Width);
+    this->connect(this->p_->ui.width, SIGNAL(clicked()), SIGNAL(fitWidth()));
 
-	this->p_->modes->addButton( this->p_->ui.height );
-	this->p_->modes->setId( this->p_->ui.height, Height );
-	this->connect( this->p_->ui.height, SIGNAL( clicked() ), SIGNAL( fitHeight() ) );
+    this->p_->modes->addButton(this->p_->ui.height);
+    this->p_->modes->setId(this->p_->ui.height, Height);
+    this->connect(this->p_->ui.height, SIGNAL(clicked()), SIGNAL(fitHeight()));
 
-	this->p_->modes->addButton( this->p_->ui.window );
-	this->p_->modes->setId( this->p_->ui.window, Window );
-	this->connect( this->p_->ui.window, SIGNAL( clicked() ), SIGNAL( fitWindow() ) );
+    this->p_->modes->addButton(this->p_->ui.window);
+    this->p_->modes->setId(this->p_->ui.window, Window);
+    this->connect(this->p_->ui.window, SIGNAL(clicked()), SIGNAL(fitWindow()));
 
-	this->connect( this->p_->ui.scaleSlider, SIGNAL( sliderMoved( int ) ), SIGNAL( scaled( int ) ) );
-	this->connect( this->p_->ui.scaleSlider, SIGNAL( valueChanged( int ) ), SIGNAL( scaled( int ) ) );
+    this->connect(this->p_->ui.scaleSlider, SIGNAL(sliderMoved(int)), SIGNAL(scaled(int)));
+    this->connect(this->p_->ui.scaleSlider, SIGNAL(valueChanged(int)), SIGNAL(scaled(int)));
 }
 
-void ScaleWidget::scale( int ratio ) {
-	this->p_->modes->button( Custom )->setChecked( true );
-	if( ratio != 0 ) {
-		this->p_->ui.scaleSlider->setValue( this->p_->ui.scaleSlider->value() + ratio );
-	} else {
-		this->p_->ui.scaleSlider->setValue( 100 );
-	}
+void ScaleWidget::scale(int ratio) {
+    this->p_->modes->button(Custom)->setChecked(true);
+    if (ratio != 0) {
+        this->p_->ui.scaleSlider->setValue(this->p_->ui.scaleSlider->value() + ratio);
+    } else {
+        this->p_->ui.scaleSlider->setValue(100);
+    }
+}
+
+void ScaleWidget::scaleBy(qreal ratio) {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->ui.scaleSlider->setValue(this->p_->currentFactor * ratio);
+}
+
+void ScaleWidget::startScaling() {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->currentFactor = this->p_->ui.scaleSlider->value();
+}
+
+void ScaleWidget::finishScaling() {
+    this->p_->modes->button(Custom)->setChecked(true);
+
+    this->p_->currentFactor = 0.0;
 }

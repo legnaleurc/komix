@@ -26,16 +26,16 @@
 #include <memory>
 
 namespace KomiX {
-class CharacterDeviceLoader: public AsynchronousLoader {
+class CharacterDeviceLoader : public AsynchronousLoader {
 public:
-	CharacterDeviceLoader( QIODevice * device );
+    CharacterDeviceLoader(QIODevice * device);
 
-	virtual void run();
+    virtual void run();
 
 private:
-	class Private;
-	friend class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    friend class Private;
+    std::shared_ptr<Private> p_;
 };
 }
 

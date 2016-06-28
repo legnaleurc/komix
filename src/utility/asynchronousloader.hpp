@@ -27,20 +27,20 @@
 #include <memory>
 
 namespace KomiX {
-class AsynchronousLoader: public QObject, public QRunnable {
-	Q_OBJECT
+class AsynchronousLoader : public QObject, public QRunnable {
+    Q_OBJECT
 public:
-	AsynchronousLoader( QIODevice * device );
+    AsynchronousLoader(QIODevice * device);
 
 protected:
-	QIODevice * getDevice() const;
+    QIODevice * getDevice() const;
 
 signals:
-	void finished( const QByteArray & data );
+    void finished(const QByteArray & data);
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
 }
 

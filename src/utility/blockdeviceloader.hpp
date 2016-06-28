@@ -24,11 +24,11 @@
 #include "asynchronousloader.hpp"
 
 namespace KomiX {
-class BlockDeviceLoader: public AsynchronousLoader {
+class BlockDeviceLoader : public AsynchronousLoader {
 public:
-	BlockDeviceLoader( QIODevice * device );
+    BlockDeviceLoader(QIODevice * device);
 
-	virtual void run();
+    virtual void run();
 };
 }
 

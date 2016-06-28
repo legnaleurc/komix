@@ -22,50 +22,50 @@
 #define KOMIX_WIDGET_MAINWINDOW_P_HPP
 
 #include "aboutwidget.hpp"
-#include "mainwindow.hpp"
-#include "preference.hpp"
-#include "navigator.hpp"
-#include "scalewidget.hpp"
 #include "filecontroller.hpp"
+#include "mainwindow.hpp"
+#include "navigator.hpp"
+#include "preference.hpp"
+#include "scalewidget.hpp"
 #include "ui_mainwindow.h"
 
-#include <QtGui/QSystemTrayIcon>
+#include <QtWidgets/QSystemTrayIcon>
 
 namespace KomiX {
 namespace widget {
-class MainWindow::Private: public QObject {
-	Q_OBJECT
+class MainWindow::Private : public QObject {
+    Q_OBJECT
 public:
-	Private( MainWindow * owner );
+    Private(MainWindow * owner);
 
-	void initTrayIcon();
-	void setupCentralWidget();
-	void setupEditMenu();
-	void setupFileMenu();
-	void setupGoMenu();
-	void setupHelpMenu();
-	void setupMenuBar();
-	void setupViewMenu();
+    void initTrayIcon();
+    void setupCentralWidget();
+    void setupEditMenu();
+    void setupFileMenu();
+    void setupGoMenu();
+    void setupHelpMenu();
+    void setupMenuBar();
+    void setupViewMenu();
 
 public slots:
-	void showNavigator();
-	void systemTrayHelper( QSystemTrayIcon::ActivationReason reason );
-	void popupError( const QString & errMsg );
-	/// toggle full-screen mode
-	void toggleFullScreen();
-	/// toggle minimize system tray
-	void toggleSystemTray();
+    void showNavigator();
+    void systemTrayHelper(QSystemTrayIcon::ActivationReason reason);
+    void popupError(const QString & errMsg);
+    /// toggle full-screen mode
+    void toggleFullScreen();
+    /// toggle minimize system tray
+    void toggleSystemTray();
 
 public:
-	MainWindow * owner;
-	Ui::MainWindow ui;
-	FileController * controller;
-	ScaleWidget * scaler;
-	Navigator * navigator;
-	Preference * preference;
-	QSystemTrayIcon * trayIcon;
-	AboutWidget * about;
-	Qt::WindowStates dumpState;
+    MainWindow * owner;
+    Ui::MainWindow ui;
+    FileController * controller;
+    ScaleWidget * scaler;
+    Navigator * navigator;
+    Preference * preference;
+    QSystemTrayIcon * trayIcon;
+    AboutWidget * about;
+    Qt::WindowStates dumpState;
 };
 }
 }

@@ -21,29 +21,28 @@
 #ifndef KOMIX_MODEL_SINGLE_SINGLEHOOK_HPP
 #define KOMIX_MODEL_SINGLE_SINGLEHOOK_HPP
 
-#include <QtGui/QAction>
+#include <QtWidgets/QAction>
 
 class QUrl;
 
 namespace KomiX {
-	namespace model {
-		namespace single {
+namespace model {
+namespace single {
 
-			/// Private menu hook
-			class SingleHook : public QAction {
-				Q_OBJECT
-			public:
-				/// Constructor
-				SingleHook( QWidget * parent );
-			signals:
-				/// emitted when user opened a url
-				void opened( const QUrl & url );
-			private slots:
-				void helper_();
-			};
-
-		}
-	}
+/// Private menu hook
+class SingleHook : public QAction {
+    Q_OBJECT
+public:
+    /// Constructor
+    SingleHook(QWidget * parent);
+signals:
+    /// emitted when user opened a url
+    void opened(const QUrl & url);
+private slots:
+    void helper_();
+};
+}
+}
 } // end of namespace
 
 #endif

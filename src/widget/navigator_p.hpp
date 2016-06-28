@@ -29,28 +29,27 @@
 namespace KomiX {
 namespace widget {
 
-class Navigator::Private: public QObject {
-	Q_OBJECT
+class Navigator::Private : public QObject {
+    Q_OBJECT
 public:
-	Private( FileController * controller, Navigator * owner );
+    Private(FileController * controller, Navigator * owner);
 
 public slots:
-	void openHelper();
-	void viewImage( const QModelIndex &, const QModelIndex & );
-	void onFinished( int id, QMovie * movie );
-	void onFinished( int id, const QPixmap & pixmap );
+    void openHelper();
+    void viewImage(const QModelIndex &, const QModelIndex &);
+    void onFinished(int id, QMovie * movie);
+    void onFinished(int id, const QPixmap & pixmap);
 
 signals:
-	void required( const QModelIndex & index );
+    void required(const QModelIndex & index);
 
 public:
-	Navigator * owner;
-	Ui::Navigator ui;
-	FileController * controller;
-	std::shared_ptr< model::FileModel > model;
-	QItemSelectionModel * selection;
+    Navigator * owner;
+    Ui::Navigator ui;
+    FileController * controller;
+    std::shared_ptr<model::FileModel> model;
+    QItemSelectionModel * selection;
 };
-
 }
 }
 

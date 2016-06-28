@@ -27,28 +27,27 @@ namespace KomiX {
 namespace model {
 namespace archive {
 
-class ArchiveModel::Private: public QObject {
-	Q_OBJECT
+class ArchiveModel::Private : public QObject {
+    Q_OBJECT
 public:
-	explicit Private( ArchiveModel * owner, const QFileInfo & root );
+    explicit Private(ArchiveModel * owner, const QFileInfo & root);
 
-	void extract( const QString &, const char * );
+    void extract(const QString &, const char *);
 
 public slots:
-	void cleanup( int );
-	void checkTwo( int );
-	void allDone( int );
+    void cleanup(int);
+    void checkTwo(int);
+    void allDone(int);
 
 signals:
-	void ready();
-	void error( const QString & );
+    void ready();
+    void error(const QString &);
 
 public:
-	ArchiveModel * owner;
-	QFileInfo root;
-	QString hash;
+    ArchiveModel * owner;
+    QFileInfo root;
+    QString hash;
 };
-
 }
 }
 }

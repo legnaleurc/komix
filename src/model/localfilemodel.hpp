@@ -33,37 +33,36 @@ namespace model {
 /**
  * @brief The model to retrive files in local
  */
-class LocalFileModel: public FileModel {
+class LocalFileModel : public FileModel {
 public:
-	/**
-	 * @brief Default constructor, open @p root as top-level directory
-	 */
-	LocalFileModel( const QDir & root = QDir() );
+    /**
+     * @brief Default constructor, open @p root as top-level directory
+     */
+    LocalFileModel(const QDir & root = QDir());
 
-	/// @brief Overrides from FileModel
-	virtual QModelIndex index( const QUrl & url ) const;
+    /// @brief Overrides from FileModel
+    virtual QModelIndex index(const QUrl & url) const;
 
-	/// Overrides from FileModel
-	virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
-	/// Overrides from FileModel
-	virtual QModelIndex parent( const QModelIndex & child ) const;
-	/// Overrides from FileModel
-	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-	/// Overrides from FileModel
-	virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const;
-	/// Overrides from FileModel
-	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    /// Overrides from FileModel
+    virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    /// Overrides from FileModel
+    virtual QModelIndex parent(const QModelIndex & child) const;
+    /// Overrides from FileModel
+    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    /// Overrides from FileModel
+    virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    /// Overrides from FileModel
+    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 protected:
-	virtual void doInitialize();
-	/// Set top-level directory
-	void setRoot( const QDir & root );
+    virtual void doInitialize();
+    /// Set top-level directory
+    void setRoot(const QDir & root);
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
-
 }
 } // end of namespace
 

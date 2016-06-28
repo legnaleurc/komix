@@ -28,8 +28,7 @@ namespace model {
 namespace archive {
 
 const QDir & getTmpDir();
-int delTree( const QDir & dir );
-
+int delTree(const QDir & dir);
 }
 }
 }

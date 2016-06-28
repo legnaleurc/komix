@@ -34,71 +34,71 @@ namespace KomiX {
  *
  * This class is used to provide a generic open image action.
  */
-class FileController: public QObject {
-	Q_OBJECT
+class FileController : public QObject {
+    Q_OBJECT
 public:
-	/**
-	 * @brief default constructor
-	 * @param parent parent widget
-	 */
-	FileController( QObject * parent );
+    /**
+     * @brief default constructor
+     * @param parent parent widget
+     */
+    FileController(QObject * parent);
 
-	/**
-	 * @brief open a url
-	 * @param url url
-	 * @retval true emited getImage( const QPixmap & )
-	 * @retval false nothing happend
-	 *
-	 * It will emit getImage( const QPixmap & ) if necessary.
-	 */
-	bool open( const QUrl & url );
+    /**
+     * @brief open a url
+     * @param url url
+     * @retval true emited getImage( const QPixmap & )
+     * @retval false nothing happend
+     *
+     * It will emit getImage( const QPixmap & ) if necessary.
+     */
+    bool open(const QUrl & url);
 
-	/// check if there has openable files.
-	bool isEmpty() const;
+    /// check if there has openable files.
+    bool isEmpty() const;
 
-	/// get current model
-	std::shared_ptr< model::FileModel > getModel() const;
-	/// get current index
-	QModelIndex getCurrentIndex() const;
+    /// get current model
+    std::shared_ptr<model::FileModel> getModel() const;
+    /// get current index
+    QModelIndex getCurrentIndex() const;
 
 public slots:
-	/**
-	 * @brief go to next image
-	 * @sa prev()
-	 *
-	 * This function well emit getImage( const QPixmap & ), and
-	 * prefetch images.
-	 */
-	void next();
-	/**
-	 * @brief go to previous image
-	 * @sa next()
-	 *
-	 * This function well emit getImage( const QPixmap & ).
-	 */
-	void prev();
-	/**
-	 * @brief open @p index
-	 *
-	 * If successful, signal imageLoaded is emitted.
-	 */
-	void open( const QModelIndex & index );
+    /**
+     * @brief go to next image
+     * @sa prev()
+     *
+     * This function well emit getImage( const QPixmap & ), and
+     * prefetch images.
+     */
+    void next();
+    /**
+     * @brief go to previous image
+     * @sa next()
+     *
+     * This function well emit getImage( const QPixmap & ).
+     */
+    void prev();
+    /**
+     * @brief open @p index
+     *
+     * If successful, signal imageLoaded is emitted.
+     */
+    void open(const QModelIndex & index);
 
 signals:
-	/**
-	 * @brief get image
-	 * @param image image
-	 */
-	void imageLoaded( QIODevice * device );
-	/**
-	 * @brief Some error occured
-	 * @param errMsg error message
-	 */
-	void errorOccured( const QString & errMsg );
+    /**
+     * @brief get image
+     * @param image image
+     */
+    void imageLoaded(QIODevice * device);
+    /**
+     * @brief Some error occured
+     * @param errMsg error message
+     */
+    void errorOccured(const QString & errMsg);
 
 private:
-	class Private;
-	std::shared_ptr< Private > p_;
+    class Private;
+    std::shared_ptr<Private> p_;
 };
 
 } // end of KomiX
