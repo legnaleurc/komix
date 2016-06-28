@@ -66,7 +66,7 @@ bool FileController::open(const QUrl & url) {
     try {
         this->p_->model = FileModel::createModel(url);
         if (!this->p_->model) {
-          throw exception::Exception(QObject::tr("can not find a model for `%1`").arg(url.toString()));
+            throw exception::Exception(QObject::tr("can not find a model for `%1`").arg(url.toString()));
         }
         this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
         this->connect(this->p_->model.get(), SIGNAL(error(const QString &)), SIGNAL(errorOccured(const QString &)));
