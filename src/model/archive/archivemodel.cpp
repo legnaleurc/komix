@@ -27,6 +27,7 @@
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QDir>
 #include <QtCore/QProcess>
+#include <QtCore/QStandardPaths>
 #include <QtCore/QtDebug>
 #include <QtGui/QPixmap>
 #include <QtWidgets/QApplication>
@@ -97,12 +98,18 @@ inline QStringList archiveList() {
     return a;
 }
 
-const QString & sevenZip() {
+inline QString getSevenZip () {
+    QStringList paths;
 #ifdef Q_OS_WIN32
-    static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
-#elif defined(Q_OS_UNIX)
-    static QString sz = "7z";
+    auto pf = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
+    paths << QString("%1/7-Zip").arg(pf);
 #endif
+    auto path = QStandardPaths::findExecutable("7z", paths);
+    return path;
+}
+
+inline const QString & sevenZip() {
+    static auto sz = getSevenZip();
     return sz;
 }
 
