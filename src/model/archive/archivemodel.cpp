@@ -101,7 +101,7 @@ const QString & sevenZip() {
 #ifdef Q_OS_WIN32
     static QString sz = "C:\\Program Files\\7-Zip\\7z.exe";
 #elif defined(Q_OS_UNIX)
-    static QString sz = "/usr/local/bin/7z";
+    static QString sz = "7z";
 #endif
     return sz;
 }
