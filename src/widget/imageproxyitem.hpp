@@ -1,5 +1,5 @@
 /**
- * @file scalewidget.hpp
+ * @file imageproxyitem.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,55 +18,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_SCALEWIDGET_HPP
-#define KOMIX_WIDGET_SCALEWIDGET_HPP
+#ifndef KOMIX_WIDGET_IMAGEPROXYITEM_HPP
+#define KOMIX_WIDGET_IMAGEPROXYITEM_HPP
 
-#include <QtWidgets/QWidget>
+#include "global.hpp"
 
-#include <memory>
+#include <QtWidgets/QGraphicsObject>
+
 
 namespace KomiX {
 namespace widget {
 
-/**
- * @brief Widget to scale image
- *
- * This widget is simple ... too simple. Maybe I'll
- * change this widget to option widget.
- */
-class ScaleWidget : public QWidget {
+// TODO just QGraphicsItem?
+class ImageProxyItem : public QGraphicsObject {
     Q_OBJECT
-public:
-    /**
-     * @brief default constructor
-     * @param parent parent widget
-     */
-    explicit ScaleWidget(QWidget * parent);
 
-public slots:
-    /// to move slider
-    void scale(int ratio);
-    void scaleBy(qreal ratio);
-    void startScaling();
-    void finishScaling();
+public:
+    ImageProxyItem(int id, DeviceCreator deviceCreator, const QSize & size);
+
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+    void setPaused(bool paused);
+    void deactivate();
+    int getID() const;
 
 signals:
-    void fitHeight();
-    void fitWidth();
-    void fitWindow();
-    /**
-     * @brief scale event
-     * @param ratio scalar ratio
-     *
-     * The ratio means percents, so 100 actually means 100%.
-     */
-    void scaled(int ratio);
+    void activated(ImageProxyItem * item);
 
 private:
     class Private;
-    std::shared_ptr<Private> p_;
+    Private * p_;
 };
+
 }
-} // end namespace
+}
 
 #endif

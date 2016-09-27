@@ -30,13 +30,8 @@ class FileController::Private : public QObject {
 public:
     explicit Private(FileController * owner);
 
-    void fromIndex(const QModelIndex &);
-
 public slots:
     void onModelReady();
-
-signals:
-    void imageLoaded(QIODevice * device);
 
 public:
     FileController * owner;

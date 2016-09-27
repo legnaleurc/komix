@@ -20,28 +20,29 @@
  */
 #include "asynchronousloader.hpp"
 
+
 namespace KomiX {
 
 class AsynchronousLoader::Private {
 public:
-    Private(QIODevice * device);
+    explicit Private(std::shared_ptr<QIODevice> device);
 
-    QIODevice * device;
+    std::shared_ptr<QIODevice> device;
 };
 }
 
 using KomiX::AsynchronousLoader;
 
-AsynchronousLoader::Private::Private(QIODevice * device)
+AsynchronousLoader::Private::Private(std::shared_ptr<QIODevice> device)
     : device(device) {
 }
 
-AsynchronousLoader::AsynchronousLoader(QIODevice * device)
+AsynchronousLoader::AsynchronousLoader(std::shared_ptr<QIODevice> device)
     : QObject()
     , QRunnable()
     , p_(new Private(device)) {
 }
 
 QIODevice * AsynchronousLoader::getDevice() const {
-    return this->p_->device;
+    return this->p_->device.get();
 }

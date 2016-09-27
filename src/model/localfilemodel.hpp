@@ -27,6 +27,7 @@
 
 #include <memory>
 
+
 namespace KomiX {
 namespace model {
 
@@ -63,6 +64,7 @@ private:
     class Private;
     std::shared_ptr<Private> p_;
 };
+
 }
 } // end of namespace
 

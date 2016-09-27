@@ -1,5 +1,5 @@
 /**
- * @file imageitem.hpp
+ * @file literal.cpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,34 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_IMAGEITEM_HPP
-#define KOMIX_WIDGET_IMAGEITEM_HPP
+#include "literal.hpp"
 
-#include <QtWidgets/QGraphicsObject>
+#include <QtCore/QObject>
 
-#include <memory>
 
 namespace KomiX {
-namespace widget {
-class ImageItem : public QGraphicsObject {
-    Q_OBJECT
-    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-public:
-    explicit ImageItem(const QList<QIODevice *> & devices);
 
-    virtual QRectF boundingRect() const;
-    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+const QString OPEN_DIALOG_TITLE = QObject::tr("Open File");
+const QString OPEN_DIRECTORY_DIALOG_TITLE = QObject::tr("Open Directory");
+const QString MAINWINDOW_ERROR_DIALOG_TITLE = QObject::tr("Oops!");
+const QString NO_OPENABLE_FILE = QObject::tr("No openable file.");
 
-    void setPaused(bool paused);
-
-signals:
-    void changed();
-
-private:
-    class Private;
-    std::shared_ptr<Private> p_;
-};
 }
-}
-
-#endif

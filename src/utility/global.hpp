@@ -21,11 +21,20 @@
 #ifndef KOMIX_GLOBAL_HPP
 #define KOMIX_GLOBAL_HPP
 
+#include <QtCore/QMetaType>
+#include <QtCore/QObject>
+
+#include <functional>
 #include <list>
+#include <memory>
+
 
 class QAction;
+class QIODevice;
 class QStringList;
 class QWidget;
+class QDir;
+
 
 /**
  * @namespace KomiX
@@ -33,12 +42,42 @@ class QWidget;
  */
 namespace KomiX {
 
-/// File menu hook
-typedef QAction * (*FileMenuHook)(QWidget *);
-/// register file menu hook
-bool registerFileMenuHook(FileMenuHook hook);
-/// get file menu hooks
-const std::list<FileMenuHook> & getFileMenuHooks();
+
+class FileController;
+
+
+class Global : public QObject {
+public:
+    static Global & instance();
+
+    Global();
+
+    void initializeFileController();
+    FileController & getFileController() const;
+
+    /**
+     * @brief Get temporary directory
+     */
+    const QDir & getTemporaryDirectory() const;
+    /**
+     * @brief Register file type filter for file open dialog
+     */
+    void registerDialogFilter(const QString & filter);
+    /**
+    * @brief Get file type filter for file open dialog
+    */
+    const QString & getDialogFilter() const;
+
+private:
+    class Private;
+    Private * p_;
+};
+
+
+/**
+ * create a QIODevice to read the image file
+ */
+typedef std::function<std::shared_ptr<QIODevice> ()> DeviceCreator;
 
 /**
      * @brief Get supported formats
@@ -65,5 +104,7 @@ const QStringList & SupportedFormatsFilter();
      */
 QStringList toNameFilter(const QStringList & exts);
 }
+
+Q_DECLARE_METATYPE(KomiX::DeviceCreator)
 
 #endif

@@ -18,19 +18,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP_
-#define KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP_
+#ifndef KOMIX_MODEL_ARCHIVEMODEL_HPP_
+#define KOMIX_MODEL_ARCHIVEMODEL_HPP_
 
 #include "archivemodel.hpp"
 
+
 namespace KomiX {
 namespace model {
-namespace archive {
 
 class ArchiveModel::Private : public QObject {
     Q_OBJECT
 public:
-    explicit Private(ArchiveModel * owner, const QFileInfo & root);
+    Private(ArchiveModel * owner, const QFileInfo & root);
 
     void extract(const QString &, const char *);
 
@@ -48,7 +48,7 @@ public:
     QFileInfo root;
     QString hash;
 };
-}
+
 }
 }
 

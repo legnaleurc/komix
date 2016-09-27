@@ -23,11 +23,13 @@
 
 #include "deviceloader.hpp"
 
+
 namespace KomiX {
+
 class DeviceLoader::Private : public QObject {
     Q_OBJECT
 public:
-    Private(int id, QIODevice * device);
+    Private(int id, std::shared_ptr<QIODevice> device, QObject * parent);
 
     void read(QIODevice * device);
 
@@ -40,8 +42,9 @@ signals:
 
 public:
     int id;
-    QIODevice * device;
+    std::shared_ptr<QIODevice> device;
 };
+
 }
 
 #endif

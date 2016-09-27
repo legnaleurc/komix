@@ -20,26 +20,23 @@
  */
 #include "directorymodel.hpp"
 
-namespace {
 
-bool check(const QUrl & url) {
-    if (url.scheme() == "file") {
-        QFileInfo fi(url.toLocalFile());
-        return fi.isDir();
+using namespace KomiX::model;
+
+
+FileModel::SP DirectoryModel::create(const QUrl & url) {
+    if (url.scheme() != "file") {
+        return nullptr;
     }
-    return false;
+    QFileInfo fi(url.toLocalFile());
+    if (!fi.isDir()) {
+        return nullptr;
+    }
+    return std::make_shared<DirectoryModel>(fi);
 }
 
-std::shared_ptr<KomiX::model::FileModel> create(const QUrl & url) {
-    return std::shared_ptr<KomiX::model::FileModel>(new KomiX::model::directory::DirectoryModel(QFileInfo(url.toLocalFile())));
-}
-
-static const bool registered = KomiX::model::FileModel::registerModel(check, create);
-
-} // end of namespace
-
-using namespace KomiX::model::directory;
 
 DirectoryModel::DirectoryModel(const QFileInfo & root)
-    : LocalFileModel(root.absoluteFilePath()) {
+    : LocalFileModel(root.absoluteFilePath())
+{
 }

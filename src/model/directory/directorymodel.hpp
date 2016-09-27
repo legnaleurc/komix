@@ -18,24 +18,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_DIRECTORY_DIRECTORYMODEL_HPP
-#define KOMIX_MODEL_DIRECTORY_DIRECTORYMODEL_HPP
+#ifndef KOMIX_MODEL_DIRECTORYMODEL_HPP
+#define KOMIX_MODEL_DIRECTORYMODEL_HPP
 
 #include "localfilemodel.hpp"
 
+
 namespace KomiX {
 namespace model {
-namespace directory {
 
 /**
  * @brief The model to open directory
  */
 class DirectoryModel : public LocalFileModel {
 public:
+    static SP create(const QUrl & url);
+
     /// Constructor open @p root as top-level directory
-    DirectoryModel(const QFileInfo & root);
+    explicit DirectoryModel(const QFileInfo & root);
 };
-}
+
 }
 } // end of namespace
 

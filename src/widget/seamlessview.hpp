@@ -1,5 +1,5 @@
 /**
- * @file preference.hpp
+ * @file seamlessview.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,36 +18,52 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_WIDGET_PREFERENCE_HPP
-#define KOMIX_WIDGET_PREFERENCE_HPP
+#ifndef KOMIX_WIDGET_SEAMLESSVIEW_HPP
+#define KOMIX_WIDGET_SEAMLESSVIEW_HPP
 
-#include <QtWidgets/QDialog>
+#include <QtWidgets/QGraphicsView>
 
 #include <memory>
 
+
 namespace KomiX {
+
+class FileController;
+
 namespace widget {
 
-/**
- * @brief preference widget
- */
-class Preference : public QDialog {
+class SeamlessView : public QGraphicsView {
     Q_OBJECT
-public:
-    /// constructor
-    explicit Preference(QWidget * parent);
+    using QGraphicsView::scale;
 
-public slots:
-    /// Override from QDialog, won't hide dialog
-    virtual void accept();
-    /// Override from QDialog
-    virtual void reject();
+public:
+    explicit SeamlessView(QWidget * parent);
+
+    void setPaused(bool paused);
+
+signals:
+    void fileDropped(const QUrl & uri);
+    void middleClicked();
+
+protected:
+    /// overrided method
+    virtual void dragEnterEvent(QDragEnterEvent *);
+    /// overrided method
+    virtual void dragMoveEvent(QDragMoveEvent *);
+    /// overrided method
+    virtual void dropEvent(QDropEvent *);
+    virtual void mouseMoveEvent(QMouseEvent *);
+    /// overrided method
+    virtual bool viewportEvent(QEvent *);
+    /// overrided method
+    virtual void wheelEvent(QWheelEvent *);
 
 private:
     class Private;
     std::shared_ptr<Private> p_;
 };
+
 }
-} // end of namespace
+}
 
 #endif

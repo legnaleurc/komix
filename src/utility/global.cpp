@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "global.hpp"
+#include "global_p.hpp"
+
+#include "filecontroller.hpp"
 
 #include <QCoreApplication>
 #include <QImageReader>
@@ -26,6 +28,8 @@
 #include <QtGlobal>
 
 #include <algorithm>
+#include <cassert>
+
 
 namespace {
 
@@ -45,22 +49,44 @@ inline QStringList uniqueList() {
     return result;
 }
 
-std::list<KomiX::FileMenuHook> & fileMenuHooks() {
-    static std::list<KomiX::FileMenuHook> hooks;
-    return hooks;
+
+QDir createTmpDir() {
+    qsrand(qApp->applicationPid());
+    QString tmpPath(QString("komix_%1").arg(qrand()));
+    QDir tmpDir(QDir::temp());
+    if (!tmpDir.mkdir(tmpPath)) {
+        qWarning("can not make temp dir");
+        // tmpDir will remain to tmp dir
+    } else {
+        tmpDir.cd(tmpPath);
+    }
+    return tmpDir;
 }
+
+
+int delTree(const QDir & dir) {
+    int sum = 0;
+    QFileInfoList entry = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+    foreach(QFileInfo e, entry) {
+        if (e.isDir()) {
+            sum += delTree(e.absoluteFilePath());
+        } else {
+            if (QFile::remove(e.absoluteFilePath())) {
+                ++sum;
+            }
+        }
+    }
+    dir.rmdir(dir.absolutePath());
+    return sum + 1;
+}
+
+
+// NOTE this points to STACK, do not delete this
+static KomiX::Global * self = nullptr;
+
 }
 
 namespace KomiX {
-
-const std::list<FileMenuHook> & getFileMenuHooks() {
-    return fileMenuHooks();
-}
-
-bool registerFileMenuHook(FileMenuHook hook) {
-    fileMenuHooks().push_back(hook);
-    return true;
-}
 
 const QStringList & SupportedFormats() {
     static QStringList sf = uniqueList();
@@ -79,4 +105,72 @@ QStringList toNameFilter(const QStringList & exts) {
     }
     return tmp;
 }
+
+}
+
+
+using KomiX::Global;
+using KomiX::FileController;
+
+
+Global & Global::instance() {
+    assert(self || "not initialize yet");
+    return *self;
+}
+
+
+Global::Global()
+    : QObject()
+    , p_(new Private(this))
+{
+    self = this;
+}
+
+
+void Global::initializeFileController() {
+    assert(!this->p_->fileController || "do not initialize again");
+    this->p_->fileController = new FileController(this->p_);
+}
+
+
+FileController & Global::getFileController() const {
+    assert(this->p_->fileController || "not initialize yet");
+    return *this->p_->fileController;
+}
+
+
+const QDir & Global::getTemporaryDirectory() const {
+    return this->p_->tmp;
+}
+
+
+void Global::registerDialogFilter(const QString & filter) {
+    if (filter.isEmpty()) {
+        return;
+    }
+    if (this->p_->dialogFilter.isEmpty()) {
+        this->p_->dialogFilter = filter;
+        return;
+    }
+    this->p_->dialogFilter += ";;" + filter;
+}
+
+
+const QString & Global::getDialogFilter() const {
+    return this->p_->dialogFilter;
+}
+
+
+Global::Private::Private(Global * parent)
+    : QObject(parent)
+    , tmp(createTmpDir())
+    , dialogFilter()
+    , fileController(nullptr)
+{
+    assert(!self || "do not initialize again");
+}
+
+
+Global::Private::~Private() {
+    delTree(this->tmp);
 }

@@ -18,19 +18,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "archive.hpp"
-#include "archivehook.hpp"
+
 #include "archivemodel_p.hpp"
-#include "exception.hpp"
-#include "global.hpp"
 
 #include <QtCore/QCryptographicHash>
-#include <QtCore/QDir>
 #include <QtCore/QProcess>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QtDebug>
-#include <QtGui/QPixmap>
-#include <QtWidgets/QApplication>
+
+#include "exception.hpp"
+#include "global.hpp"
+
 
 namespace KomiX {
 namespace exception {
@@ -50,55 +48,8 @@ public:
 
 namespace {
 
-bool check(const QUrl & url) {
-    if (url.scheme() == "file") {
-        QFileInfo fi(url.toLocalFile());
-        if (!fi.isDir()) {
-            return KomiX::model::archive::isArchiveSupported(fi.fileName().toLower());
-        }
-    }
-    return false;
-}
 
-std::shared_ptr<KomiX::model::FileModel> create(const QUrl & url) {
-    if (!KomiX::model::archive::ArchiveModel::IsRunnable()) {
-        throw KomiX::exception::ArchiveException("This feature is based on 7-zip. Please install it.");
-    } else if (!KomiX::model::archive::ArchiveModel::IsPrepared()) {
-        throw KomiX::exception::ArchiveException("I could not create temporary directory.");
-    }
-    return std::shared_ptr<KomiX::model::FileModel>(new KomiX::model::archive::ArchiveModel(QFileInfo(url.toLocalFile())));
-}
-
-static const bool registered = KomiX::model::FileModel::registerModel(check, create);
-
-inline const QStringList & archiveList2() {
-    static QStringList a2 = QStringList() << "tar.gz"
-                                          << "tgz"
-                                          << "tar.bz2"
-                                          << "tbz2"
-                                          << "tar.lzma";
-    return a2;
-}
-
-inline bool isTwo(const QString & name) {
-    foreach (QString ext, archiveList2()) {
-        if (name.endsWith(ext)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-inline QStringList archiveList() {
-    QStringList a(archiveList2());
-    a << "7z";
-    a << "rar";
-    a << "zip";
-    a << "tar";
-    return a;
-}
-
-inline QString getSevenZip () {
+inline QString getSevenZip() {
     QStringList paths;
 #ifdef Q_OS_WIN32
     auto pf = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
@@ -113,19 +64,82 @@ inline QString getSevenZip () {
     return path;
 }
 
+
 inline const QString & sevenZip() {
     static auto sz = getSevenZip();
     return sz;
 }
 
-QDir archiveDir(const QString & dirName) {
-    if (!KomiX::model::archive::getTmpDir().exists(dirName)) {
-        KomiX::model::archive::getTmpDir().mkdir(dirName);
+
+inline bool isRunnable() {
+    return QFileInfo(sevenZip()).isExecutable();
+}
+
+
+inline bool isPrepared() {
+    const auto & global = KomiX::Global::instance();
+    return global.getTemporaryDirectory().exists();
+}
+
+
+inline const QStringList & archiveList2() {
+    static QStringList a2 = {
+        "tar.gz",
+        "tgz",
+        "tar.bz2",
+        "tbz2",
+        "tar.lzma",
+    };
+    return a2;
+}
+
+
+inline QStringList archiveList() {
+    QStringList a(archiveList2());
+    a << "7z";
+    a << "rar";
+    a << "zip";
+    a << "tar";
+    return a;
+}
+
+
+const QStringList & archiveFormats() {
+    static QStringList af = archiveList();
+    return af;
+}
+
+
+bool isArchiveSupported(const QString & name) {
+    for(const auto & ext : archiveFormats()) {
+        if (name.endsWith(ext)) {
+            return true;
+        }
     }
-    QDir tmp(KomiX::model::archive::getTmpDir());
+    return false;
+}
+
+
+inline bool isTwo(const QString & name) {
+    foreach (QString ext, archiveList2()) {
+        if (name.endsWith(ext)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+QDir archiveDir(const QString & dirName) {
+    const auto & global = KomiX::Global::instance();
+    auto tmp = global.getTemporaryDirectory();
+    if (!tmp.exists(dirName)) {
+        tmp.mkdir(dirName);
+    }
     tmp.cd(dirName);
     return tmp;
 }
+
 
 QStringList arguments(const QString & fileName) {
     QStringList args("e");
@@ -136,7 +150,66 @@ QStringList arguments(const QString & fileName) {
 
 } // end of namespace
 
-using KomiX::model::archive::ArchiveModel;
+
+using namespace KomiX::model;
+using KomiX::exception::ArchiveException;
+
+
+FileModel::SP ArchiveModel::create(const QUrl & url) {
+    if (url.scheme() != "file") {
+        return nullptr;
+    }
+    QFileInfo fi(url.toLocalFile());
+    if (fi.isDir()) {
+        return nullptr;
+    }
+    if (!isArchiveSupported(fi.fileName().toLower())) {
+        return nullptr;
+    }
+    // TODO tr
+    if (!isRunnable()) {
+        throw ArchiveException("This feature is based on 7-zip. Please install it.");
+    }
+    if (!isPrepared()) {
+        throw ArchiveException("Temporary directory does not exist.");
+    }
+    return std::make_shared<ArchiveModel>(fi);
+}
+
+
+QString ArchiveModel::createDialogFilter() {
+    QStringList filter = toNameFilter(archiveFormats());
+    return QObject::tr("All Supported Archives ( %1 )").arg(filter.join(" "));
+}
+
+
+ArchiveModel::ArchiveModel(const QFileInfo & root)
+    : LocalFileModel()
+    , p_(new Private(this, root)) {
+    this->connect(this->p_.get(), SIGNAL(error(const QString &)), SIGNAL(error(const QString &)));
+    this->connect(this->p_.get(), SIGNAL(ready()), SIGNAL(ready()));
+}
+
+void ArchiveModel::doInitialize() {
+    this->p_->hash = QString::fromUtf8(QCryptographicHash::hash(this->p_->root.fileName().toUtf8(), QCryptographicHash::Sha1).toHex());
+
+    const auto & global = Global::instance();
+    const auto & tmp = global.getTemporaryDirectory();
+    if (tmp.exists(this->p_->hash)) {
+        // uncompressed before
+        this->setRoot(archiveDir(this->p_->hash));
+        emit this->ready();
+        return;
+    }
+
+    auto origPath = this->p_->root.absoluteFilePath();
+    auto ext = this->p_->root.completeSuffix();
+    auto linkPath = tmp.absoluteFilePath(QString("%1.%2").arg(this->p_->hash).arg(ext));
+    QFile::link(origPath, linkPath);
+
+    this->p_->extract(linkPath, SLOT(checkTwo(int)));
+}
+
 
 ArchiveModel::Private::Private(ArchiveModel * owner, const QFileInfo & root)
     : QObject()
@@ -156,8 +229,6 @@ void ArchiveModel::Private::extract(const QString & aFilePath, const char * onFi
 void ArchiveModel::Private::cleanup(int exitCode) {
     QProcess * p = static_cast<QProcess *>(this->sender());
     if (exitCode != 0) {
-        // delete wrong dir
-        KomiX::model::archive::delTree(archiveDir(hash));
         QString err = QString::fromLocal8Bit(p->readAllStandardError());
         qWarning() << p->readAllStandardOutput();
         qWarning() << err;
@@ -186,63 +257,4 @@ void ArchiveModel::Private::allDone(int exitCode) {
     }
     this->owner->setRoot(archiveDir(this->hash));
     emit this->ready();
-}
-
-bool ArchiveModel::IsRunnable() {
-    return QFileInfo(sevenZip()).isExecutable();
-}
-
-bool ArchiveModel::IsPrepared() {
-    return QDir::temp() != getTmpDir();
-}
-
-ArchiveModel::ArchiveModel(const QFileInfo & root)
-    : LocalFileModel()
-    , p_(new Private(this, root)) {
-    this->connect(this->p_.get(), SIGNAL(error(const QString &)), SIGNAL(error(const QString &)));
-    this->connect(this->p_.get(), SIGNAL(ready()), SIGNAL(ready()));
-}
-
-void ArchiveModel::doInitialize() {
-    this->p_->hash = QString::fromUtf8(QCryptographicHash::hash(this->p_->root.fileName().toUtf8(), QCryptographicHash::Sha1).toHex());
-
-    if (getTmpDir().exists(this->p_->hash)) {
-        // uncompressed before
-        this->setRoot(archiveDir(this->p_->hash));
-        emit this->ready();
-        return;
-    }
-
-    auto origPath = this->p_->root.absoluteFilePath();
-    auto ext = this->p_->root.completeSuffix();
-    auto linkPath = getTmpDir().absoluteFilePath(QString("%1.%2").arg(this->p_->hash).arg(ext));
-    QFile::link(origPath, linkPath);
-
-    this->p_->extract(linkPath, SLOT(checkTwo(int)));
-}
-
-namespace KomiX {
-namespace model {
-namespace archive {
-
-const QStringList & ArchiveFormats() {
-    static QStringList af = archiveList();
-    return af;
-}
-
-const QStringList & ArchiveFormatsFilter() {
-    static QStringList sff = toNameFilter(ArchiveFormats());
-    return sff;
-}
-
-bool isArchiveSupported(const QString & name) {
-    foreach (QString ext, ArchiveFormats()) {
-        if (name.endsWith(ext)) {
-            return true;
-        }
-    }
-    return false;
-}
-}
-}
 }

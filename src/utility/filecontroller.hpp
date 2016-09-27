@@ -25,7 +25,10 @@
 
 #include <memory>
 
+
 class QModelIndex;
+class QIODevice;
+
 
 namespace KomiX {
 
@@ -41,17 +44,7 @@ public:
      * @brief default constructor
      * @param parent parent widget
      */
-    FileController(QObject * parent);
-
-    /**
-     * @brief open a url
-     * @param url url
-     * @retval true emited getImage( const QPixmap & )
-     * @retval false nothing happend
-     *
-     * It will emit getImage( const QPixmap & ) if necessary.
-     */
-    bool open(const QUrl & url);
+    explicit FileController(QObject * parent);
 
     /// check if there has openable files.
     bool isEmpty() const;
@@ -78,23 +71,34 @@ public slots:
      */
     void prev();
     /**
+    * @brief open a url
+    * @param url url
+    *
+    * It will emit getImage( const QPixmap & ) if necessary.
+    */
+    void open(const QUrl & url);
+    /**
+     * @brief open a local file
+     * @param localPath file path
+     *
+     * It will emit getImage( const QPixmap & ) if necessary.
+     */
+    void open(const QString & localPath);
+    /**
      * @brief open @p index
      *
-     * If successful, signal imageLoaded is emitted.
+     * If successful, signal focus(int) is emitted.
      */
     void open(const QModelIndex & index);
 
 signals:
-    /**
-     * @brief get image
-     * @param image image
-     */
-    void imageLoaded(QIODevice * device);
+    void modelReady();
     /**
      * @brief Some error occured
      * @param errMsg error message
      */
     void errorOccured(const QString & errMsg);
+    void focus(int id);
 
 private:
     class Private;

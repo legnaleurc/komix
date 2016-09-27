@@ -32,7 +32,7 @@ namespace widget {
 class Navigator::Private : public QObject {
     Q_OBJECT
 public:
-    Private(FileController * controller, Navigator * owner);
+    Private(Navigator * owner);
 
 public slots:
     void openHelper();
@@ -46,8 +46,7 @@ signals:
 public:
     Navigator * owner;
     Ui::Navigator ui;
-    FileController * controller;
-    std::shared_ptr<model::FileModel> model;
+    model::FileModel::SP model;
     QItemSelectionModel * selection;
 };
 }

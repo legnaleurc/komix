@@ -28,7 +28,7 @@
 namespace KomiX {
 class CharacterDeviceLoader : public AsynchronousLoader {
 public:
-    CharacterDeviceLoader(QIODevice * device);
+    CharacterDeviceLoader(std::shared_ptr<QIODevice> device);
 
     virtual void run();
 

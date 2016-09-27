@@ -26,16 +26,104 @@
 
 #include <QtCore/QtDebug>
 
+
 using KomiX::FileController;
 using KomiX::model::FileModel;
+
+
+FileController::FileController(QObject * parent)
+    : QObject(parent)
+    , p_(new Private(this))
+{
+}
+
+
+// FIXME exception safety
+void FileController::open(const QUrl & url) {
+    try {
+        this->p_->model = FileModel::createModel(url);
+        if (!this->p_->model) {
+            throw exception::Exception(QObject::tr("can not find a model for `%1`").arg(url.toString()));
+        }
+        this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
+        this->connect(this->p_->model.get(), SIGNAL(error(const QString &)), SIGNAL(errorOccured(const QString &)));
+        this->p_->openingURL = url;
+        this->p_->model->initialize();
+    } catch (exception::Exception & e) {
+        emit errorOccured(e.getMessage());
+    }
+}
+
+
+void FileController::open(const QString & localPath) {
+    if (localPath.isEmpty()) {
+        return;
+    }
+    this->open(QUrl::fromLocalFile(localPath));
+}
+
+
+void FileController::open(const QModelIndex & index) {
+    if (!this->isEmpty()) {
+        this->p_->index = index.row();
+        emit this->focus(this->p_->index);
+    }
+}
+
+
+QModelIndex FileController::getCurrentIndex() const {
+    if (!this->isEmpty()) {
+        return this->p_->model->index(this->p_->index, 0);
+    } else {
+        return QModelIndex();
+    }
+}
+
+
+void FileController::next() {
+    if (!this->isEmpty()) {
+        ++this->p_->index;
+        if (this->p_->index >= this->p_->model->rowCount()) {
+            this->p_->index = 0;
+        }
+        QModelIndex item = this->p_->model->index(this->p_->index, 0);
+        //this->p_->fromIndex(item);
+    }
+}
+
+
+void FileController::prev() {
+    if (!this->isEmpty()) {
+        --this->p_->index;
+        if (this->p_->index < 0) {
+            this->p_->index = this->p_->model->rowCount() - 1;
+        }
+        QModelIndex item = this->p_->model->index(this->p_->index, 0);
+        //this->p_->fromIndex(item);
+    }
+}
+
+
+bool FileController::isEmpty() const {
+    if (!this->p_->model) {
+        return true;
+    }
+    return this->p_->model->rowCount() == 0;
+}
+
+
+std::shared_ptr<KomiX::model::FileModel> FileController::getModel() const {
+    return this->p_->model;
+}
+
 
 FileController::Private::Private(FileController * owner)
     : QObject()
     , owner(owner)
     , index(0)
     , openingURL()
-    , model(NULL) {
-    this->owner->connect(this, SIGNAL(imageLoaded(QIODevice *)), SIGNAL(imageLoaded(QIODevice *)));
+    , model(NULL)
+{
 }
 
 void FileController::Private::onModelReady() {
@@ -49,80 +137,5 @@ void FileController::Private::onModelReady() {
         first = this->model->index(0, 0);
         this->index = 0;
     }
-    this->fromIndex(first);
-}
-
-void FileController::Private::fromIndex(const QModelIndex & index) {
-    QIODevice * image = index.data(Qt::UserRole).value<QIODevice *>();
-    emit this->imageLoaded(image);
-}
-
-FileController::FileController(QObject * parent)
-    : QObject(parent)
-    , p_(new Private(this)) {
-}
-
-bool FileController::open(const QUrl & url) {
-    try {
-        this->p_->model = FileModel::createModel(url);
-        if (!this->p_->model) {
-            throw exception::Exception(QObject::tr("can not find a model for `%1`").arg(url.toString()));
-        }
-        this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
-        this->connect(this->p_->model.get(), SIGNAL(error(const QString &)), SIGNAL(errorOccured(const QString &)));
-        this->p_->openingURL = url;
-        this->p_->model->initialize();
-    } catch (exception::Exception & e) {
-        emit errorOccured(e.getMessage());
-        return false;
-    }
-    return true;
-}
-
-void FileController::open(const QModelIndex & index) {
-    if (!this->isEmpty()) {
-        this->p_->index = index.row();
-        this->p_->fromIndex(index);
-    }
-}
-
-QModelIndex FileController::getCurrentIndex() const {
-    if (!this->isEmpty()) {
-        return this->p_->model->index(this->p_->index, 0);
-    } else {
-        return QModelIndex();
-    }
-}
-
-void FileController::next() {
-    if (!this->isEmpty()) {
-        ++this->p_->index;
-        if (this->p_->index >= this->p_->model->rowCount()) {
-            this->p_->index = 0;
-        }
-        QModelIndex item = this->p_->model->index(this->p_->index, 0);
-        this->p_->fromIndex(item);
-    }
-}
-
-void FileController::prev() {
-    if (!this->isEmpty()) {
-        --this->p_->index;
-        if (this->p_->index < 0) {
-            this->p_->index = this->p_->model->rowCount() - 1;
-        }
-        QModelIndex item = this->p_->model->index(this->p_->index, 0);
-        this->p_->fromIndex(item);
-    }
-}
-
-bool FileController::isEmpty() const {
-    if (!this->p_->model) {
-        return true;
-    }
-    return this->p_->model->rowCount() == 0;
-}
-
-std::shared_ptr<KomiX::model::FileModel> FileController::getModel() const {
-    return this->p_->model;
+    emit this->owner->modelReady();
 }

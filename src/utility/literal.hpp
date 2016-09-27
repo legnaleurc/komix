@@ -1,5 +1,5 @@
 /**
- * @file singlehook.hpp
+ * @file literal.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,31 +18,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_SINGLE_SINGLEHOOK_HPP
-#define KOMIX_MODEL_SINGLE_SINGLEHOOK_HPP
+#ifndef KOMIX_LITERAL_HPP
+#define KOMIX_LITERAL_HPP
 
-#include <QtWidgets/QAction>
 
-class QUrl;
+#include <QtCore/QString>
+
 
 namespace KomiX {
-namespace model {
-namespace single {
 
-/// Private menu hook
-class SingleHook : public QAction {
-    Q_OBJECT
-public:
-    /// Constructor
-    SingleHook(QWidget * parent);
-signals:
-    /// emitted when user opened a url
-    void opened(const QUrl & url);
-private slots:
-    void helper_();
-};
+extern const QString OPEN_DIALOG_TITLE;
+extern const QString OPEN_DIRECTORY_DIALOG_TITLE;
+extern const QString MAINWINDOW_ERROR_DIALOG_TITLE;
+extern const QString NO_OPENABLE_FILE;
+
 }
-}
-} // end of namespace
+
 
 #endif

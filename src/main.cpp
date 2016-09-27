@@ -20,16 +20,22 @@
  */
 #include "mainwindow.hpp"
 
-#include <QtCore/QSettings>
+#include "global.hpp"
+#include "filecontroller.hpp"
+#include "single/singlemodel.hpp"
+#include "directory/directorymodel.hpp"
+#include "archive/archivemodel.hpp"
+
 #include <QtCore/QStringList>
-#include <QtCore/QTextCodec>
 
 #include <QtWidgets/QApplication>
+
 
 /// literal to string
 #define X(x) XX(x)
 /// symbol to literal
 #define XX(x) #x
+
 
 /**
  * @brief Main entry point
@@ -47,16 +53,25 @@ int main(int argc, char * argv[]) {
 
     QStringList args(QApplication::arguments());
 
-    // QTextCodec::setCodecForTr( QTextCodec::codecForName( "UTF-8" ) );
+    KomiX::Global global;
+    global.initializeFileController();
+    {
+        using namespace KomiX::model;
 
-    QSettings::setDefaultFormat(QSettings::IniFormat);
+        FileModel::registerModel(SingleModel::create);
+        FileModel::registerModel(DirectoryModel::create);
+        FileModel::registerModel(ArchiveModel::create);
+
+        global.registerDialogFilter(SingleModel::createDialogFilter());
+        global.registerDialogFilter(ArchiveModel::createDialogFilter());
+    }
 
     KomiX::widget::MainWindow mainWindow;
     mainWindow.setWindowTitle(QApplication::applicationName());
     mainWindow.resize(800, 600);
 
     if (args.length() > 1) {
-        mainWindow.open(args.at(1));
+        global.getFileController().open(args.at(1));
     }
 
     mainWindow.show();

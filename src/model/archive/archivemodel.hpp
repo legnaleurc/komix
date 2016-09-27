@@ -18,14 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP
-#define KOMIX_MODEL_ARCHIVE_ARCHIVEMODEL_HPP
+#ifndef KOMIX_MODEL_ARCHIVEMODEL_HPP
+#define KOMIX_MODEL_ARCHIVEMODEL_HPP
 
 #include "localfilemodel.hpp"
 
+
 namespace KomiX {
 namespace model {
-namespace archive {
 
 /**
  * @brief The model using 7-Zip to open compressed file
@@ -35,36 +35,23 @@ namespace archive {
  */
 class ArchiveModel : public LocalFileModel {
 public:
-    /// Check if 7-zip existed
-    static bool IsRunnable();
-    /// Check if temporary directory is prepared
-    static bool IsPrepared();
+    static SP create(const QUrl & url);
+    static QString createDialogFilter();
 
     /**
      * @brief Constructor with given fileinfo
      * @param root top-level file
      */
-    ArchiveModel(const QFileInfo & root);
+    explicit ArchiveModel(const QFileInfo & root);
 
 protected:
     virtual void doInitialize();
 
 private:
-    friend class ArchiveHook;
     class Private;
     std::shared_ptr<Private> p_;
 };
 
-/// get supported archive formats
-const QStringList & ArchiveFormats();
-/// get supported archive formats name filter
-const QStringList & ArchiveFormatsFilter();
-/**
- * @brief check if archive is supported
- * @param path file path
- */
-bool isArchiveSupported(const QString & path);
-}
 }
 } // end of namespace
 

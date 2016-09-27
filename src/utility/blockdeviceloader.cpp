@@ -20,12 +20,24 @@
  */
 #include "blockdeviceloader.hpp"
 
+#include <cassert>
+
+
 using KomiX::BlockDeviceLoader;
 
-BlockDeviceLoader::BlockDeviceLoader(QIODevice * device)
+
+BlockDeviceLoader::BlockDeviceLoader(std::shared_ptr<QIODevice> device)
     : AsynchronousLoader(device) {
 }
 
 void BlockDeviceLoader::run() {
-    emit this->finished(this->getDevice()->readAll());
+    auto device = this->getDevice();
+    if (!device->open(QIODevice::ReadOnly)) {
+        // TODO emit error signal
+        assert(!"can not open file");
+        return;
+    }
+    auto bytes = device->readAll();
+    device->close();
+    emit this->finished(bytes);
 }

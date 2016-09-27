@@ -18,24 +18,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_SINGLE_SINGLEMODEL_HPP
-#define KOMIX_MODEL_SINGLE_SINGLEMODEL_HPP
+#ifndef KOMIX_MODEL_SINGLEMODEL_HPP
+#define KOMIX_MODEL_SINGLEMODEL_HPP
 
 #include "localfilemodel.hpp"
 
+
 namespace KomiX {
 namespace model {
-namespace single {
 
 /**
  * @brief The model to open single file
  */
 class SingleModel : public LocalFileModel {
 public:
+    static SP create(const QUrl & url);
+    static QString createDialogFilter();
+
     /// Constructor open @p root as image
-    SingleModel(const QFileInfo & root);
+    explicit SingleModel(const QFileInfo & root);
 };
-}
+
 }
 } //end of namespace
 

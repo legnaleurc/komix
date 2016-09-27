@@ -20,22 +20,12 @@
  */
 #include "filemodel.hpp"
 
-#include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
-
-#include <algorithm>
 #include <list>
-#include <utility>
+
 
 namespace {
 
-typedef std::pair<KomiX::model::FileModel::KeyFunctor, KomiX::model::FileModel::ValueFunctor> FunctorPair;
-typedef std::list<FunctorPair> FunctorList;
-
-QMutex * lock() {
-    static QMutex m;
-    return &m;
-}
+typedef std::list<KomiX::model::FileModel::ModelCreator> FunctorList;
 
 FunctorList & getFunctorList() {
     static FunctorList fl;
@@ -44,27 +34,26 @@ FunctorList & getFunctorList() {
 
 } // end of namespace
 
+
 using KomiX::model::FileModel;
 
-std::shared_ptr<FileModel> FileModel::createModel(const QUrl & url) {
-    QMutexLocker locker(::lock());
-    Q_UNUSED(locker);
-    auto it = std::find_if(getFunctorList().begin(), getFunctorList().end(), [&url](const FunctorPair & that) -> bool {
-        return that.first(url);
-    });
-    if (it == getFunctorList().end()) {
-        return std::shared_ptr<FileModel>();
-    } else {
-        return it->second(url);
+
+FileModel::SP FileModel::createModel(const QUrl & url) {
+    const auto & creators = getFunctorList();
+    for (const auto & create : creators) {
+        auto model = create(url);
+        if (model) {
+            return model;
+        }
     }
+    return nullptr;
 }
 
-bool FileModel::registerModel(const KeyFunctor & key, const ValueFunctor & value) {
-    QMutexLocker locker(::lock());
-    Q_UNUSED(locker);
-    getFunctorList().push_back(std::make_pair(key, value));
-    return true;
+
+void FileModel::registerModel(const ModelCreator & creator) {
+    getFunctorList().push_back(creator);
 }
+
 
 void FileModel::initialize() {
     this->doInitialize();

@@ -26,7 +26,7 @@
 namespace KomiX {
 class BlockDeviceLoader : public AsynchronousLoader {
 public:
-    BlockDeviceLoader(QIODevice * device);
+    BlockDeviceLoader(std::shared_ptr<QIODevice> device);
 
     virtual void run();
 };

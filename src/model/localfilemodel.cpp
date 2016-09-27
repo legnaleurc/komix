@@ -19,46 +19,121 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "localfilemodel.hpp"
+
+#include <QtCore/QtDebug>
+#include <QtCore/QRegularExpression>
+
+#include <tuple>
+
 #include "global.hpp"
+
 
 namespace KomiX {
 namespace model {
 
 class LocalFileModel::Private {
 public:
-    Private(const QDir & root);
+    explicit Private(const QDir & root);
 
     QDir root;
     QStringList files;
 };
+
+
+QVariantList parseName(const QString & name) {
+    QVariantList parts;
+    QRegularExpression pattern("\\d+|\\D+");
+    auto match = pattern.match(name, 0, QRegularExpression::PartialPreferFirstMatch);
+    while (match.hasPartialMatch() || match.hasMatch()) {
+        auto part = match.captured(0);
+        bool ok = false;
+        int tmp = part.toInt(&ok, 10);
+        if (ok) {
+            parts.push_back(tmp);
+        } else {
+            parts.push_back(part);
+        }
+        match = pattern.match(name, match.capturedEnd(0), QRegularExpression::PartialPreferFirstMatch);
+    }
+    return parts;
+}
+
+
+typedef std::tuple<QVariantList, QString> Part;
+
+
+std::vector<Part> parseNameParts(const QStringList & names) {
+    std::vector<std::tuple<QVariantList, QString>> parts;
+    for (const auto & name : names) {
+        auto pivot = parseName(name);
+        parts.push_back(std::make_tuple(pivot, name));
+    }
+    return parts;
+}
+
+
+QStringList smartSort(const QStringList & names) {
+    auto partList = parseNameParts(names);
+    std::stable_sort(std::begin(partList), std::end(partList), [](const Part & left, const Part & right) -> bool {
+        const auto & lp = std::get<0>(left);
+        const auto & rp = std::get<0>(right);
+        auto length = std::min(lp.size(), rp.size());
+        for (int i = 0; i < length; ++i) {
+            const auto & l = lp.at(i);
+            const auto & r = rp.at(i);
+            auto lt = l.type();
+            auto rt = r.type();
+            if (lt == rt) {
+                if (l == r) {
+                    continue;
+                }
+                return l < r;
+            } else {
+                return lt == QVariant::String;
+            }
+        }
+        return lp.size() < rp.size();
+    });
+    QStringList newNames;
+    for (const auto & part : partList) {
+        newNames.push_back(std::get<1>(part));
+    }
+    return newNames;
+}
+
+
 }
 }
+
 
 using KomiX::model::LocalFileModel;
 
-LocalFileModel::Private::Private(const QDir & root)
-    : root(root)
-    , files(root.entryList(SupportedFormatsFilter(), QDir::Files)) {
-}
 
 LocalFileModel::LocalFileModel(const QDir & root)
     : FileModel()
-    , p_(new Private(root)) {
+    , p_(new Private(root))
+{
+    this->setRoot(root);
 }
+
 
 void LocalFileModel::doInitialize() {
     emit this->ready();
 }
 
+
 void LocalFileModel::setRoot(const QDir & root) {
     this->p_->root = root;
-    this->p_->files = root.entryList(SupportedFormatsFilter(), QDir::Files);
+    auto files = root.entryList(SupportedFormatsFilter(), QDir::Files);
+    this->p_->files = smartSort(files);
 }
+
 
 QModelIndex LocalFileModel::index(const QUrl & url) const {
     int row = this->p_->files.indexOf(QFileInfo(url.toLocalFile()).fileName());
     return (row < 0) ? QModelIndex() : createIndex(row, 0, row);
 }
+
 
 QModelIndex LocalFileModel::index(int row, int column, const QModelIndex & parent) const {
     if (!parent.isValid()) {
@@ -74,6 +149,7 @@ QModelIndex LocalFileModel::index(int row, int column, const QModelIndex & paren
     }
 }
 
+
 QModelIndex LocalFileModel::parent(const QModelIndex & child) const {
     if (!child.isValid()) {
         // root has no parent
@@ -87,6 +163,7 @@ QModelIndex LocalFileModel::parent(const QModelIndex & child) const {
     }
 }
 
+
 int LocalFileModel::rowCount(const QModelIndex & parent) const {
     if (!parent.isValid()) {
         // root row size
@@ -97,9 +174,11 @@ int LocalFileModel::rowCount(const QModelIndex & parent) const {
     }
 }
 
+
 int LocalFileModel::columnCount(const QModelIndex & /*parent*/) const {
     return 1;
 }
+
 
 QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
     if (!index.isValid()) {
@@ -112,9 +191,11 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
                     case Qt::DisplayRole:
                         return this->p_->files[index.row()];
                     case Qt::UserRole: {
-                        QIODevice * fin = new QFile(this->p_->root.filePath(this->p_->files[index.row()]));
-                        fin->open(QIODevice::ReadOnly);
-                        return QVariant::fromValue(fin);
+                        auto path = this->p_->root.filePath(this->p_->files[index.row()]);
+                        DeviceCreator dc = [path]() -> std::shared_ptr<QIODevice> {
+                            return std::make_shared<QFile>(path);
+                        };
+                        return QVariant::fromValue(dc);
                     }
                     default:
                         return QVariant();
@@ -125,4 +206,11 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
         default:
             return QVariant();
     }
+}
+
+
+LocalFileModel::Private::Private(const QDir & root)
+    : root(root)
+    , files()
+{
 }

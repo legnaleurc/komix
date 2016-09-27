@@ -27,6 +27,8 @@
 
 #include "global.hpp"
 #include "mainwindow_p.hpp"
+#include "literal.hpp"
+#include "filemodel.hpp"
 
 #include <QtCore/QtDebug>
 #include <QtWidgets/QAction>
@@ -37,159 +39,10 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 
+
 using KomiX::widget::MainWindow;
+using KomiX::model::FileModel;
 
-MainWindow::Private::Private(MainWindow * owner)
-    : QObject()
-    , owner(owner)
-    , ui()
-    , controller(new FileController(this))
-    , scaler(new ScaleWidget(owner))
-    , navigator(new Navigator(this->controller, owner))
-    , preference(new Preference(owner))
-    , trayIcon(new QSystemTrayIcon(QIcon(":/image/logo.svg"), owner))
-    , about(new AboutWidget(owner))
-    , dumpState(Qt::WindowNoState) {
-    this->ui.setupUi(this->owner);
-
-    this->ui.graphicsView->initialize(this->controller);
-
-    this->setupMenuBar();
-    this->setupCentralWidget();
-    this->initTrayIcon();
-
-    this->connect(this->controller, SIGNAL(errorOccured(const QString &)), SLOT(popupError(const QString &)));
-
-    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaled(int)), SLOT(scale(int)));
-    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaledBy(qreal)), SLOT(scaleBy(qreal)));
-    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaleStarted()), SLOT(startScaling()));
-    this->scaler->connect(this->ui.graphicsView, SIGNAL(scaleFinished()), SLOT(finishScaling()));
-    this->ui.graphicsView->connect(this->scaler, SIGNAL(scaled(int)), SLOT(scale(int)));
-    this->ui.graphicsView->connect(this->scaler, SIGNAL(fitHeight()), SLOT(fitHeight()));
-    this->ui.graphicsView->connect(this->scaler, SIGNAL(fitWidth()), SLOT(fitWidth()));
-    this->ui.graphicsView->connect(this->scaler, SIGNAL(fitWindow()), SLOT(fitWindow()));
-}
-
-void MainWindow::Private::setupMenuBar() {
-    this->setupFileMenu();
-    this->setupEditMenu();
-    this->setupViewMenu();
-    this->setupGoMenu();
-    this->setupHelpMenu();
-}
-
-void MainWindow::Private::setupFileMenu() {
-    QMenu * fileMenu = this->ui.menu_File;
-
-    foreach (FileMenuHook hook, getFileMenuHooks()) {
-        QAction * action = hook(this->owner);
-        fileMenu->addAction(action);
-        this->owner->addAction(action);
-    }
-}
-
-void MainWindow::Private::setupEditMenu() {
-    this->preference->connect(this->ui.action_Preference, SIGNAL(triggered()), SLOT(exec()));
-    this->ui.graphicsView->connect(this->preference, SIGNAL(accepted()), SLOT(loadSettings()));
-}
-
-void MainWindow::Private::setupViewMenu() {
-    this->owner->addAction(this->ui.actionSmooth_Next);
-    this->ui.graphicsView->connect(this->ui.actionSmooth_Next, SIGNAL(triggered()), SLOT(smoothMove()));
-
-    this->owner->addAction(this->ui.actionSmooth_Previous);
-    this->ui.graphicsView->connect(this->ui.actionSmooth_Previous, SIGNAL(triggered()), SLOT(smoothReversingMove()));
-
-    this->owner->addAction(this->ui.actionPage_Head);
-    this->ui.graphicsView->connect(this->ui.actionPage_Head, SIGNAL(triggered()), SLOT(begin()));
-
-    this->owner->addAction(this->ui.actionPage_Tail);
-    this->ui.graphicsView->connect(this->ui.actionPage_Tail, SIGNAL(triggered()), SLOT(end()));
-
-    this->owner->addAction(this->ui.action_Fullscreen);
-    this->connect(this->ui.action_Fullscreen, SIGNAL(triggered()), SLOT(toggleFullScreen()));
-
-    this->owner->addAction(this->ui.action_Hide_Window);
-    this->connect(this->ui.action_Hide_Window, SIGNAL(triggered()), SLOT(toggleSystemTray()));
-
-    this->owner->addAction(this->ui.action_Scale_Image);
-    this->scaler->connect(this->ui.action_Scale_Image, SIGNAL(triggered()), SLOT(show()));
-}
-
-void MainWindow::Private::setupGoMenu() {
-    this->owner->addAction(this->ui.action_Go_To);
-    this->connect(this->ui.action_Go_To, SIGNAL(triggered()), SLOT(showNavigator()));
-
-    this->owner->addAction(this->ui.action_Previous_Image);
-    this->ui.graphicsView->connect(this->ui.action_Previous_Image, SIGNAL(triggered()), SLOT(previousPage()));
-
-    this->owner->addAction(this->ui.action_Next_Image);
-    this->ui.graphicsView->connect(this->ui.action_Next_Image, SIGNAL(triggered()), SLOT(nextPage()));
-}
-
-void MainWindow::Private::setupHelpMenu() {
-    this->about->connect(this->ui.action_About, SIGNAL(triggered()), SLOT(show()));
-
-    qApp->connect(this->ui.actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
-}
-
-void MainWindow::Private::setupCentralWidget() {
-    this->owner->connect(this->ui.graphicsView, SIGNAL(fileDropped(const QUrl &)), SLOT(open(const QUrl &)));
-    this->connect(this->ui.graphicsView, SIGNAL(middleClicked()), SLOT(toggleFullScreen()));
-}
-
-void MainWindow::Private::initTrayIcon() {
-    QMenu * menu = new QMenu(this->owner);
-    QAction * quit = menu->addAction(tr("&Quit"));
-    this->trayIcon->setContextMenu(menu);
-
-    this->trayIcon->setToolTip(tr("KomiX"));
-
-    qApp->connect(quit, SIGNAL(triggered()), SLOT(quit()));
-    this->connect(this->trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), SLOT(systemTrayHelper(QSystemTrayIcon::ActivationReason)));
-
-    this->trayIcon->show();
-}
-
-void MainWindow::Private::systemTrayHelper(QSystemTrayIcon::ActivationReason reason) {
-    switch (reason) {
-        case QSystemTrayIcon::Trigger:
-            toggleSystemTray();
-            break;
-        default:;
-    }
-}
-
-void MainWindow::Private::popupError(const QString & errMsg) {
-    QMessageBox::critical(this->owner, tr("Oops!"), errMsg);
-}
-
-void MainWindow::Private::toggleFullScreen() {
-    this->owner->menuBar()->setVisible(!this->owner->menuBar()->isVisible());
-    this->owner->setWindowState(this->owner->windowState() ^ Qt::WindowFullScreen);
-}
-
-void MainWindow::Private::toggleSystemTray() {
-    if (this->owner->isVisible()) {
-        this->dumpState = this->owner->windowState();
-        this->owner->hide();
-    } else {
-        this->owner->show();
-        this->owner->setWindowState(this->dumpState);
-    }
-}
-
-void MainWindow::Private::showNavigator() {
-    if (this->controller->isEmpty()) {
-        this->popupError(tr("No openable file."));
-        return;
-    }
-    this->navigator->setModel(this->controller->getModel());
-    this->navigator->setCurrentIndex(this->controller->getCurrentIndex());
-    this->ui.graphicsView->setPaused(true);
-    this->navigator->exec();
-    this->ui.graphicsView->setPaused(false);
-}
 
 /**
  * @brief default constructor
@@ -201,19 +54,107 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags f)
     , p_(new Private(this)) {
 }
 
-/**
- * @brief open url
- * @param url file url
- */
-void MainWindow::open(const QUrl & url) {
-    if (!this->p_->ui.graphicsView->open(url)) {
-        QMessageBox::critical(this, tr("Error"), tr("No openable file in this directory."));
-    }
+
+MainWindow::Private::Private(MainWindow * owner)
+    : QObject()
+    , owner(owner)
+    , ui()
+    , navigator(new Navigator(owner))
+    , about(new AboutWidget(owner))
+    , dumpState(Qt::WindowNoState)
+{
+    this->ui.setupUi(this->owner);
+
+    this->setupMenuBar();
+    this->setupCentralWidget();
+    //this->initTrayIcon();
+
+    auto & fc = Global::instance().getFileController();
+    this->connect(&fc, SIGNAL(errorOccured(const QString &)), SLOT(popupError(const QString &)));
 }
 
-void MainWindow::open(const QString & localFile) {
-    if (localFile.isEmpty()) {
+
+void MainWindow::Private::setupMenuBar() {
+    this->setupFileMenu();
+    this->setupViewMenu();
+    this->setupGoMenu();
+    this->setupHelpMenu();
+}
+
+
+void MainWindow::Private::setupFileMenu() {
+    this->connect(this->ui.action_Open, SIGNAL(triggered()), SLOT(showOpenDialog()));
+    this->connect(this->ui.actionOpen_Directory, SIGNAL(triggered()), SLOT(showOpenDirectoryDialog()));
+}
+
+
+void MainWindow::Private::setupViewMenu() {
+    this->connect(this->ui.action_Fullscreen, SIGNAL(triggered()), SLOT(toggleFullScreen()));
+}
+
+
+void MainWindow::Private::setupGoMenu() {
+    this->connect(this->ui.action_Go_To, SIGNAL(triggered()), SLOT(showNavigator()));
+}
+
+
+void MainWindow::Private::setupHelpMenu() {
+    this->about->connect(this->ui.action_About, SIGNAL(triggered()), SLOT(show()));
+    qApp->connect(this->ui.actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
+}
+
+
+void MainWindow::Private::setupCentralWidget() {
+    this->connect(this->ui.graphicsView, SIGNAL(middleClicked()), SLOT(toggleFullScreen()));
+}
+
+
+void MainWindow::Private::popupError(const QString & errMsg) {
+    QMessageBox::critical(this->owner, MAINWINDOW_ERROR_DIALOG_TITLE, errMsg);
+}
+
+
+void MainWindow::Private::toggleFullScreen() {
+    this->owner->menuBar()->setVisible(!this->owner->menuBar()->isVisible());
+    this->owner->setWindowState(this->owner->windowState() ^ Qt::WindowFullScreen);
+}
+
+
+void MainWindow::Private::showOpenDialog() {
+    const auto & global = Global::instance();
+    QString path = QFileDialog::getOpenFileName(this->owner, OPEN_DIALOG_TITLE, QDir::homePath(), global.getDialogFilter());
+    if (path.isEmpty()) {
         return;
     }
-    this->open(QUrl::fromLocalFile(localFile));
+    auto & fc = global.getFileController();
+    auto url = QUrl::fromLocalFile(path);
+    fc.open(url);
+}
+
+
+void MainWindow::Private::showOpenDirectoryDialog() {
+    QString path = QFileDialog::getExistingDirectory(this->owner, OPEN_DIRECTORY_DIALOG_TITLE, QDir::homePath());
+    if (path.isEmpty()) {
+        return;
+    }
+    auto & fc = Global::instance().getFileController();
+    auto url = QUrl::fromLocalFile(path);
+    fc.open(url);
+}
+
+
+// TODO
+void MainWindow::Private::showNavigator() {
+    auto & fc = Global::instance().getFileController();
+
+    if (fc.isEmpty()) {
+        this->popupError(NO_OPENABLE_FILE);
+        return;
+    }
+
+    this->navigator->setModel(fc.getModel());
+    this->navigator->setCurrentIndex(fc.getCurrentIndex());
+    this->ui.graphicsView->setPaused(true);
+    this->navigator->exec();
+    this->ui.graphicsView->setPaused(false);
 }

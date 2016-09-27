@@ -21,13 +21,12 @@
 #ifndef KOMIX_MODEL_FILEMODEL_HPP
 #define KOMIX_MODEL_FILEMODEL_HPP
 
-#include <QtCore/QAbstractItemModel>
-#include <QtCore/QIODevice>
-#include <QtCore/QMetaType>
-#include <QtCore/QUrl>
-
 #include <functional>
 #include <memory>
+
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QUrl>
+
 
 namespace KomiX {
 namespace model {
@@ -40,23 +39,22 @@ namespace model {
 class FileModel : public QAbstractItemModel {
     Q_OBJECT
 public:
-    /// Functor of key comparsion
-    typedef std::function<bool(const QUrl &)> KeyFunctor;
+    typedef std::shared_ptr<FileModel> SP;
     /// Functor of model creation
-    typedef std::function<std::shared_ptr<FileModel>(const QUrl &)> ValueFunctor;
+    typedef std::function<SP (const QUrl &)> ModelCreator;
 
     /**
      * @brief Create concrete model
      * @param url opening url
      */
-    static std::shared_ptr<FileModel> createModel(const QUrl & url);
+    static SP createModel(const QUrl & url);
     /**
      * @brief Register model
      * @param key compare function
      * @param value create function
      * @return always true
      */
-    static bool registerModel(const KeyFunctor & key, const ValueFunctor & value);
+    static void registerModel(const ModelCreator & creator);
 
     using QAbstractItemModel::index;
     /// Query the index @p url in the model
@@ -65,15 +63,15 @@ public:
     void initialize();
 
 protected:
+    /// being called by initialize()
     virtual void doInitialize() = 0;
 
 signals:
-    void error(const QString & msg);
+    void error(const QString & message);
     void ready();
 };
+
 }
 } // end namespace
-
-Q_DECLARE_METATYPE(QIODevice *)
 
 #endif

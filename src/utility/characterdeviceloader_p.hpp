@@ -38,9 +38,6 @@ public slots:
     void onReadyRead();
     void onReadFinished();
 
-signals:
-    void finished();
-
 public:
     CharacterDeviceLoader * owner;
     QBuffer buffer;

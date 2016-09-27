@@ -5,14 +5,12 @@ project(KomiX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(KomiXUtilities)
 
+find_package(Qt5Concurrent REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
 
 set(KOMIX_VERSION_MAJOR 1)
 set(KOMIX_VERSION_MINOR 0)
@@ -53,7 +51,7 @@ else()
 endif()
 
 set_target_properties(komix PROPERTIES CXX_STANDARD 11)
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} ${Boost_LIBRARIES} Qt5::Core Qt5::Widgets)
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} Qt5::Concurrent Qt5::Core Qt5::Widgets)
 
 # install
 include(InstallRequiredSystemLibraries)

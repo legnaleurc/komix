@@ -1,5 +1,5 @@
 /**
- * @file archive.hpp
+ * @file imageproxyitem_p.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,18 +18,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_ARCHIVE_ARCHIVE_HPP
-#define KOMIX_MODEL_ARCHIVE_ARCHIVE_HPP
+#ifndef KOMIX_WIDGET_IMAGEPROXYITEM_HPP_
+#define KOMIX_WIDGET_IMAGEPROXYITEM_HPP_
 
-#include <QtCore/QDir>
+#include "imageproxyitem.hpp"
+
+#include <QtGui/QMovie>
+
 
 namespace KomiX {
-namespace model {
-namespace archive {
+namespace widget {
 
-const QDir & getTmpDir();
-int delTree(const QDir & dir);
-}
+class ImageProxyItem::Private : public QObject {
+    Q_OBJECT
+public:
+    explicit Private(int id, DeviceCreator deviceCreator, const QSize & size, ImageProxyItem * owner);
+
+    void activate();
+
+public slots:
+    void onFinished(int id, QMovie * movie);
+    void onFinished(int id, const QPixmap & pixmap);
+
+signals:
+    void changed();
+
+public:
+    ImageProxyItem * owner;
+    int id;
+    DeviceCreator deviceCreator;
+    QSize size;
+    bool activated;
+    bool activating;
+    QGraphicsItem * item;
+    QMovie * movie;
+};
+
 }
 }
 

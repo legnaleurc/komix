@@ -21,17 +21,24 @@
 #ifndef KOMIX_WIDGET_DEVICELOADER_HPP
 #define KOMIX_WIDGET_DEVICELOADER_HPP
 
+#include <functional>
+#include <memory>
+
 #include <QtCore/QIODevice>
 #include <QtGui/QMovie>
 #include <QtGui/QPixmap>
 
-#include <memory>
 
 namespace KomiX {
+
 class DeviceLoader : public QObject {
     Q_OBJECT
 public:
-    DeviceLoader(int id, QIODevice * device);
+    typedef std::shared_ptr<QIODevice> DeviceSP;
+
+    static void load(int id, DeviceSP device, QObject * receiver, const char * pictureLoaded, const char * animationLoaded);
+
+    DeviceLoader(int id, std::shared_ptr<QIODevice> device, QObject * parent);
 
     void start() const;
 
@@ -41,8 +48,9 @@ signals:
 
 private:
     class Private;
-    std::shared_ptr<Private> p_;
+    Private * p_;
 };
+
 }
 
 #endif

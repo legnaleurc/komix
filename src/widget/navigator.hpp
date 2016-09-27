@@ -45,10 +45,10 @@ public:
      * @brief default constructor
      * @param parent parent widget
      */
-    Navigator(FileController * controller, QWidget * parent);
+    explicit Navigator(QWidget * parent);
 
     /// set current using model
-    void setModel(std::shared_ptr<model::FileModel> model);
+    void setModel(model::FileModel::SP model);
     /// set current model index
     void setCurrentIndex(const QModelIndex & index);
 
