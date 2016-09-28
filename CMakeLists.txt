@@ -43,7 +43,7 @@ if(WIN32)
 	add_executable(komix WIN32 "${CMAKE_SOURCE_DIR}/komix.rc" ${KOMIX_COMPILE_UNITS})
 	set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
 	set_target_properties(komix PROPERTIES
-		COMPILE_FLAGS "/MP /Zc:wchar_t-")
+		COMPILE_FLAGS "/MP")
 elseif(APPLE)
 	add_executable(komix MACOSX_BUNDLE "image/logo.icns" ${KOMIX_COMPILE_UNITS})
 	set_target_properties(komix PROPERTIES
