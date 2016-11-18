@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.0)
 project(KomiX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
-include(KomiXUtilities)
 
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt5Core REQUIRED)
