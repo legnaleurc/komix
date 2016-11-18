@@ -11,7 +11,7 @@ This is a comic viewer.
 
 ## Supported Toolchains
 
-* [GNU Compiler Collection] >= 6.2
+* [GNU Compiler Collection] >= 4.8
 * [LLVM Clang] >= 3.9
 * [Microsoft Visual C++] >= 14
 
