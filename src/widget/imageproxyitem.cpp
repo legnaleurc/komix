@@ -31,7 +31,7 @@
 #include <QtWidgets/QGraphicsScene>
 #include <QtWidgets/QLabel>
 
-#include "deviceloader.hpp"
+#include "imageloader.hpp"
 
 
 using KomiX::widget::ImageProxyItem;
@@ -108,7 +108,7 @@ void ImageProxyItem::Private::activate() {
     }
     this->activating = true;
     auto device = this->deviceCreator();
-    DeviceLoader::load(this->id, device, this, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
+    ImageLoader::load(this->id, device, this, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
 }
 
 

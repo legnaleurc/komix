@@ -1,5 +1,5 @@
 /**
- * @file blockdeviceloader.cpp
+ * @file imageloader.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,26 +18,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "blockdeviceloader.hpp"
+#ifndef KOMIX_IMAGELOADER_HPP
+#define KOMIX_IMAGELOADER_HPP
 
-#include <cassert>
+#include <functional>
+#include <memory>
+
+#include <QtCore/QIODevice>
+#include <QtGui/QMovie>
+#include <QtGui/QPixmap>
 
 
-using KomiX::BlockDeviceLoader;
+namespace KomiX {
 
+class ImageLoader : public QObject {
+    Q_OBJECT
+public:
+    typedef std::shared_ptr<QIODevice> DeviceSP;
 
-BlockDeviceLoader::BlockDeviceLoader(std::shared_ptr<QIODevice> device)
-    : AsynchronousLoader(device) {
+    static void load(int id, DeviceSP device, QObject * receiver, const char * pictureLoaded, const char * animationLoaded);
+
+    ImageLoader(int id, std::shared_ptr<QIODevice> device, QObject * parent);
+    void start() const;
+
+signals:
+    void finished(int id, const QPixmap & pixmap);
+    void finished(int id, QMovie * movie);
+
+private:
+
+    class Private;
+    Private * p_;
+};
+
 }
 
-void BlockDeviceLoader::run() {
-    auto device = this->getDevice();
-    if (!device->open(QIODevice::ReadOnly)) {
-        // TODO emit error signal
-        assert(!"can not open file");
-        return;
-    }
-    auto bytes = device->readAll();
-    device->close();
-    emit this->finished(bytes);
-}
+#endif

@@ -18,15 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "deviceloader.hpp"
 #include "filecontroller.hpp"
 #include "global.hpp"
+#include "imageloader.hpp"
 #include "navigator_p.hpp"
 
 
 using KomiX::widget::Navigator;
 using KomiX::FileController;
-using KomiX::DeviceLoader;
 using KomiX::model::FileModel;
 
 
@@ -88,7 +87,7 @@ void Navigator::Private::openHelper() {
 
 void Navigator::Private::viewImage(const QModelIndex & current, const QModelIndex & /* previous */) {
     auto deviceCreator = current.data(Qt::UserRole).value<DeviceCreator>();
-    DeviceLoader::load(current.row(), deviceCreator(), this, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
+    ImageLoader::load(current.row(), deviceCreator(), this, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
 }
 
 
