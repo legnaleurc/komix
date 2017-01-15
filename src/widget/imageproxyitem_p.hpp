@@ -34,8 +34,6 @@ class ImageProxyItem::Private : public QObject {
 public:
     explicit Private(int id, DeviceCreator deviceCreator, const QSize & size, ImageProxyItem * owner);
 
-    void activate();
-
 public slots:
     void onFinished(int id, QMovie * movie);
     void onFinished(int id, const QPixmap & pixmap);

@@ -289,6 +289,7 @@ void SeamlessView::Private::createProxies() {
 
         // connect events
         this->connect(proxyItem, SIGNAL(activated(ImageProxyItem *)), SLOT(addActiveItem(ImageProxyItem *)));
+        this->connect(proxyItem, SIGNAL(viewing(int)), SLOT(prefetch(int)));
     }
 
     scene->setSceneRect(scene->itemsBoundingRect());
@@ -329,4 +330,18 @@ void SeamlessView::Private::tryRecycle() {
 void SeamlessView::Private::focusTo(int index) {
     auto item = this->items.at(index);
     this->owner->ensureVisible(item, 0, 0);
+}
+
+
+void SeamlessView::Private::prefetch(int id) {
+    int p = id - 1;
+    int n = id + 1;
+    if (p >= 0) {
+        auto item = this->items.at(p);
+        item->activate();
+    }
+    if (n < this->items.size()) {
+        auto item = this->items.at(n);
+        item->activate();
+    }
 }

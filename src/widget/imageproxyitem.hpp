@@ -40,11 +40,13 @@ public:
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     void setPaused(bool paused);
+    void activate();
     void deactivate();
     int getID() const;
 
 signals:
     void activated(ImageProxyItem * item);
+    void viewing(int id);
 
 private:
     class Private;

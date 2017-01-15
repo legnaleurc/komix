@@ -54,6 +54,7 @@ public slots:
     void tryRecycle();
     void addActiveItem(ImageProxyItem *);
     void focusTo(int index);
+    void prefetch(int id);
 
 public:
     SeamlessView * owner;

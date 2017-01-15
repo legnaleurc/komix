@@ -51,6 +51,16 @@ void ImageProxyItem::setPaused(bool paused) {
 }
 
 
+void ImageProxyItem::activate() {
+    if (this->p_->activating || this->p_->activated) {
+        return;
+    }
+    this->p_->activating = true;
+    auto device = this->p_->deviceCreator();
+    ImageLoader::load(this->getID(), device, this->p_, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
+}
+
+
 void ImageProxyItem::deactivate() {
     assert(!this->p_->activating || !"deactivate while activating");
     if (!this->p_->activated) {
@@ -77,9 +87,10 @@ QRectF ImageProxyItem::boundingRect() const {
 }
 
 void ImageProxyItem::paint(QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-    if (!this->p_->activated) {
-        this->p_->activate();
+    if (!this->p_->activated && !this->p_->activating) {
+        this->activate();
     }
+    emit this->viewing(this->getID());
 }
 
 
@@ -99,16 +110,6 @@ ImageProxyItem::Private::Private(int id, DeviceCreator deviceCreator, const QSiz
     , item(nullptr)
     , movie(nullptr)
 {
-}
-
-
-void ImageProxyItem::Private::activate() {
-    if (this->activating) {
-        return;
-    }
-    this->activating = true;
-    auto device = this->deviceCreator();
-    ImageLoader::load(this->id, device, this, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
 }
 
 
