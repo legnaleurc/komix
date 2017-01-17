@@ -64,8 +64,8 @@ public:
      */
     void registerDialogFilter(const QString & filter);
     /**
-    * @brief Get file type filter for file open dialog
-    */
+     * @brief Get file type filter for file open dialog
+     */
     const QString & getDialogFilter() const;
 
 private:
@@ -80,28 +80,28 @@ private:
 typedef std::function<std::shared_ptr<QIODevice> ()> DeviceCreator;
 
 /**
-     * @brief Get supported formats
-     * @return A QStringList contains all supported formats
-     * @note Not thread-safe on initialization. Do not initialize before QApplication.
-     *
-     * The formats is read from QImageReader::supportedImageFormats().\n
-     * This list transforms to lower string, sort it, and remove deprecated
-     * items.
-     */
+ * @brief Get supported formats
+ * @return A QStringList contains all supported formats
+ * @note Not thread-safe on initialization. Do not initialize before QApplication.
+ *
+ * The formats is read from QImageReader::supportedImageFormats().\n
+ * This list transforms to lower string, sort it, and remove deprecated
+ * items.
+ */
 const QStringList & SupportedFormats();
 
 /**
-     * @brief Get the supported formats filter
-     * @return A QStringList that can pass to name filter
-     * @note Not thread-safe on initialization.
-     *
-     * The string format is like this: <strong>"*.<ext>"</strong>.
-     */
+ * @brief Get the supported formats filter
+ * @return A QStringList that can pass to name filter
+ * @note Not thread-safe on initialization.
+ *
+ * The string format is like this: <strong>"*.<ext>"</strong>.
+ */
 const QStringList & SupportedFormatsFilter();
 
 /**
-     * @brief make @p exts to name filter
-     */
+ * @brief make @p exts to name filter
+ */
 QStringList toNameFilter(const QStringList & exts);
 }
 
