@@ -32,17 +32,11 @@ AboutWidget::AboutWidget(QWidget * parent)
     , p_(new Private(this)) {
     this->p_->ui.setupUi(this);
 
-    this->p_->ui.info->setText(tr(
-                                   "<h1>%1</h1>"
-                                   "Version: %2<br/>"
-                                   "<a href=\"http://legnaleurc.blogspot.com/search/label/KomiX/\">More information</a>")
-                                   .arg(QApplication::applicationName())
-                                   .arg(QApplication::applicationVersion()));
+    auto text = this->p_->ui.info->text();
+    text = text.arg(QApplication::applicationName()).arg(QApplication::applicationVersion());
+    this->p_->ui.info->setText(text);
 
-    this->p_->ui.aboutMessage->setText(tr(
-                                           "<h4>%1 - A comics viewer</h4>"
-                                           "(c) 2008-2010 %2<br/>"
-                                           "License: GPLv3 or later<br/>")
-                                           .arg(QApplication::applicationName())
-                                           .arg(QApplication::organizationName()));
+    text = this->p_->ui.aboutMessage->text();
+    text = text.arg(QApplication::organizationName());
+    this->p_->ui.aboutMessage->setText(text);
 }
