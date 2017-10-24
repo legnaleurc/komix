@@ -191,7 +191,9 @@ ArchiveModel::ArchiveModel(const QFileInfo & root)
 }
 
 void ArchiveModel::doInitialize() {
-    this->p_->hash = QString::fromUtf8(QCryptographicHash::hash(this->p_->root.fileName().toUtf8(), QCryptographicHash::Sha1).toHex());
+    auto fileName = this->p_->root.fileName().toUtf8();
+    auto sha1 = QCryptographicHash::hash(fileName, QCryptographicHash::Sha1);
+    this->p_->hash = QString::fromUtf8(sha1.toHex());
 
     const auto & global = Global::instance();
     const auto & tmp = global.getTemporaryDirectory();
@@ -202,9 +204,13 @@ void ArchiveModel::doInitialize() {
         return;
     }
 
+    // HACK MacOSX and Linux use different Unicode Normalization Forms, so they
+    // cannot smoothly access each other via file sharing.
+    // Create a symbolic link without CJK characters to workaround this.
     auto origPath = this->p_->root.absoluteFilePath();
     auto ext = this->p_->root.completeSuffix();
-    auto linkPath = tmp.absoluteFilePath(QString("%1.%2").arg(this->p_->hash).arg(ext));
+    auto linkPath = QString("%1.%2").arg(this->p_->hash).arg(ext);
+    linkPath = tmp.absoluteFilePath(linkPath);
     QFile::link(origPath, linkPath);
 
     this->p_->extract(linkPath, SLOT(checkTwo(int)));
