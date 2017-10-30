@@ -20,8 +20,9 @@
  */
 #include "localfilemodel.hpp"
 
-#include <QtCore/QtDebug>
+#include <QtCore/QDirIterator>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QtDebug>
 
 #include <tuple>
 
@@ -124,14 +125,25 @@ void LocalFileModel::doInitialize() {
 
 void LocalFileModel::setRoot(const QDir & root) {
     this->p_->root = root;
-    auto files = root.entryList(SupportedFormatsFilter(), QDir::Files);
+
+    QDirIterator it(root.path(), SupportedFormatsFilter(), QDir::Files,
+                    QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+    QStringList files;
+    while (it.hasNext()) {
+        auto path = it.next();
+        path = root.relativeFilePath(path);
+        files.push_back(path);
+    }
     this->p_->files = smartSort(files);
 }
 
 
 QModelIndex LocalFileModel::index(const QUrl & url) const {
     int row = this->p_->files.indexOf(QFileInfo(url.toLocalFile()).fileName());
-    return (row < 0) ? QModelIndex() : createIndex(row, 0, row);
+    if (row < 0) {
+        return QModelIndex();
+    }
+    return createIndex(row, 0, row);
 }
 
 
@@ -187,11 +199,12 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
     switch (index.column()) {
         case 0:
             if (index.row() >= 0 && index.row() < this->p_->files.size()) {
+                const auto & relativePath = this->p_->files[index.row()];
                 switch (role) {
                     case Qt::DisplayRole:
-                        return this->p_->files[index.row()];
+                        return relativePath;
                     case Qt::UserRole: {
-                        auto path = this->p_->root.filePath(this->p_->files[index.row()]);
+                        auto path = this->p_->root.filePath(relativePath);
                         DeviceCreator dc = [path]() -> std::shared_ptr<QIODevice> {
                             return std::make_shared<QFile>(path);
                         };
