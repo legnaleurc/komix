@@ -142,9 +142,9 @@ QDir archiveDir(const QString & dirName) {
 
 
 QStringList arguments(const QString & fileName) {
-    QStringList args("e");
-    args << QString("-o%1").arg(archiveDir(fileName).absolutePath());
+    QStringList args("x");
     args << "-aos";
+    args << QString("-o%1").arg(archiveDir(fileName).absolutePath());
     return args;
 }
 
