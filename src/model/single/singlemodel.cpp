@@ -100,6 +100,7 @@ QString SingleModel::createDialogFilter() {
 
 
 SingleModel::SingleModel(const QFileInfo & root)
-    : LocalFileModel(root.dir())
+    : LocalFileModel()
 {
+    this->setRoot(root.dir());
 }

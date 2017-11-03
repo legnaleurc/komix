@@ -34,7 +34,7 @@ namespace model {
 
 class LocalFileModel::Private {
 public:
-    explicit Private(const QDir & root);
+    Private();
 
     QDir root;
     QStringList files;
@@ -110,11 +110,10 @@ QStringList smartSort(const QStringList & names) {
 using KomiX::model::LocalFileModel;
 
 
-LocalFileModel::LocalFileModel(const QDir & root)
+LocalFileModel::LocalFileModel()
     : FileModel()
-    , p_(new Private(root))
+    , p_(new Private)
 {
-    this->setRoot(root);
 }
 
 
@@ -222,8 +221,8 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
 }
 
 
-LocalFileModel::Private::Private(const QDir & root)
-    : root(root)
+LocalFileModel::Private::Private()
+    : root("__KOMIX_INVALID_ROOT__")
     , files()
 {
 }

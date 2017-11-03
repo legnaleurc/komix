@@ -39,7 +39,7 @@ public:
     /**
      * @brief Default constructor, open @p root as top-level directory
      */
-    LocalFileModel(const QDir & root = QDir());
+    LocalFileModel();
 
     /// @brief Overrides from FileModel
     virtual QModelIndex index(const QUrl & url) const;

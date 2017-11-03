@@ -37,6 +37,7 @@ FileModel::SP DirectoryModel::create(const QUrl & url) {
 
 
 DirectoryModel::DirectoryModel(const QFileInfo & root)
-    : LocalFileModel(root.absoluteFilePath())
+    : LocalFileModel()
 {
+    this->setRoot(root.absoluteFilePath());
 }
