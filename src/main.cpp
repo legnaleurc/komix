@@ -53,8 +53,7 @@ int main(int argc, char * argv[]) {
 
     QStringList args(QApplication::arguments());
 
-    KomiX::Global global;
-    global.initializeFileController();
+    auto & global = KomiX::Global::instance();
     {
         using namespace KomiX::model;
 

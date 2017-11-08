@@ -37,6 +37,8 @@ public:
     explicit Private(Global * parent);
     virtual ~Private();
 
+    void initializeFileController();
+
     QDir tmp;
     QString dialogFilter;
     FileController * fileController;

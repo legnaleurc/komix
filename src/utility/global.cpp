@@ -80,10 +80,6 @@ int delTree(const QDir & dir) {
     return sum + 1;
 }
 
-
-// NOTE this points to STACK, do not delete this
-static KomiX::Global * self = nullptr;
-
 }
 
 namespace KomiX {
@@ -114,8 +110,9 @@ using KomiX::FileController;
 
 
 Global & Global::instance() {
-    assert(self || "not initialize yet");
-    return *self;
+    // This is thread-safe since C++11.
+    static Global self;
+    return self;
 }
 
 
@@ -123,18 +120,16 @@ Global::Global()
     : QObject()
     , p_(new Private(this))
 {
-    self = this;
+    this->p_->initializeFileController();
 }
 
 
-void Global::initializeFileController() {
-    assert(!this->p_->fileController || "do not initialize again");
-    this->p_->fileController = new FileController(this->p_);
+Global::~Global() {
 }
 
 
 FileController & Global::getFileController() const {
-    assert(this->p_->fileController || "not initialize yet");
+    assert(this->p_->fileController || "have not initialized yet");
     return *this->p_->fileController;
 }
 
@@ -167,10 +162,15 @@ Global::Private::Private(Global * parent)
     , dialogFilter()
     , fileController(nullptr)
 {
-    assert(!self || "do not initialize again");
 }
 
 
 Global::Private::~Private() {
     delTree(this->tmp);
+}
+
+
+void Global::Private::initializeFileController() {
+    assert(!this->fileController || "do not initialize again");
+    this->fileController = new FileController(this);
 }

@@ -50,9 +50,6 @@ class Global : public QObject {
 public:
     static Global & instance();
 
-    Global();
-
-    void initializeFileController();
     FileController & getFileController() const;
 
     /**
@@ -69,6 +66,9 @@ public:
     const QString & getDialogFilter() const;
 
 private:
+    Global();
+    virtual ~Global();
+
     class Private;
     Private * p_;
 };
