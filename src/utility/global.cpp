@@ -34,18 +34,20 @@
 namespace {
 
 inline QStringList uniqueList() {
-    Q_ASSERT(QCoreApplication::instance() != NULL);
-    std::list<QByteArray> uniList = QImageReader::supportedImageFormats().toStdList();
+    assert(QCoreApplication::instance() || !"application is null");
 
-    std::for_each(uniList.begin(), uniList.end(), [](QByteArray & s) -> void {
+    auto formatList = QImageReader::supportedImageFormats();
+    for (auto & s : formatList) {
         s = s.toLower();
-    });
-    uniList.sort();
-    uniList.unique();
+    }
+    std::sort(std::begin(formatList), std::end(formatList));
+    auto it = std::unique(std::begin(formatList), std::end(formatList));
+    formatList.erase(it, std::end(formatList));
 
     QStringList result;
-
-    std::copy(uniList.begin(), uniList.end(), std::back_inserter(result));
+    for (const auto & s : formatList) {
+        result.push_back(QString::fromUtf8(s));
+    }
     return result;
 }
 
@@ -66,8 +68,9 @@ QDir createTmpDir() {
 
 int delTree(const QDir & dir) {
     int sum = 0;
-    QFileInfoList entry = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
-    foreach(QFileInfo e, entry) {
+    auto flags = QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs;
+    QFileInfoList entry = dir.entryInfoList(flags);
+    for(const QFileInfo & e : entry) {
         if (e.isDir()) {
             sum += delTree(e.absoluteFilePath());
         } else {
