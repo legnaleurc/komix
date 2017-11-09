@@ -27,10 +27,11 @@
 
 namespace KomiX {
 
-extern const QString OPEN_DIALOG_TITLE;
-extern const QString OPEN_DIRECTORY_DIALOG_TITLE;
 extern const QString MAINWINDOW_ERROR_DIALOG_TITLE;
 extern const QString NO_OPENABLE_FILE;
+extern const QString OPEN_DIALOG_ARCHIVE_FORMATS;
+extern const QString OPEN_DIALOG_TITLE;
+extern const QString OPEN_DIRECTORY_DIALOG_TITLE;
 
 }
 

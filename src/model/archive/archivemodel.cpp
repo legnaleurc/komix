@@ -28,6 +28,7 @@
 
 #include "exception.hpp"
 #include "global.hpp"
+#include "literal.hpp"
 
 
 namespace KomiX {
@@ -179,7 +180,8 @@ FileModel::SP ArchiveModel::create(const QUrl & url) {
 
 QString ArchiveModel::createDialogFilter() {
     QStringList filter = toNameFilter(archiveFormats());
-    return QObject::tr("All Supported Archives ( %1 )").arg(filter.join(" "));
+    QString tpl("%1 ( %2 )");
+    return tpl.arg(OPEN_DIALOG_ARCHIVE_FORMATS).arg(filter.join(" "));
 }
 
 

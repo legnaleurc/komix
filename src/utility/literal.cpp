@@ -25,9 +25,10 @@
 
 namespace KomiX {
 
-const QString OPEN_DIALOG_TITLE = QObject::tr("Open File");
-const QString OPEN_DIRECTORY_DIALOG_TITLE = QObject::tr("Open Directory");
 const QString MAINWINDOW_ERROR_DIALOG_TITLE = QObject::tr("Oops!");
 const QString NO_OPENABLE_FILE = QObject::tr("No openable file.");
+const QString OPEN_DIALOG_ARCHIVE_FORMATS = QObject::tr("All Supported Archives");
+const QString OPEN_DIALOG_TITLE = QObject::tr("Open File");
+const QString OPEN_DIRECTORY_DIALOG_TITLE = QObject::tr("Open Directory");
 
 }
