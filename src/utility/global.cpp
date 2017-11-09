@@ -87,16 +87,6 @@ int delTree(const QDir & dir) {
 
 namespace KomiX {
 
-const QStringList & SupportedFormats() {
-    static QStringList sf = uniqueList();
-    return sf;
-}
-
-const QStringList & SupportedFormatsFilter() {
-    static QStringList sff = toNameFilter(KomiX::SupportedFormats());
-    return sff;
-}
-
 QStringList toNameFilter(const QStringList & exts) {
     QStringList tmp;
     foreach (QString str, exts) {
@@ -123,7 +113,6 @@ Global::Global()
     : QObject()
     , p_(new Private(this))
 {
-    this->p_->initializeFileController();
 }
 
 
@@ -132,7 +121,6 @@ Global::~Global() {
 
 
 FileController & Global::getFileController() const {
-    assert(this->p_->fileController || "have not initialized yet");
     return *this->p_->fileController;
 }
 
@@ -159,21 +147,29 @@ const QString & Global::getDialogFilter() const {
 }
 
 
+const QStringList & Global::getSupportedFormats() const {
+    static QStringList sf = uniqueList();
+    return sf;
+}
+
+
+const QStringList & Global::getSupportedFormatsFilter() const {
+    static QStringList sff = toNameFilter(this->getSupportedFormats());
+    return sff;
+}
+
+
 Global::Private::Private(Global * parent)
     : QObject(parent)
     , tmp(createTmpDir())
     , dialogFilter()
-    , fileController(nullptr)
+    , fileController(new FileController(this))
+    , supportedFormats(uniqueList())
+    , supportedFormatsFilter(toNameFilter(this->supportedFormats))
 {
 }
 
 
 Global::Private::~Private() {
     delTree(this->tmp);
-}
-
-
-void Global::Private::initializeFileController() {
-    assert(!this->fileController || "do not initialize again");
-    this->fileController = new FileController(this);
 }

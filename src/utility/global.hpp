@@ -25,14 +25,10 @@
 #include <QtCore/QObject>
 
 #include <functional>
-#include <list>
 #include <memory>
 
 
-class QAction;
 class QIODevice;
-class QStringList;
-class QWidget;
 class QDir;
 
 
@@ -65,6 +61,24 @@ public:
      */
     const QString & getDialogFilter() const;
 
+    /**
+     * @brief Get supported formats
+     * @return A QStringList contains all supported formats
+     *
+     * The formats is read from QImageReader::supportedImageFormats().\n
+     * This list transforms to lower string, sort it, and remove deprecated
+     * items.
+     */
+    const QStringList & getSupportedFormats() const;
+
+    /**
+     * @brief Get the supported formats filter
+     * @return A QStringList that can pass to name filter
+     *
+     * The string format is like this: <strong>"*.<ext>"</strong>.
+     */
+    const QStringList & getSupportedFormatsFilter() const;
+
 private:
     Global();
     virtual ~Global();
@@ -78,26 +92,6 @@ private:
  * create a QIODevice to read the image file
  */
 typedef std::function<std::shared_ptr<QIODevice> ()> DeviceCreator;
-
-/**
- * @brief Get supported formats
- * @return A QStringList contains all supported formats
- * @note Not thread-safe on initialization. Do not initialize before QApplication.
- *
- * The formats is read from QImageReader::supportedImageFormats().\n
- * This list transforms to lower string, sort it, and remove deprecated
- * items.
- */
-const QStringList & SupportedFormats();
-
-/**
- * @brief Get the supported formats filter
- * @return A QStringList that can pass to name filter
- * @note Not thread-safe on initialization.
- *
- * The string format is like this: <strong>"*.<ext>"</strong>.
- */
-const QStringList & SupportedFormatsFilter();
 
 /**
  * @brief make @p exts to name filter

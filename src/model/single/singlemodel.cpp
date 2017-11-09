@@ -34,7 +34,8 @@ FileModel::SP SingleModel::create(const QUrl & url) {
         return nullptr;
     }
     QString suffix = fi.suffix().toLower();
-    const auto & supported = KomiX::SupportedFormats();
+    auto & global = KomiX::Global::instance();
+    const auto & supported = global.getSupportedFormats();
     if (!supported.contains(suffix)) {
         return nullptr;
     }
@@ -44,8 +45,9 @@ FileModel::SP SingleModel::create(const QUrl & url) {
 
 QString SingleModel::createDialogFilter() {
     QMultiMap<QString, QString> cat;
+    auto & global = KomiX::Global::instance();
 
-    for (auto str : KomiX::SupportedFormats()) {
+    for (auto str : global.getSupportedFormats()) {
         if (str == "bmp") {
             cat.insert(QObject::tr("Windows Bitmap"), str.prepend("*."));
         } else if (str == "gif") {
@@ -91,7 +93,7 @@ QString SingleModel::createDialogFilter() {
         QString filter = "%1 ( %2 )";
         tmp.push_back(filter.arg(key).arg(values.join(" ")));
     }
-    const auto & all = KomiX::SupportedFormatsFilter();
+    const auto & all = global.getSupportedFormatsFilter();
     QString filter = QObject::tr("All Supported Image File ( %1 )");
     tmp.push_front(filter.arg(all.join(" ")));
 

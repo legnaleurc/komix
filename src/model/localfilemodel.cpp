@@ -123,9 +123,10 @@ void LocalFileModel::doInitialize() {
 
 
 void LocalFileModel::setRoot(const QDir & root) {
+    auto & global = KomiX::Global::instance();
     this->p_->root = root;
 
-    QDirIterator it(root.path(), SupportedFormatsFilter(), QDir::Files,
+    QDirIterator it(root.path(), global.getSupportedFormatsFilter(), QDir::Files,
                     QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
     QStringList files;
     while (it.hasNext()) {
