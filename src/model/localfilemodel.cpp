@@ -196,26 +196,26 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
     if (!index.isValid()) {
         return QVariant();
     }
-    switch (index.column()) {
-        case 0:
-            if (index.row() >= 0 && index.row() < this->p_->files.size()) {
-                const auto & relativePath = this->p_->files[index.row()];
-                switch (role) {
-                    case Qt::DisplayRole:
-                        return relativePath;
-                    case Qt::UserRole: {
-                        auto path = this->p_->root.filePath(relativePath);
-                        DeviceCreator dc = [path]() -> std::shared_ptr<QIODevice> {
-                            return std::make_shared<QFile>(path);
-                        };
-                        return QVariant::fromValue(dc);
-                    }
-                    default:
-                        return QVariant();
-                }
-            } else {
-                return QVariant();
-            }
+    if (index.column() != 0) {
+        return QVariant();
+    }
+    if (index.row() < 0) {
+        return QVariant();
+    }
+    if (index.row() >= this->p_->files.size()) {
+        return QVariant();
+    }
+    const auto & relativePath = this->p_->files[index.row()];
+    switch (role) {
+        case Qt::DisplayRole:
+            return relativePath;
+        case Qt::UserRole: {
+            auto path = this->p_->root.filePath(relativePath);
+            DeviceCreator dc = [path]() -> std::shared_ptr<QIODevice> {
+                return std::make_shared<QFile>(path);
+            };
+            return QVariant::fromValue(dc);
+        }
         default:
             return QVariant();
     }
