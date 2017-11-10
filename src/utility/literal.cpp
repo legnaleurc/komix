@@ -25,6 +25,7 @@
 
 namespace KomiX {
 
+const QString FILEMODEL_ERROR = QObject::tr("can not find a model for `%1`");
 const QString MAINWINDOW_ERROR_DIALOG_TITLE = QObject::tr("Oops!");
 const QString NO_OPENABLE_FILE = QObject::tr("No openable file.");
 const QString OPEN_DIALOG_ARCHIVE_FORMATS = QObject::tr("All Supported Archives");

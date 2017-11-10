@@ -21,6 +21,7 @@
 #include "exception.hpp"
 #include "filecontroller_p.hpp"
 #include "global.hpp"
+#include "literal.hpp"
 
 #include <QtCore/QFileInfo>
 
@@ -43,7 +44,7 @@ void FileController::open(const QUrl & url) {
     try {
         this->p_->model = FileModel::createModel(url);
         if (!this->p_->model) {
-            throw exception::Exception(QObject::tr("can not find a model for `%1`").arg(url.toString()));
+            throw exception::Exception(FILEMODEL_ERROR.arg(url.toString()));
         }
         this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
         this->connect(this->p_->model.get(), SIGNAL(error(const QString &)), SIGNAL(errorOccured(const QString &)));
