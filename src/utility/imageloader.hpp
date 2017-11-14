@@ -21,7 +21,6 @@
 #ifndef KOMIX_IMAGELOADER_HPP
 #define KOMIX_IMAGELOADER_HPP
 
-#include <functional>
 #include <memory>
 
 #include <QtCore/QIODevice>
@@ -36,9 +35,10 @@ class ImageLoader : public QObject {
 public:
     typedef std::shared_ptr<QIODevice> DeviceSP;
 
-    static void load(int id, DeviceSP device, QObject * receiver, const char * pictureLoaded, const char * animationLoaded);
+    static void load(int id, DeviceSP device, QObject * receiver,
+                     const char * pictureLoaded, const char * animationLoaded);
 
-    ImageLoader(int id, std::shared_ptr<QIODevice> device, QObject * parent);
+    ImageLoader(int id, DeviceSP device, QObject * parent);
     void start() const;
 
 signals:
@@ -46,7 +46,6 @@ signals:
     void finished(int id, QMovie * movie);
 
 private:
-
     class Private;
     Private * p_;
 };

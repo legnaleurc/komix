@@ -35,19 +35,25 @@ using KomiX::BlockDeviceLoader;
 using KomiX::ImageHelper;
 
 
-void ImageLoader::load(int id, DeviceSP device, QObject * receiver, const char * pictureLoaded, const char * animationLoaded) {
+void ImageLoader::load(int id, DeviceSP device, QObject * receiver,
+                       const char * pictureLoaded, const char * animationLoaded)
+{
     auto loader = new ImageLoader(id, device, receiver);
     receiver->connect(loader, SIGNAL(finished(int, const QPixmap &)), pictureLoaded);
     loader->start();
 }
 
 
-ImageLoader::ImageLoader(int id, std::shared_ptr<QIODevice> device, QObject * parent)
+ImageLoader::ImageLoader(int id, DeviceSP device, QObject * parent)
     : QObject(parent)
     , p_(new Private(id, device, this))
 {
-    this->connect(this->p_, SIGNAL(finished(int, QMovie *)), SIGNAL(finished(int, QMovie *)));
-    this->connect(this->p_, SIGNAL(finished(int, const QPixmap &)), SIGNAL(finished(int, const QPixmap &)));
+    this->connect(this->p_,
+                  SIGNAL(finished(int, QMovie *)),
+                  SIGNAL(finished(int, QMovie *)));
+    this->connect(this->p_,
+                  SIGNAL(finished(int, const QPixmap &)),
+                  SIGNAL(finished(int, const QPixmap &)));
 }
 
 
@@ -60,7 +66,9 @@ void ImageLoader::start() const {
         // large block device, async operation
         loader = new BlockDeviceLoader(this->p_->device, this->p_);
     }
-    this->p_->connect(loader, SIGNAL(finished(const QByteArray &)), SLOT(onDataFinished(const QByteArray &)));
+    this->p_->connect(loader,
+                      SIGNAL(finished(const QByteArray &)),
+                      SLOT(onDataFinished(const QByteArray &)));
     loader->start();
 }
 
@@ -89,7 +97,9 @@ void ImageLoader::Private::onDataFinished(const QByteArray & data) {
     } else {
         buffer->deleteLater();
         auto loader = new ImageHelper(data, this);
-        this->connect(loader, SIGNAL(finished(const QImage &)), SLOT(onImageFinished(const QImage &)));
+        this->connect(loader,
+                      SIGNAL(finished(const QImage &)),
+                      SLOT(onImageFinished(const QImage &)));
         loader->start();
     }
 }
@@ -104,7 +114,8 @@ void ImageLoader::Private::onImageFinished(const QImage & image) {
 }
 
 
-AsynchronousDeviceLoader::AsynchronousDeviceLoader(ImageLoader::DeviceSP device, QObject * parent)
+AsynchronousDeviceLoader::AsynchronousDeviceLoader(ImageLoader::DeviceSP device,
+                                                   QObject * parent)
     : QObject(parent)
     , device_(device)
 {
@@ -116,7 +127,8 @@ ImageLoader::DeviceSP AsynchronousDeviceLoader::getDevice() const {
 }
 
 
-CharacterDeviceLoader::CharacterDeviceLoader(ImageLoader::DeviceSP device, QObject * parent)
+CharacterDeviceLoader::CharacterDeviceLoader(ImageLoader::DeviceSP device,
+                                             QObject * parent)
     : AsynchronousDeviceLoader(device, parent)
     , buffer_()
 {
@@ -127,7 +139,9 @@ void CharacterDeviceLoader::start() {
     auto device = this->getDevice();
 
     this->connect(device.get(), SIGNAL(readyRead()), SLOT(onReadyRead()));
-    this->connect(device.get(), SIGNAL(readChannelFinished()), SLOT(onReadFinished()));
+    this->connect(device.get(),
+                  SIGNAL(readChannelFinished()),
+                  SLOT(onReadFinished()));
 
     bool ok = this->buffer_.open(QIODevice::ReadWrite);
     assert(ok || !"cannot open buffer");
@@ -153,7 +167,8 @@ void CharacterDeviceLoader::onReadFinished() {
 }
 
 
-BlockDeviceLoader::BlockDeviceLoader(ImageLoader::DeviceSP device, QObject * parent)
+BlockDeviceLoader::BlockDeviceLoader(ImageLoader::DeviceSP device,
+                                     QObject * parent)
     : AsynchronousDeviceLoader(device, parent)
     , watcher_(new QFutureWatcher<QByteArray>(this))
 {
