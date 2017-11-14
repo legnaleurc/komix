@@ -11,6 +11,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+find_package(LibArchive REQUIRED)
+find_package(LibUCharDet REQUIRED)
+
 set(KOMIX_VERSION_MAJOR 2)
 set(KOMIX_VERSION_MINOR 2)
 set(KOMIX_VERSION_PATCH 0)
@@ -53,11 +56,15 @@ target_include_directories(komix
                                "src/model"
                                "src/utility"
                                "src/widget"
+                               ${LibArchive_INCLUDE_DIRS}
+                               ${LibUCharDet_INCLUDE_DIRS}
                                "${CMAKE_BINARY_DIR}")
 target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES}
                             Qt5::Concurrent
                             Qt5::Core
-                            Qt5::Widgets)
+                            Qt5::Widgets
+                            ${LibArchive_LIBRARIES}
+                            ${LibUCharDet_LIBRARIES})
 
 # install
 include(InstallRequiredSystemLibraries)
