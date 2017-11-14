@@ -42,21 +42,22 @@ public:
     LocalFileModel();
 
     /// @brief Overrides from FileModel
-    virtual QModelIndex index(const QUrl & url) const;
+    virtual QModelIndex index(const QUrl & url) const override;
 
     /// Overrides from FileModel
-    virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    virtual QModelIndex index(int row, int column,
+                              const QModelIndex & parent = QModelIndex()) const override;
     /// Overrides from FileModel
-    virtual QModelIndex parent(const QModelIndex & child) const;
+    virtual QModelIndex parent(const QModelIndex & child) const override;
     /// Overrides from FileModel
-    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     /// Overrides from FileModel
-    virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex & parent = QModelIndex()) const override;
     /// Overrides from FileModel
-    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 
 protected:
-    virtual void doInitialize();
+    virtual void doInitialize() override;
     /// Set top-level directory
     void setRoot(const QDir & root);
 

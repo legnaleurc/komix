@@ -45,7 +45,7 @@ public:
     explicit ArchiveModel(const QFileInfo & root);
 
 protected:
-    virtual void doInitialize();
+    virtual void doInitialize() override;
 
 private:
     class Private;
