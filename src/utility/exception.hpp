@@ -28,7 +28,6 @@
 #include <string>
 
 namespace KomiX {
-namespace exception {
 
 class Exception : public std::exception {
 public:
@@ -45,7 +44,7 @@ private:
     class Private;
     std::shared_ptr<Private> p_;
 };
-}
+
 } // end of namespace
 
 #endif

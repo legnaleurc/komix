@@ -44,7 +44,7 @@ void FileController::open(const QUrl & url) {
     try {
         this->p_->model = FileModel::createModel(url);
         if (!this->p_->model) {
-            throw exception::Exception(FILEMODEL_ERROR.arg(url.toString()));
+            throw Exception(FILEMODEL_ERROR.arg(url.toString()));
         }
         this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
         this->connect(this->p_->model.get(),
@@ -55,7 +55,7 @@ void FileController::open(const QUrl & url) {
                       SIGNAL(progressUpdated(int, int)));
         this->p_->openingURL = url;
         this->p_->model->initialize();
-    } catch (exception::Exception & e) {
+    } catch (Exception & e) {
         emit errorOccured(e.getMessage());
     }
 }

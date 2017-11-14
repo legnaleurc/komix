@@ -32,7 +32,6 @@
 
 
 namespace KomiX {
-namespace exception {
 
 /// Private archive error class
 class ArchiveException : public Exception {
@@ -44,7 +43,7 @@ public:
         : Exception(msg) {
     }
 };
-}
+
 } // end of namespace
 
 namespace {
@@ -153,7 +152,6 @@ QStringList arguments(const QString & fileName) {
 
 
 using namespace KomiX::model;
-using KomiX::exception::ArchiveException;
 
 
 FileModel::SP ArchiveModel::create(const QUrl & url) {

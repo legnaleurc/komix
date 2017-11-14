@@ -23,7 +23,6 @@
 #include <cassert>
 
 namespace KomiX {
-namespace exception {
 
 class Exception::Private {
 public:
@@ -32,10 +31,10 @@ public:
 
     QString msg;
 };
-}
+
 }
 
-using KomiX::exception::Exception;
+using KomiX::Exception;
 
 Exception::Private::Private()
     : msg() {
