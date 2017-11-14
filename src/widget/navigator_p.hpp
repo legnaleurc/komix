@@ -32,7 +32,7 @@ namespace widget {
 class Navigator::Private : public QObject {
     Q_OBJECT
 public:
-    Private(Navigator * owner);
+    explicit Private(Navigator * owner);
 
 public slots:
     void openHelper();

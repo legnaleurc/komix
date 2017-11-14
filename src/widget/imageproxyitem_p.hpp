@@ -32,7 +32,8 @@ namespace widget {
 class ImageProxyItem::Private : public QObject {
     Q_OBJECT
 public:
-    explicit Private(int id, DeviceCreator deviceCreator, const QSize & size, ImageProxyItem * owner);
+    Private(int id, DeviceCreator deviceCreator, const QSize & size,
+            ImageProxyItem * owner);
 
 public slots:
     void onFinished(int id, QMovie * movie);

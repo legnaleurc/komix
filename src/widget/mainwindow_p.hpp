@@ -38,7 +38,7 @@ namespace widget {
 class MainWindow::Private : public QObject {
     Q_OBJECT
 public:
-    Private(MainWindow * owner);
+    explicit Private(MainWindow * owner);
 
     void setupCentralWidget();
     void setupFileMenu();

@@ -35,7 +35,6 @@ namespace widget {
 class SeamlessView : public QGraphicsView {
     Q_OBJECT
     using QGraphicsView::scale;
-
 public:
     explicit SeamlessView(QWidget * parent);
 
@@ -46,17 +45,12 @@ signals:
     void middleClicked();
 
 protected:
-    /// overrided method
-    virtual void dragEnterEvent(QDragEnterEvent *);
-    /// overrided method
-    virtual void dragMoveEvent(QDragMoveEvent *);
-    /// overrided method
-    virtual void dropEvent(QDropEvent *);
-    virtual void mouseMoveEvent(QMouseEvent *);
-    /// overrided method
-    virtual bool viewportEvent(QEvent *);
-    /// overrided method
-    virtual void wheelEvent(QWheelEvent *);
+    virtual void dragEnterEvent(QDragEnterEvent *) override;
+    virtual void dragMoveEvent(QDragMoveEvent *) override;
+    virtual void dropEvent(QDropEvent *) override;
+    virtual void mouseMoveEvent(QMouseEvent *) override;
+    virtual bool viewportEvent(QEvent *) override;
+    virtual void wheelEvent(QWheelEvent *) override;
 
 private:
     class Private;
