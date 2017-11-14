@@ -65,16 +65,8 @@ Exception::Exception(const char * msg)
     : p_(new Private(QString::fromUtf8(msg))) {
 }
 
-Exception::Exception(const wchar_t * msg)
-    : p_(new Private(QString::fromWCharArray(msg))) {
-}
-
 Exception::Exception(const std::string & msg)
     : p_(new Private(QString::fromStdString(msg))) {
-}
-
-Exception::Exception(const std::wstring & msg)
-    : p_(new Private(QString::fromStdWString(msg))) {
 }
 
 /**
@@ -87,14 +79,14 @@ Exception::Exception(const QString & msg)
 /**
  * @brief Destructor
  */
-Exception::~Exception() throw() {
+Exception::~Exception() {
 }
 
 /**
  * @brief Get message for STL
  * @note encode as UTF-8
  */
-const char * Exception::what() const throw() {
+const char * Exception::what() const noexcept {
     return this->p_->msg.toLocal8Bit().constData();
 }
 
