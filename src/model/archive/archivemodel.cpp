@@ -22,13 +22,14 @@
 #include "archivemodel_p.hpp"
 
 #include <QtCore/QCryptographicHash>
-#include <QtCore/QProcess>
-#include <QtCore/QStandardPaths>
+#include <QtCore/QThreadPool>
+
 #include <QtCore/QtDebug>
 
 #include "exception.hpp"
 #include "global.hpp"
 #include "literal.hpp"
+#include "unarchivetask.hpp"
 
 
 namespace KomiX {
@@ -47,34 +48,6 @@ public:
 } // end of namespace
 
 namespace {
-
-
-inline QString getSevenZip() {
-    QStringList paths;
-#ifdef Q_OS_WIN32
-    auto pf = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
-    paths << QString("%1/7-Zip").arg(pf);
-#else
-    paths << "/usr/local/bin" << "/usr/bin" << "/bin";
-#endif
-    auto path = QStandardPaths::findExecutable("7z", paths);
-    if (path.isEmpty()) {
-        path = QStandardPaths::findExecutable("7z");
-    }
-    return path;
-}
-
-
-inline const QString & sevenZip() {
-    static auto sz = getSevenZip();
-    return sz;
-}
-
-
-inline bool isRunnable() {
-    return QFileInfo(sevenZip()).isExecutable();
-}
-
 
 inline bool isPrepared() {
     const auto & global = KomiX::Global::instance();
@@ -120,16 +93,6 @@ bool isArchiveSupported(const QString & name) {
 }
 
 
-inline bool isTwo(const QString & name) {
-    foreach (QString ext, archiveList2()) {
-        if (name.endsWith(ext)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 QDir archiveDir(const QString & dirName) {
     const auto & global = KomiX::Global::instance();
     auto tmp = global.getTemporaryDirectory();
@@ -138,14 +101,6 @@ QDir archiveDir(const QString & dirName) {
     }
     tmp.cd(dirName);
     return tmp;
-}
-
-
-QStringList arguments(const QString & fileName) {
-    QStringList args("x");
-    args << "-aos";
-    args << QString("-o%1").arg(archiveDir(fileName).absolutePath());
-    return args;
 }
 
 } // end of namespace
@@ -165,10 +120,6 @@ FileModel::SP ArchiveModel::create(const QUrl & url) {
     if (!isArchiveSupported(fi.fileName().toLower())) {
         return nullptr;
     }
-    // TODO tr
-    if (!isRunnable()) {
-        throw ArchiveException("This feature is based on 7-zip. Please install it.");
-    }
     if (!isPrepared()) {
         throw ArchiveException("Temporary directory does not exist.");
     }
@@ -185,8 +136,11 @@ QString ArchiveModel::createDialogFilter() {
 
 ArchiveModel::ArchiveModel(const QFileInfo & root)
     : LocalFileModel()
-    , p_(new Private(this, root)) {
-    this->connect(this->p_.get(), SIGNAL(error(const QString &)), SIGNAL(error(const QString &)));
+    , p_(new Private(this, root))
+{
+    this->connect(this->p_.get(),
+                  SIGNAL(error(const QString &)),
+                  SIGNAL(error(const QString &)));
     this->connect(this->p_.get(), SIGNAL(ready()), SIGNAL(ready()));
 }
 
@@ -213,7 +167,7 @@ void ArchiveModel::doInitialize() {
     linkPath = tmp.absoluteFilePath(linkPath);
     QFile::link(origPath, linkPath);
 
-    this->p_->extract(linkPath, SLOT(checkTwo(int)));
+    this->p_->extract(linkPath);
 }
 
 
@@ -224,43 +178,25 @@ ArchiveModel::Private::Private(ArchiveModel * owner, const QFileInfo & root)
     , hash() {
 }
 
-void ArchiveModel::Private::extract(const QString & aFilePath, const char * onFinished) {
-    QProcess * p = new QProcess;
-    this->connect(p, SIGNAL(finished(int)), onFinished);
-    this->connect(p, SIGNAL(finished(int)), SLOT(cleanup(int)));
-    qDebug() << (arguments(this->hash) << aFilePath);
-    p->start(sevenZip(), (arguments(this->hash) << aFilePath), QIODevice::ReadOnly);
+
+void ArchiveModel::Private::extract(const QString & aFilePath) {
+    auto task = new UnarchiveTask(aFilePath, archiveDir(this->hash).absolutePath());
+    this->connect(task,
+                  SIGNAL(finished(bool, const QString &)),
+                  SLOT(onFinished(bool, const QString &)));
+    this->owner->connect(task,
+                         SIGNAL(progressUpdated(int, int)),
+                         SIGNAL(progressUpdated(int, int)));
+    QThreadPool::globalInstance()->start(task);
 }
 
-void ArchiveModel::Private::cleanup(int exitCode) {
-    QProcess * p = static_cast<QProcess *>(this->sender());
-    if (exitCode != 0) {
-        QString err = QString::fromLocal8Bit(p->readAllStandardError());
-        qWarning() << p->readAllStandardOutput();
-        qWarning() << err;
-        emit this->error(err);
-    }
-    p->deleteLater();
-}
 
-void ArchiveModel::Private::checkTwo(int exitCode) {
-    if (exitCode != 0) {
-        return;
-    }
-    // check if is tar-compressed
-    if (isTwo(this->root.fileName())) {
-        QString name = archiveDir(this->hash).absoluteFilePath(this->root.completeBaseName());
-        this->extract(name, SLOT(allDone(int)));
-    } else {
+void ArchiveModel::Private::onFinished(bool ok, const QString & message) {
+    if (ok) {
+        // update the model root
         this->owner->setRoot(archiveDir(this->hash));
         emit this->ready();
+    } else {
+        emit this->error(message);
     }
-}
-
-void ArchiveModel::Private::allDone(int exitCode) {
-    if (exitCode != 0) {
-        return;
-    }
-    this->owner->setRoot(archiveDir(this->hash));
-    emit this->ready();
 }

@@ -1,5 +1,5 @@
 /**
- * @file archivemodel_p.hpp
+ * @file unarchivetask.hpp
  * @author Wei-Cheng Pan
  *
  * KomiX, a comics viewer.
@@ -18,34 +18,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KOMIX_MODEL_ARCHIVEMODEL_HPP_
-#define KOMIX_MODEL_ARCHIVEMODEL_HPP_
+#ifndef KOMIX_MODEL_UNARCHIVETASK_HPP
+#define KOMIX_MODEL_UNARCHIVETASK_HPP
 
-#include "archivemodel.hpp"
+#include <QtCore/QObject>
+#include <QtCore/QRunnable>
+#include <QtCore/QString>
+
+#include <memory>
 
 
 namespace KomiX {
 namespace model {
 
-class ArchiveModel::Private : public QObject {
+
+class UnarchiveTask : public QObject, public QRunnable {
     Q_OBJECT
+
 public:
-    Private(ArchiveModel * owner, const QFileInfo & root);
+    UnarchiveTask(const QString & archivePath, const QString & outputPath);
 
-    void extract(const QString &);
-
-public slots:
-    void onFinished(bool ok, const QString & message);
+    virtual void run() override;
 
 signals:
-    void ready();
-    void error(const QString &);
+    void progressUpdated(int current, int total);
+    void finished(bool ok, const QString & message);
 
-public:
-    ArchiveModel * owner;
-    QFileInfo root;
-    QString hash;
+private:
+    class Private;
+    friend class Private;
+    std::shared_ptr<Private> p_;
 };
+
 
 }
 }
