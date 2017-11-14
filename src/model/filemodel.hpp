@@ -50,9 +50,7 @@ public:
     static SP createModel(const QUrl & url);
     /**
      * @brief Register model
-     * @param key compare function
-     * @param value create function
-     * @return always true
+     * @param creator a functor which creates the model
      */
     static void registerModel(const ModelCreator & creator);
 
