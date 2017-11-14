@@ -36,8 +36,10 @@ class ImageProxyItem : public QGraphicsObject {
 public:
     ImageProxyItem(int id, DeviceCreator deviceCreator, const QSize & size);
 
-    virtual QRectF boundingRect() const;
-    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+    virtual QRectF boundingRect() const override;
+    virtual void paint(QPainter * painter,
+                       const QStyleOptionGraphicsItem * option,
+                       QWidget * widget = 0) override;
 
     void setPaused(bool paused);
     void activate();
