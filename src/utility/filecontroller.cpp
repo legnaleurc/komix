@@ -47,7 +47,12 @@ void FileController::open(const QUrl & url) {
             throw exception::Exception(FILEMODEL_ERROR.arg(url.toString()));
         }
         this->p_->connect(this->p_->model.get(), SIGNAL(ready()), SLOT(onModelReady()));
-        this->connect(this->p_->model.get(), SIGNAL(error(const QString &)), SIGNAL(errorOccured(const QString &)));
+        this->connect(this->p_->model.get(),
+                      SIGNAL(error(const QString &)),
+                      SIGNAL(errorOccured(const QString &)));
+        this->connect(this->p_->model.get(),
+                      SIGNAL(progressUpdated(int, int)),
+                      SIGNAL(progressUpdated(int, int)));
         this->p_->openingURL = url;
         this->p_->model->initialize();
     } catch (exception::Exception & e) {

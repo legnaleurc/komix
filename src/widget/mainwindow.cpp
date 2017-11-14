@@ -59,6 +59,7 @@ MainWindow::Private::Private(MainWindow * owner)
     : QObject()
     , owner(owner)
     , ui()
+    , progress(new QProgressDialog(owner))
     , navigator(new Navigator(owner))
     , about(new AboutWidget(owner))
     , dumpState(Qt::WindowNoState)
@@ -68,9 +69,15 @@ MainWindow::Private::Private(MainWindow * owner)
     this->setupMenuBar();
     this->setupCentralWidget();
     //this->initTrayIcon();
+    this->setupProgressDialog();
 
     auto & fc = Global::instance().getFileController();
-    this->connect(&fc, SIGNAL(errorOccured(const QString &)), SLOT(popupError(const QString &)));
+    this->connect(&fc,
+                  SIGNAL(errorOccured(const QString &)),
+                  SLOT(popupError(const QString &)));
+    this->connect(&fc,
+                  SIGNAL(progressUpdated(int, int)),
+                  SLOT(onProgressUpdated(int, int)));
 }
 
 
@@ -109,7 +116,25 @@ void MainWindow::Private::setupCentralWidget() {
 }
 
 
+void MainWindow::Private::setupProgressDialog() {
+    this->progress->setModal(true);
+    this->progress->setCancelButton(nullptr);
+    auto flags = this->progress->windowFlags();
+    flags |= Qt::CustomizeWindowHint;
+    flags &= ~Qt::WindowTitleHint;
+    flags &= ~Qt::WindowSystemMenuHint;
+    flags &= ~Qt::WindowContextHelpButtonHint;
+    flags &= ~Qt::WindowCloseButtonHint;
+    this->progress->setWindowFlags(flags);
+
+    // HACK Reset it immediately or it will popup after minimumDuration.
+    // Probably a Qt bug.
+    this->progress->reset();
+}
+
+
 void MainWindow::Private::popupError(const QString & errMsg) {
+    this->progress->reset();
     QMessageBox::critical(this->owner, MAINWINDOW_ERROR_DIALOG_TITLE, errMsg);
 }
 
@@ -157,4 +182,14 @@ void MainWindow::Private::showNavigator() {
     this->ui.graphicsView->setPaused(true);
     this->navigator->exec();
     this->ui.graphicsView->setPaused(false);
+}
+
+
+void MainWindow::Private::onProgressUpdated(int current, int total) {
+    if (current == total) {
+        this->progress->reset();
+        return;
+    }
+    this->progress->setRange(0, total);
+    this->progress->setValue(current);
 }

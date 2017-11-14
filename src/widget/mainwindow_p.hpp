@@ -24,6 +24,8 @@
 
 #include "mainwindow.hpp"
 
+#include <QProgressDialog>
+
 #include "aboutwidget.hpp"
 #include "filecontroller.hpp"
 #include "navigator.hpp"
@@ -43,12 +45,14 @@ public:
     void setupGoMenu();
     void setupHelpMenu();
     void setupMenuBar();
+    void setupProgressDialog();
     void setupViewMenu();
 
 public slots:
     void showOpenDialog();
     void showOpenDirectoryDialog();
     void showNavigator();
+    void onProgressUpdated(int current, int total);
     void popupError(const QString & errMsg);
     /// toggle full-screen mode
     void toggleFullScreen();
@@ -56,6 +60,7 @@ public slots:
 public:
     MainWindow * owner;
     Ui::MainWindow ui;
+    QProgressDialog * progress;
     Navigator * navigator;
     AboutWidget * about;
     Qt::WindowStates dumpState;

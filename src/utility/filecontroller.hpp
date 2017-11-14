@@ -99,6 +99,7 @@ signals:
      */
     void errorOccured(const QString & errMsg);
     void focus(int id);
+    void progressUpdated(int current, int total);
 
 private:
     class Private;

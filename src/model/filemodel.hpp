@@ -66,6 +66,7 @@ protected:
 
 signals:
     void error(const QString & message);
+    void progressUpdated(int current, int total);
     void ready();
 };
 
