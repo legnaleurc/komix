@@ -15,17 +15,7 @@ set(KOMIX_VERSION_MAJOR 2)
 set(KOMIX_VERSION_MINOR 2)
 set(KOMIX_VERSION_PATCH 0)
 set(KOMIX_VERSION "${KOMIX_VERSION_MAJOR}.${KOMIX_VERSION_MINOR}.${KOMIX_VERSION_PATCH}")
-add_definitions(-DKOMIX_VERSION=${KOMIX_VERSION}
-                -DKOMIX_VERSION_MAJOR=${KOMIX_VERSION_MAJOR}
-                -DKOMIX_VERSION_MINOR=${KOMIX_VERSION_MINOR}
-                -DKOMIX_VERSION_PATCH=${KOMIX_VERSION_PATCH})
 
-include_directories(
-    .
-    src/model
-    src/utility
-    src/widget
-    "${CMAKE_BINARY_DIR}")
 file(GLOB_RECURSE KOMIX_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.cpp)
 file(GLOB_RECURSE KOMIX_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} src/*.hpp)
 file(GLOB_RECURSE KOMIX_FORMS RELATIVE ${CMAKE_SOURCE_DIR} src/*.ui)
@@ -39,7 +29,7 @@ set(KOMIX_COMPILE_UNITS ${KOMIX_SOURCES} ${KOMIX_HEADERS} ${KOMIX_RESOURCES})
 
 if(WIN32)
     add_executable(komix WIN32 "${CMAKE_SOURCE_DIR}/komix.rc" ${KOMIX_COMPILE_UNITS})
-    set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+    set(KOMIX_EXTRA_LIBRARIES ${KOMIX_EXTRA_LIBRARIES} Qt5::Main)
     set_target_properties(komix PROPERTIES
         COMPILE_FLAGS "/MP")
 elseif(APPLE)
@@ -50,8 +40,24 @@ else()
     add_executable(komix ${KOMIX_COMPILE_UNITS})
 endif()
 
-set_target_properties(komix PROPERTIES CXX_STANDARD 11)
-target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES} Qt5::Concurrent Qt5::Core Qt5::Widgets)
+target_compile_features(komix PRIVATE cxx_std_11)
+target_compile_definitions(komix
+                           PRIVATE
+                               -DKOMIX_VERSION=${KOMIX_VERSION}
+                               -DKOMIX_VERSION_MAJOR=${KOMIX_VERSION_MAJOR}
+                               -DKOMIX_VERSION_MINOR=${KOMIX_VERSION_MINOR}
+                               -DKOMIX_VERSION_PATCH=${KOMIX_VERSION_PATCH})
+target_include_directories(komix
+                           PRIVATE
+                               "."
+                               "src/model"
+                               "src/utility"
+                               "src/widget"
+                               "${CMAKE_BINARY_DIR}")
+target_link_libraries(komix ${KOMIX_EXTRA_LIBRARIES}
+                            Qt5::Concurrent
+                            Qt5::Core
+                            Qt5::Widgets)
 
 # install
 include(InstallRequiredSystemLibraries)
