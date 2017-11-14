@@ -30,13 +30,8 @@ namespace KomiX {
 namespace widget {
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
 public:
     explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags f = 0);
-
-public slots:
-    //void open(const QUrl & url);
-    //void open(const QString & localFile);
 
 private:
     class Private;
