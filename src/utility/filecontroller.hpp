@@ -27,7 +27,6 @@
 
 
 class QModelIndex;
-class QIODevice;
 
 
 namespace KomiX {
@@ -50,24 +49,14 @@ public:
     bool isEmpty() const;
 
     /// get current model
-    std::shared_ptr<model::FileModel> getModel() const;
+    model::FileModel::SP getModel() const;
     /// get current index
     QModelIndex getCurrentIndex() const;
 
 public slots:
-    /**
-    * @brief open a url
-    * @param url url
-    *
-    * It will emit getImage( const QPixmap & ) if necessary.
-    */
+    /// open @p url
     void open(const QUrl & url);
-    /**
-     * @brief open a local file
-     * @param localPath file path
-     *
-     * It will emit getImage( const QPixmap & ) if necessary.
-     */
+    /// open @p localPath
     void open(const QString & localPath);
     /**
      * @brief open @p index
@@ -78,11 +67,7 @@ public slots:
 
 signals:
     void modelReady();
-    /**
-     * @brief Some error occured
-     * @param errMsg error message
-     */
-    void errorOccured(const QString & errMsg);
+    void errorOccured(const QString & message);
     void focus(int id);
     void progressUpdated(int current, int total);
 

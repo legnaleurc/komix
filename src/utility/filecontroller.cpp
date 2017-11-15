@@ -94,7 +94,7 @@ bool FileController::isEmpty() const {
 }
 
 
-std::shared_ptr<KomiX::model::FileModel> FileController::getModel() const {
+FileModel::SP FileController::getModel() const {
     return this->p_->model;
 }
 
