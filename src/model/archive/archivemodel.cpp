@@ -154,7 +154,7 @@ void ArchiveModel::doInitialize() {
     if (tmp.exists(this->p_->hash)) {
         // uncompressed before
         this->setRoot(archiveDir(this->p_->hash));
-        emit this->ready();
+        this->LocalFileModel::doInitialize();
         return;
     }
 
@@ -195,7 +195,7 @@ void ArchiveModel::Private::onFinished(bool ok, const QString & message) {
     if (ok) {
         // update the model root
         this->owner->setRoot(archiveDir(this->hash));
-        emit this->ready();
+        this->owner->LocalFileModel::doInitialize();
     } else {
         emit this->error(message);
     }
