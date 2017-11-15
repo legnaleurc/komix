@@ -78,6 +78,9 @@ MainWindow::Private::Private(MainWindow * owner)
     this->connect(&fc,
                   SIGNAL(progressUpdated(int, int)),
                   SLOT(onProgressUpdated(int, int)));
+    this->connect(&fc,
+                  SIGNAL(modelReady()),
+                  SLOT(onModelReady()));
 }
 
 
@@ -192,4 +195,9 @@ void MainWindow::Private::onProgressUpdated(int current, int total) {
     }
     this->progress->setRange(0, total);
     this->progress->setValue(current);
+}
+
+
+void MainWindow::Private::onModelReady() {
+    this->progress->reset();
 }

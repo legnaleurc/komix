@@ -53,6 +53,7 @@ public slots:
     void showOpenDirectoryDialog();
     void showNavigator();
     void onProgressUpdated(int current, int total);
+    void onModelReady();
     void popupError(const QString & errMsg);
     /// toggle full-screen mode
     void toggleFullScreen();
