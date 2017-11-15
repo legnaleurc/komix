@@ -6,7 +6,7 @@ This is a comic viewer.
 
 ## Building Dependency
 
-* [CMake] >= 3.7
+* [CMake] >= 3.8
 * [Qt toolkit] >= 5.7
 
 ## Supported Toolchains
