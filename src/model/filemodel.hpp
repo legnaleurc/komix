@@ -58,6 +58,7 @@ public:
     /// Query the index @p url in the model
     virtual QModelIndex index(const QUrl & url) const = 0;
 
+    /// Models should emit ready() after finished initialization.
     void initialize();
 
 protected:
