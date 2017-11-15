@@ -37,10 +37,10 @@ namespace KomiX {
 /// Private archive error class
 class ArchiveException : public Exception {
 public:
-    ArchiveException(const char * msg)
+    explicit ArchiveException(const char * msg)
         : Exception(msg) {
     }
-    ArchiveException(const QString & msg)
+    explicit ArchiveException(const QString & msg)
         : Exception(msg) {
     }
 };

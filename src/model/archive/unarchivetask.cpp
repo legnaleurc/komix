@@ -41,9 +41,8 @@ QString createErrorMessage(const std::shared_ptr<archive> & handle,
 
 QString extractArchive(std::shared_ptr<archive> src,
                        std::shared_ptr<archive> dst) {
-    int rv = 0;
-
     for (;;) {
+        int rv = 0;
         const void * chunk = NULL;
         size_t length = 0;
         int64_t offset = 0;

@@ -29,7 +29,7 @@ namespace widget {
 
 class AboutWidget::Private {
 public:
-    Private(AboutWidget * owner);
+    explicit Private(AboutWidget * owner);
 
     AboutWidget * owner;
     Ui::AboutWidget ui;
