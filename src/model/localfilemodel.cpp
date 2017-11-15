@@ -22,6 +22,9 @@
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QRunnable>
+#include <QtCore/QThreadPool>
+
 #include <QtCore/QtDebug>
 
 #include <tuple>
@@ -32,13 +35,65 @@
 namespace KomiX {
 namespace model {
 
-class LocalFileModel::Private {
+class LocalFileModel::Private : public QObject {
+    Q_OBJECT
 public:
     Private();
 
+signals:
+    void ready();
+
+public slots:
+    void onWalkFinished(const QStringList & files);
+
+public:
     QDir root;
     QStringList files;
 };
+
+
+class DirectoryWalker : public QObject, public QRunnable {
+    Q_OBJECT
+public:
+    explicit DirectoryWalker(const QDir & root);
+
+    virtual void run() override;
+
+signals:
+    void progressUpdated(int current, int total);
+    void finished(const QStringList & files);
+
+private:
+    QDir root_;
+};
+
+
+DirectoryWalker::DirectoryWalker(const QDir & root)
+    : QObject()
+    , QRunnable()
+    , root_(root)
+{}
+
+
+QStringList smartSort(const QStringList & names);
+
+
+void DirectoryWalker::run() {
+    auto & global = KomiX::Global::instance();
+
+    QDirIterator it(this->root_.path(), global.getSupportedFormatsFilter(),
+                    QDir::Files,
+                    QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+    QStringList files;
+    while (it.hasNext()) {
+        auto path = it.next();
+        path = this->root_.relativeFilePath(path);
+        files.push_back(path);
+        emit this->progressUpdated(files.size(), 0);
+    }
+    files = smartSort(files);
+    emit this->finished(files);
+}
 
 
 QVariantList parseName(const QString & name) {
@@ -114,27 +169,24 @@ LocalFileModel::LocalFileModel()
     : FileModel()
     , p_(new Private)
 {
+    this->connect(this->p_.get(), SIGNAL(ready()), SIGNAL(ready()));
 }
 
 
 void LocalFileModel::doInitialize() {
-    emit this->ready();
+    auto task = new DirectoryWalker(this->p_->root);
+    this->connect(task,
+                  SIGNAL(progressUpdated(int, int)),
+                  SIGNAL(progressUpdated(int, int)));
+    this->p_->connect(task,
+                      SIGNAL(finished(const QStringList &)),
+                      SLOT(onWalkFinished(const QStringList &)));
+    QThreadPool::globalInstance()->start(task);
 }
 
 
 void LocalFileModel::setRoot(const QDir & root) {
-    auto & global = KomiX::Global::instance();
     this->p_->root = root;
-
-    QDirIterator it(root.path(), global.getSupportedFormatsFilter(), QDir::Files,
-                    QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
-    QStringList files;
-    while (it.hasNext()) {
-        auto path = it.next();
-        path = root.relativeFilePath(path);
-        files.push_back(path);
-    }
-    this->p_->files = smartSort(files);
 }
 
 
@@ -223,7 +275,17 @@ QVariant LocalFileModel::data(const QModelIndex & index, int role) const {
 
 
 LocalFileModel::Private::Private()
-    : root("__KOMIX_INVALID_ROOT__")
+    : QObject()
+    , root("__KOMIX_INVALID_ROOT__")
     , files()
 {
 }
+
+
+void LocalFileModel::Private::onWalkFinished(const QStringList & files) {
+    this->files = files;
+    emit this->ready();
+}
+
+
+#include "localfilemodel.moc"
