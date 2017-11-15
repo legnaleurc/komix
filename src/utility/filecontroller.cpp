@@ -86,30 +86,6 @@ QModelIndex FileController::getCurrentIndex() const {
 }
 
 
-void FileController::next() {
-    if (!this->isEmpty()) {
-        ++this->p_->index;
-        if (this->p_->index >= this->p_->model->rowCount()) {
-            this->p_->index = 0;
-        }
-        QModelIndex item = this->p_->model->index(this->p_->index, 0);
-        //this->p_->fromIndex(item);
-    }
-}
-
-
-void FileController::prev() {
-    if (!this->isEmpty()) {
-        --this->p_->index;
-        if (this->p_->index < 0) {
-            this->p_->index = this->p_->model->rowCount() - 1;
-        }
-        QModelIndex item = this->p_->model->index(this->p_->index, 0);
-        //this->p_->fromIndex(item);
-    }
-}
-
-
 bool FileController::isEmpty() const {
     if (!this->p_->model) {
         return true;

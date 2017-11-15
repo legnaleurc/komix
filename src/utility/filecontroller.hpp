@@ -56,21 +56,6 @@ public:
 
 public slots:
     /**
-     * @brief go to next image
-     * @sa prev()
-     *
-     * This function well emit getImage( const QPixmap & ), and
-     * prefetch images.
-     */
-    void next();
-    /**
-     * @brief go to previous image
-     * @sa next()
-     *
-     * This function well emit getImage( const QPixmap & ).
-     */
-    void prev();
-    /**
     * @brief open a url
     * @param url url
     *
