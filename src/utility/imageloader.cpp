@@ -94,6 +94,7 @@ void ImageLoader::Private::onDataFinished(const QByteArray & data) {
         buffer->seek(0);
         QMovie * movie = new QMovie(buffer);
         buffer->setParent(movie);
+        movie->setCacheMode(QMovie::CacheAll);
         emit this->finished(this->id, movie);
     } else {
         buffer->deleteLater();
