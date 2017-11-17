@@ -94,6 +94,7 @@ void Navigator::Private::viewImage(const QModelIndex & current, const QModelInde
 void Navigator::Private::onFinished(int /*id*/, QMovie * movie) {
     QMovie * tmp = this->ui.preview->movie();
 
+    movie->setParent(this);
     movie->jumpToNextFrame();
     QSize size = movie->frameRect().size();
     size.scale(this->ui.preview->size(), Qt::KeepAspectRatio);
