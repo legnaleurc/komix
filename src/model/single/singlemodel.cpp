@@ -43,61 +43,51 @@ FileModel::SP SingleModel::create(const QUrl & url) {
 }
 
 
-QString SingleModel::createDialogFilter() {
-    QMultiMap<QString, QString> cat;
+void SingleModel::registerDialogFilter() {
     auto & global = KomiX::Global::instance();
+    auto builder = global.createDialogFilterBuilder();
+
+    builder.setSummary(QObject::tr("All Supported Image File"));
 
     for (auto str : global.getSupportedFormats()) {
         if (str == "bmp") {
-            cat.insert(QObject::tr("Windows Bitmap"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Windows Bitmap"), str);
         } else if (str == "gif") {
-            cat.insert(QObject::tr("Graphic Interchange Format"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Graphic Interchange Format"), str);
         } else if (str == "jpg" || str == "jpeg" || str == "jp2") {
-            cat.insert(QObject::tr("Joint Photographic Experts Group"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Joint Photographic Experts Group"), str);
         } else if (str == "mng" || str == "png") {
-            cat.insert(QObject::tr("Network Graphics"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Network Graphics"), str);
         } else if (str == "pbm" || str == "pgm" || str == "ppm") {
-            cat.insert(QObject::tr("Portable anymap"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Portable anymap"), str);
         } else if (str == "tif" || str == "tiff") {
-            cat.insert(QObject::tr("Tagged Image File Format"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Tagged Image File Format"), str);
         } else if (str == "xbm" || str == "xpm") {
-            cat.insert(QObject::tr("X11"), str.prepend("*."));
+            builder.addFilter(QObject::tr("X11"), str);
         } else if (str == "sgi" || str == "rgba" || str == "rgb" || str == "bw") {
-            cat.insert(QObject::tr("Silicon Graphics Image"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Silicon Graphics Image"), str);
         } else if (str == "tga") {
-            cat.insert(QObject::tr("Truevision Advanced Raster Graphics Adapter"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Truevision Advanced Raster Graphics Adapter"), str);
         } else if (str == "eps" || str == "epsf" || str == "epsi") {
-            cat.insert(QObject::tr("Encapsulated PostScript"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Encapsulated PostScript"), str);
         } else if (str == "svg") {
-            cat.insert(QObject::tr("Scalable Vector Graphics"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Scalable Vector Graphics"), str);
         } else if (str == "xcf") {
-            cat.insert(QObject::tr("eXperimental Computing Facility"), str.prepend("*."));
+            builder.addFilter(QObject::tr("eXperimental Computing Facility"), str);
         } else if (str == "psd") {
-            cat.insert(QObject::tr("Photoshop Document"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Photoshop Document"), str);
         } else if (str == "pcx") {
-            cat.insert(QObject::tr("PC Paintbrush Exchange"), str.prepend("*."));
+            builder.addFilter(QObject::tr("PC Paintbrush Exchange"), str);
         } else if (str == "ico") {
-            cat.insert(QObject::tr("Windows icon"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Windows icon"), str);
         } else if (str == "dds") {
-            cat.insert(QObject::tr("DirectDraw Surface"), str.prepend("*."));
+            builder.addFilter(QObject::tr("DirectDraw Surface"), str);
         } else if (str == "exr") {
-            cat.insert(QObject::tr("OpenEXR"), str.prepend("*."));
+            builder.addFilter(QObject::tr("OpenEXR"), str);
         } else {
-            cat.insert(QObject::tr("Others"), str.prepend("*."));
+            builder.addFilter(QObject::tr("Others"), str);
         }
     }
-
-    QStringList tmp;
-    for (const auto & key : cat.uniqueKeys()) {
-        QStringList values = cat.values(key);
-        QString filter = "%1 ( %2 )";
-        tmp.push_back(filter.arg(key).arg(values.join(" ")));
-    }
-    const auto & all = global.getSupportedFormatsFilter();
-    QString filter = QObject::tr("All Supported Image File ( %1 )");
-    tmp.push_front(filter.arg(all.join(" ")));
-
-    return tmp.join(";;");
 }
 
 

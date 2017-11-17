@@ -24,6 +24,7 @@
 #include "global.hpp"
 
 #include <QtCore/QDir>
+#include <QtCore/QMultiMap>
 
 
 /**
@@ -37,11 +38,17 @@ public:
     explicit Private(Global * parent);
     virtual ~Private();
 
+    void addFilters(const QString & summary,
+                    const QMultiMap<QString, QString> & filters);
+    QString createFilterString() const;
+
     QDir tmp;
-    QString dialogFilter;
     FileController * fileController;
     QStringList supportedFormats;
     QStringList supportedFormatsFilter;
+    QMap<QString, QMultiMap<QString, QString>> filters;
+    bool filterIsDirty;
+    QString dialogFilter;
 };
 
 }

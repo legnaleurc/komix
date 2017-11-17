@@ -40,6 +40,7 @@ namespace KomiX {
 
 
 class FileController;
+class FilterBuilder;
 
 
 class Global : public QObject {
@@ -55,7 +56,7 @@ public:
     /**
      * @brief Register file type filter for file open dialog
      */
-    void registerDialogFilter(const QString & filter);
+    FilterBuilder createDialogFilterBuilder() const;
     /**
      * @brief Get file type filter for file open dialog
      */
@@ -83,8 +84,26 @@ private:
     Global();
     virtual ~Global();
 
+    friend class FilterBuilder;
     class Private;
     Private * p_;
+};
+
+
+class FilterBuilder {
+public:
+    ~FilterBuilder();
+
+    void setSummary(const QString & name);
+    void addFilter(const QString & name, const QString & suffix);
+
+private:
+    friend class Global;
+
+    explicit FilterBuilder(Global::Private *);
+
+    class Private;
+    std::shared_ptr<Private> p_;
 };
 
 

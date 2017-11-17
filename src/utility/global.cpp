@@ -22,10 +22,11 @@
 
 #include "filecontroller.hpp"
 
-#include <QCoreApplication>
-#include <QImageReader>
-#include <QString>
-#include <QtGlobal>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QString>
+#include <QtGui/QImageReader>
+
+#include <QtCore/QtDebug>
 
 #include <algorithm>
 #include <cassert>
@@ -100,6 +101,7 @@ QStringList toNameFilter(const QStringList & exts) {
 
 using KomiX::Global;
 using KomiX::FileController;
+using KomiX::FilterBuilder;
 
 
 Global & Global::instance() {
@@ -130,19 +132,16 @@ const QDir & Global::getTemporaryDirectory() const {
 }
 
 
-void Global::registerDialogFilter(const QString & filter) {
-    if (filter.isEmpty()) {
-        return;
-    }
-    if (this->p_->dialogFilter.isEmpty()) {
-        this->p_->dialogFilter = filter;
-        return;
-    }
-    this->p_->dialogFilter += ";;" + filter;
+FilterBuilder Global::createDialogFilterBuilder() const {
+    return FilterBuilder(this->p_);
 }
 
 
 const QString & Global::getDialogFilter() const {
+    if (this->p_->filterIsDirty) {
+        this->p_->dialogFilter = this->p_->createFilterString();
+        this->p_->filterIsDirty = false;
+    }
     return this->p_->dialogFilter;
 }
 
@@ -162,10 +161,12 @@ const QStringList & Global::getSupportedFormatsFilter() const {
 Global::Private::Private(Global * parent)
     : QObject(parent)
     , tmp(createTmpDir())
-    , dialogFilter()
     , fileController(new FileController(this))
     , supportedFormats(uniqueList())
     , supportedFormatsFilter(toNameFilter(this->supportedFormats))
+    , filters()
+    , filterIsDirty(false)
+    , dialogFilter()
 {
 }
 
@@ -173,3 +174,76 @@ Global::Private::Private(Global * parent)
 Global::Private::~Private() {
     delTree(this->tmp);
 }
+
+
+void Global::Private::addFilters(const QString & summary,
+                                 const QMultiMap<QString, QString> & filters) {
+    this->filterIsDirty = true;
+    this->filters.insert(summary, filters);
+}
+
+
+QString Global::Private::createFilterString() const {
+    QStringList filter;
+    QStringList globs;
+    QString tpl("%1(%2)");
+    QMapIterator<QString, QMultiMap<QString, QString>> oit{this->filters};
+    while (oit.hasNext()) {
+        oit.next();
+        const auto & summary = oit.key();
+        const auto & filters = oit.value();
+        QStringList partialGlobs;
+        for (const auto & name : filters.uniqueKeys()) {
+            QStringList ext = filters.values(name);
+            std::transform(std::begin(ext), std::end(ext), std::begin(ext), [](const QString & s) -> QString {
+                return "*." + s;
+            });
+            partialGlobs += ext;
+            filter.push_front(tpl.arg(name).arg(ext.join(" ")));
+        }
+        globs += partialGlobs;
+        filter.push_front(tpl.arg(summary).arg(partialGlobs.join(" ")));
+    }
+    filter.push_front(tpl.arg("All Supported Files").arg(globs.join(" ")));
+    return filter.join(";;");
+}
+
+
+class FilterBuilder::Private {
+public:
+    explicit Private(Global::Private * p);
+
+    Global::Private * p;
+    QString summary;
+    QMultiMap<QString, QString> filters;
+};
+
+
+FilterBuilder::FilterBuilder(Global::Private * p)
+    : p_(new Private(p))
+{}
+
+
+FilterBuilder::~FilterBuilder() {
+    if (this->p_->summary.isEmpty()) {
+        return;
+    }
+    this->p_->p->addFilters(this->p_->summary, this->p_->filters);
+}
+
+
+void FilterBuilder::setSummary(const QString & name) {
+    this->p_->summary = name;
+}
+
+
+void FilterBuilder::addFilter(const QString & name, const QString & suffix) {
+    this->p_->filters.insertMulti(name, suffix);
+}
+
+
+FilterBuilder::Private::Private(Global::Private * p)
+    : p(p)
+    , summary()
+    , filters()
+{}

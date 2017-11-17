@@ -61,8 +61,8 @@ int main(int argc, char * argv[]) {
         FileModel::registerModel(DirectoryModel::create);
         FileModel::registerModel(ArchiveModel::create);
 
-        global.registerDialogFilter(SingleModel::createDialogFilter());
-        global.registerDialogFilter(ArchiveModel::createDialogFilter());
+        SingleModel::registerDialogFilter();
+        ArchiveModel::registerDialogFilter();
     }
 
     KomiX::widget::MainWindow mainWindow;

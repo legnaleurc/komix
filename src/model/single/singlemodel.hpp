@@ -33,7 +33,7 @@ namespace model {
 class SingleModel : public LocalFileModel {
 public:
     static SP create(const QUrl & url);
-    static QString createDialogFilter();
+    static void registerDialogFilter();
 
     /// Constructor open @p root as image
     explicit SingleModel(const QFileInfo & root);

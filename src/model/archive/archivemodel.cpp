@@ -22,6 +22,7 @@
 #include "archivemodel_p.hpp"
 
 #include <QtCore/QCryptographicHash>
+#include <QtCore/QMultiMap>
 #include <QtCore/QThreadPool>
 
 #include <QtCore/QtDebug>
@@ -55,36 +56,30 @@ inline bool isPrepared() {
 }
 
 
-inline const QStringList & archiveList2() {
-    static QStringList a2 = {
-        "tar.gz",
-        "tgz",
-        "tar.bz2",
-        "tbz2",
-        "tar.lzma",
+const QMultiMap<QString, QString> & supportedMap() {
+    static QMultiMap<QString, QString> mm = {
+        {"Tarball", "tar.gz"},
+        {"Tarball", "tgz"},
+        {"Tarball", "tar.bz2"},
+        {"Tarball", "tbz2"},
+        {"Tarball", "tar.lzma"},
+        {"Tarball", "tar"},
+        {"7-Zip", "7z"},
+        {"RAR", "rar"},
+        {"ZIP", "zip"},
     };
-    return a2;
+    return mm;
 }
 
 
-inline QStringList archiveList() {
-    QStringList a(archiveList2());
-    a << "7z";
-    a << "rar";
-    a << "zip";
-    a << "tar";
-    return a;
-}
-
-
-const QStringList & archiveFormats() {
-    static QStringList af = archiveList();
-    return af;
+const QStringList & supportedList() {
+    static QStringList l = supportedMap().values();
+    return l;
 }
 
 
 bool isArchiveSupported(const QString & name) {
-    for(const auto & ext : archiveFormats()) {
+    for(const auto & ext : supportedList()) {
         if (name.endsWith(ext)) {
             return true;
         }
@@ -127,10 +122,17 @@ FileModel::SP ArchiveModel::create(const QUrl & url) {
 }
 
 
-QString ArchiveModel::createDialogFilter() {
-    QStringList filter = toNameFilter(archiveFormats());
-    QString tpl("%1 ( %2 )");
-    return tpl.arg(OPEN_DIALOG_ARCHIVE_FORMATS).arg(filter.join(" "));
+void ArchiveModel::registerDialogFilter() {
+    auto & global = KomiX::Global::instance();
+    auto builder = global.createDialogFilterBuilder();
+
+    builder.setSummary(OPEN_DIALOG_ARCHIVE_FORMATS);
+
+    QMapIterator<QString, QString> it{supportedMap()};
+    while (it.hasNext()) {
+        it.next();
+        builder.addFilter(it.key(), it.value());
+    }
 }
 
 

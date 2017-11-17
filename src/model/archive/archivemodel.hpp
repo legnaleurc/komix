@@ -36,7 +36,7 @@ namespace model {
 class ArchiveModel : public LocalFileModel {
 public:
     static SP create(const QUrl & url);
-    static QString createDialogFilter();
+    static void registerDialogFilter();
 
     /**
      * @brief Constructor with given fileinfo
