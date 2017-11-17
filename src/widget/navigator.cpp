@@ -91,7 +91,7 @@ void Navigator::Private::viewImage(const QModelIndex & current, const QModelInde
 }
 
 
-void Navigator::Private::onFinished(int id, QMovie * movie) {
+void Navigator::Private::onFinished(int /*id*/, QMovie * movie) {
     QMovie * tmp = this->ui.preview->movie();
 
     movie->jumpToNextFrame();
@@ -107,7 +107,7 @@ void Navigator::Private::onFinished(int id, QMovie * movie) {
 }
 
 
-void Navigator::Private::onFinished(int id, const QPixmap & pixmap) {
+void Navigator::Private::onFinished(int /*id*/, const QPixmap & pixmap) {
     QMovie * tmp = this->ui.preview->movie();
 
     this->ui.preview->setPixmap(pixmap.scaled(this->ui.preview->size(), Qt::KeepAspectRatio));
