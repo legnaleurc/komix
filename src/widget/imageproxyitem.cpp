@@ -113,7 +113,7 @@ ImageProxyItem::Private::Private(int id, DeviceCreator deviceCreator, const QSiz
 }
 
 
-void ImageProxyItem::Private::onFinished(int id, QMovie * movie) {
+void ImageProxyItem::Private::onFinished(int /*id*/, QMovie * movie) {
     QLabel * label = new QLabel;
     label->setMovie(movie);
     movie->setParent(label);
@@ -134,7 +134,7 @@ void ImageProxyItem::Private::onFinished(int id, QMovie * movie) {
 }
 
 
-void ImageProxyItem::Private::onFinished(int id, const QPixmap & pixmap) {
+void ImageProxyItem::Private::onFinished(int /*id*/, const QPixmap & pixmap) {
     QGraphicsPixmapItem * item = new QGraphicsPixmapItem(pixmap, this->owner);
     item->setTransformationMode(Qt::SmoothTransformation);
 
