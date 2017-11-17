@@ -40,6 +40,7 @@ void ImageLoader::load(int id, DeviceSP device, QObject * receiver,
 {
     auto loader = new ImageLoader(id, device, receiver);
     receiver->connect(loader, SIGNAL(finished(int, const QPixmap &)), pictureLoaded);
+    receiver->connect(loader, SIGNAL(finished(int, QMovie *)), animationLoaded);
     loader->start();
 }
 
