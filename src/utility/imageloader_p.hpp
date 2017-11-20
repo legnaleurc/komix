@@ -41,6 +41,7 @@ public:
 public slots:
     void onDataFinished(const QByteArray & data);
     void onImageFinished(const QImage & image);
+    void onMovieFinished(QMovie * movie);
 
 signals:
     void finished(int id, const QPixmap & pixmap);
@@ -120,6 +121,27 @@ private:
 
     QByteArray data_;
     QFutureWatcher<QImage> * watcher_;
+};
+
+
+class MovieHelper : public QObject {
+    Q_OBJECT
+public:
+    MovieHelper(const QByteArray & data, QObject * parent);
+
+    void start();
+
+signals:
+    void finished(QMovie * movie);
+
+private slots:
+    void onReadFinished();
+
+private:
+    QMovie * load();
+
+    QByteArray data_;
+    QFutureWatcher<QMovie *> * watcher_;
 };
 
 }

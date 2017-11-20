@@ -33,6 +33,7 @@ using KomiX::AsynchronousDeviceLoader;
 using KomiX::CharacterDeviceLoader;
 using KomiX::BlockDeviceLoader;
 using KomiX::ImageHelper;
+using KomiX::MovieHelper;
 
 
 void ImageLoader::load(int id, DeviceSP device, QObject * receiver,
@@ -85,11 +86,10 @@ void ImageLoader::Private::onDataFinished(const QByteArray & data) {
     buffer->open(QIODevice::ReadOnly);
     QImageReader iin(buffer);
     if (iin.supportsAnimation()) {
-        buffer->seek(0);
-        QMovie * movie = new QMovie(buffer);
-        buffer->setParent(movie);
-        movie->setCacheMode(QMovie::CacheAll);
-        emit this->finished(this->id, movie);
+        buffer->deleteLater();
+        auto loader = new MovieHelper(data, this);
+        this->connect(loader, SIGNAL(finished(QMovie *)), SLOT(onMovieFinished(QMovie *)));
+        loader->start();
     } else {
         buffer->deleteLater();
         auto loader = new ImageHelper(data, this);
@@ -104,6 +104,14 @@ void ImageLoader::Private::onDataFinished(const QByteArray & data) {
 void ImageLoader::Private::onImageFinished(const QImage & image) {
     auto pixmap = QPixmap::fromImage(image);
     emit this->finished(this->id, pixmap);
+
+    // delete the image loader and all helpers
+    this->parent()->deleteLater();
+}
+
+
+void ImageLoader::Private::onMovieFinished(QMovie * movie) {
+    emit this->finished(this->id, movie);
 
     // delete the image loader and all helpers
     this->parent()->deleteLater();
@@ -235,4 +243,40 @@ void ImageHelper::onReadFinished() {
     auto future = this->watcher_->future();
     auto image = future.result();
     emit this->finished(image);
+}
+
+
+MovieHelper::MovieHelper(const QByteArray & data, QObject * parent)
+    : QObject(parent)
+    , data_(data)
+    , watcher_(new QFutureWatcher<QMovie *>(this))
+{
+    this->connect(this->watcher_, SIGNAL(finished()), SLOT(onReadFinished()));
+}
+
+
+void MovieHelper::start() {
+    // should use bind, but VS has bug VSO#246001
+    auto fn = [this]() -> QMovie * {
+        return this->load();
+    };
+    QFuture<QMovie *> future = QtConcurrent::run(fn);
+    this->watcher_->setFuture(future);
+}
+
+
+QMovie * MovieHelper::load() {
+    auto in = new QBuffer;
+    in->setData(this->data_);
+    auto movie = new QMovie(in);
+    in->setParent(movie);
+    movie->setCacheMode(QMovie::CacheAll);
+    return movie;
+}
+
+
+void MovieHelper::onReadFinished() {
+    auto future = this->watcher_->future();
+    auto movie = future.result();
+    emit this->finished(movie);
 }
