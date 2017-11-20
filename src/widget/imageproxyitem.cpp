@@ -57,7 +57,9 @@ void ImageProxyItem::activate() {
     }
     this->p_->activity = Private::Activity::Activating;
     auto device = this->p_->deviceCreator();
-    ImageLoader::load(this->getID(), device, this->p_, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
+    ImageLoader::load(this->getID(), device, this->p_,
+                      SLOT(onFinished(int, const QPixmap &)),
+                      SLOT(onFinished(int, QMovie *)));
 }
 
 
@@ -86,7 +88,10 @@ QRectF ImageProxyItem::boundingRect() const {
     return QRectF(QPoint(0, 0), size);
 }
 
-void ImageProxyItem::paint(QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
+void ImageProxyItem::paint(QPainter * /*painter*/,
+                           const QStyleOptionGraphicsItem * /*option*/,
+                           QWidget * /*widget*/)
+{
     if (this->p_->activity == Private::Activity::Deactivated) {
         this->activate();
     }
@@ -99,7 +104,8 @@ int ImageProxyItem::getID() const {
 }
 
 
-ImageProxyItem::Private::Private(int id, DeviceCreator deviceCreator, const QSize & size, ImageProxyItem * owner)
+ImageProxyItem::Private::Private(int id, DeviceCreator deviceCreator,
+                                 const QSize & size, ImageProxyItem * owner)
     : QObject(owner)
     , owner(owner)
     , id(id)
