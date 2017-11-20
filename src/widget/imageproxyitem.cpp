@@ -121,6 +121,8 @@ void ImageProxyItem::Private::onFinished(int id, QMovie * movie) {
     label->resize(movie->frameRect().size());
     QGraphicsProxyWidget * item = new QGraphicsProxyWidget(this->owner);
     item->setWidget(label);
+    // HACK workaround for https://bugreports.qt.io/browse/QTBUG-55070
+    item->setOpacity(0.99);
 
     this->movie = movie;
     this->item = item;
