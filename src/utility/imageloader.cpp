@@ -41,7 +41,7 @@ void ImageLoader::load(int id, DeviceSP device, QObject * receiver,
     auto loader = new ImageLoader(id, device, receiver);
     receiver->connect(loader, SIGNAL(finished(int, const QPixmap &)), pictureLoaded);
     receiver->connect(loader, SIGNAL(finished(int, QMovie *)), animationLoaded);
-    loader->start();
+    loader->p_->start();
 }
 
 
@@ -58,27 +58,27 @@ ImageLoader::ImageLoader(int id, DeviceSP device, QObject * parent)
 }
 
 
-void ImageLoader::start() const {
-    AsynchronousDeviceLoader * loader = nullptr;
-    if (this->p_->device->isSequential()) {
-        // character device, async operation
-        loader = new CharacterDeviceLoader(this->p_->device, this->p_);
-    } else {
-        // large block device, async operation
-        loader = new BlockDeviceLoader(this->p_->device, this->p_);
-    }
-    this->p_->connect(loader,
-                      SIGNAL(finished(const QByteArray &)),
-                      SLOT(onDataFinished(const QByteArray &)));
-    loader->start();
-}
-
-
 ImageLoader::Private::Private(int id, std::shared_ptr<QIODevice> device, QObject * parent)
     : QObject(parent)
     , id(id)
     , device(device)
 {
+}
+
+
+void ImageLoader::Private::start() {
+    AsynchronousDeviceLoader * loader = nullptr;
+    if (this->device->isSequential()) {
+        // character device, async operation
+        loader = new CharacterDeviceLoader(this->device, this);
+    } else {
+        // large block device, async operation
+        loader = new BlockDeviceLoader(this->device, this);
+    }
+    this->connect(loader,
+                  SIGNAL(finished(const QByteArray &)),
+                  SLOT(onDataFinished(const QByteArray &)));
+    loader->start();
 }
 
 

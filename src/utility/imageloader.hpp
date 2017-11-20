@@ -33,19 +33,18 @@ namespace KomiX {
 class ImageLoader : public QObject {
     Q_OBJECT
 public:
-    typedef std::shared_ptr<QIODevice> DeviceSP;
+    using DeviceSP = std::shared_ptr<QIODevice>;
 
     static void load(int id, DeviceSP device, QObject * receiver,
                      const char * pictureLoaded, const char * animationLoaded);
-
-    ImageLoader(int id, DeviceSP device, QObject * parent);
-    void start() const;
 
 signals:
     void finished(int id, const QPixmap & pixmap);
     void finished(int id, QMovie * movie);
 
 private:
+    ImageLoader(int id, DeviceSP device, QObject * parent);
+
     class Private;
     Private * p_;
 };

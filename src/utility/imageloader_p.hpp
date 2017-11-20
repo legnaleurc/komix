@@ -34,6 +34,8 @@ class ImageLoader::Private : public QObject {
 public:
     Private(int id, ImageLoader::DeviceSP device, QObject * parent);
 
+    void start();
+
 public slots:
     void onDataFinished(const QByteArray & data);
     void onImageFinished(const QImage & image);
