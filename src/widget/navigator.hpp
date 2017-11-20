@@ -52,7 +52,7 @@ public:
     /// set current model index
     void setCurrentIndex(const QModelIndex & index);
 
-    virtual void setVisible(bool visible);
+    virtual void setVisible(bool visible) override;
 
 private:
     class Private;
