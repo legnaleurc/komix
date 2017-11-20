@@ -52,18 +52,18 @@ void ImageProxyItem::setPaused(bool paused) {
 
 
 void ImageProxyItem::activate() {
-    if (this->p_->activating || this->p_->activated) {
+    if (this->p_->activity != Private::Activity::Deactivated) {
         return;
     }
-    this->p_->activating = true;
+    this->p_->activity = Private::Activity::Activating;
     auto device = this->p_->deviceCreator();
     ImageLoader::load(this->getID(), device, this->p_, SLOT(onFinished(int, const QPixmap &)), SLOT(onFinished(int, QMovie *)));
 }
 
 
 void ImageProxyItem::deactivate() {
-    assert(!this->p_->activating || !"deactivate while activating");
-    if (!this->p_->activated) {
+    assert((this->p_->activity != Private::Activity::Activating) || !"deactivate while activating");
+    if (this->p_->activity == Private::Activity::Deactivated) {
         return;
     }
     if (this->p_->item) {
@@ -74,7 +74,7 @@ void ImageProxyItem::deactivate() {
     if (this->p_->movie) {
         this->p_->movie = nullptr;
     }
-    this->p_->activated = false;
+    this->p_->activity = Private::Activity::Deactivated;
 }
 
 
@@ -87,7 +87,7 @@ QRectF ImageProxyItem::boundingRect() const {
 }
 
 void ImageProxyItem::paint(QPainter * /*painter*/, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-    if (!this->p_->activated && !this->p_->activating) {
+    if (this->p_->activity == Private::Activity::Deactivated) {
         this->activate();
     }
     emit this->viewing(this->getID());
@@ -105,8 +105,7 @@ ImageProxyItem::Private::Private(int id, DeviceCreator deviceCreator, const QSiz
     , id(id)
     , deviceCreator(deviceCreator)
     , size(size)
-    , activated(false)
-    , activating(false)
+    , activity(Activity::Deactivated)
     , item(nullptr)
     , movie(nullptr)
 {
@@ -127,8 +126,7 @@ void ImageProxyItem::Private::onFinished(int /*id*/, QMovie * movie) {
     this->movie = movie;
     this->item = item;
 
-    this->activated = true;
-    this->activating = false;
+    this->activity = Activity::Activated;
 
     emit this->owner->activated(this->owner);
 }
@@ -140,8 +138,7 @@ void ImageProxyItem::Private::onFinished(int /*id*/, const QPixmap & pixmap) {
 
     this->item = item;
 
-    this->activated = true;
-    this->activating = false;
+    this->activity = Activity::Activated;
 
     emit this->owner->activated(this->owner);
 }

@@ -32,6 +32,12 @@ namespace widget {
 class ImageProxyItem::Private : public QObject {
     Q_OBJECT
 public:
+    enum class Activity: uint8_t {
+        Deactivated,
+        Activating,
+        Activated,
+    };
+
     Private(int id, DeviceCreator deviceCreator, const QSize & size,
             ImageProxyItem * owner);
 
@@ -47,8 +53,7 @@ public:
     int id;
     DeviceCreator deviceCreator;
     QSize size;
-    bool activated;
-    bool activating;
+    Activity activity;
     QGraphicsItem * item;
     QMovie * movie;
 };
