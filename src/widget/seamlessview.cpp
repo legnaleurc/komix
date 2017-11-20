@@ -41,6 +41,7 @@
 namespace {
 
 const qreal RECYCLE_DISTANCE = 8192.;
+const int RECYCLE_PAGE_COUNT = 4;
 
 }
 
@@ -306,16 +307,26 @@ void SeamlessView::Private::tryRecycle() {
     auto globalRect = this->owner->viewport()->geometry();
     auto sceneRect = this->owner->mapToScene(globalRect).boundingRect();
     auto center = sceneRect.center();
+    auto centerItem = this->getItemAt(center);
 
     auto b = std::begin(this->activeItems);
     auto e = std::end(this->activeItems);
-    auto it = std::partition(b, e, [&sceneRect, &center](ImageProxyItem * proxyItem) -> bool {
+    auto it = std::partition(b, e, [&sceneRect, &center, centerItem](ImageProxyItem * proxyItem) -> bool {
         auto itemRect = proxyItem->mapRectToScene(proxyItem->boundingRect());
         if (sceneRect.intersects(itemRect)) {
+            // still in the screen
             return true;
+        }
+        if (centerItem) {
+            auto pageDiff = abs(centerItem->getID() - proxyItem->getID());
+            if (pageDiff > RECYCLE_PAGE_COUNT) {
+                // exceed x pages
+                return false;
+            }
         }
         auto line = QLineF(center, itemRect.center());
         auto dist = pow(pow(line.dx(), 2) + pow(line.dy(), 2), 0.5);
+        // far away from current page
         return dist < RECYCLE_DISTANCE;
     });
 
@@ -344,4 +355,15 @@ void SeamlessView::Private::prefetch(int id) {
         auto item = this->items.at(n);
         item->activate();
     }
+}
+
+
+ImageProxyItem * SeamlessView::Private::getItemAt(const QPointF & pos) const {
+    // ImageProxyItem does not actually occupy a bound, so this will only get
+    // the underlying QGraphicsItem.
+    auto itemInView = this->owner->scene()->itemAt(pos, this->owner->transform());
+    if (!itemInView) {
+        return nullptr;
+    }
+    return dynamic_cast<ImageProxyItem *>(itemInView->parentItem());
 }

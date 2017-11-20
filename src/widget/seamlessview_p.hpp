@@ -47,6 +47,7 @@ public:
     void endRelativeScaling();
     void showCursor();
     void hideCursor();
+    ImageProxyItem * getItemAt(const QPointF & pos) const;
 
 public slots:
     void resolveBounds();
