@@ -39,8 +39,8 @@ void ImageLoader::load(int id, DeviceSP device, QObject * receiver,
                        const char * pictureLoaded, const char * animationLoaded)
 {
     auto loader = new ImageLoader(id, device, receiver);
-    receiver->connect(loader, SIGNAL(finished(int, const QPixmap &)), pictureLoaded);
-    receiver->connect(loader, SIGNAL(finished(int, QMovie *)), animationLoaded);
+    receiver->connect(loader->p_, SIGNAL(finished(int, const QPixmap &)), pictureLoaded);
+    receiver->connect(loader->p_, SIGNAL(finished(int, QMovie *)), animationLoaded);
     loader->p_->start();
 }
 
@@ -49,12 +49,6 @@ ImageLoader::ImageLoader(int id, DeviceSP device, QObject * parent)
     : QObject(parent)
     , p_(new Private(id, device, this))
 {
-    this->connect(this->p_,
-                  SIGNAL(finished(int, QMovie *)),
-                  SIGNAL(finished(int, QMovie *)));
-    this->connect(this->p_,
-                  SIGNAL(finished(int, const QPixmap &)),
-                  SIGNAL(finished(int, const QPixmap &)));
 }
 
 

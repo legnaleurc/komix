@@ -25,6 +25,8 @@
 
 #include <QtCore/QBuffer>
 #include <QtCore/QFutureWatcher>
+#include <QtGui/QMovie>
+#include <QtGui/QPixmap>
 
 
 namespace KomiX {

@@ -23,24 +23,20 @@
 
 #include <memory>
 
-#include <QtCore/QIODevice>
-#include <QtGui/QMovie>
-#include <QtGui/QPixmap>
+#include <QtCore/QObject>
+
+
+class QIODevice;
 
 
 namespace KomiX {
 
 class ImageLoader : public QObject {
-    Q_OBJECT
 public:
     using DeviceSP = std::shared_ptr<QIODevice>;
 
     static void load(int id, DeviceSP device, QObject * receiver,
                      const char * pictureLoaded, const char * animationLoaded);
-
-signals:
-    void finished(int id, const QPixmap & pixmap);
-    void finished(int id, QMovie * movie);
 
 private:
     ImageLoader(int id, DeviceSP device, QObject * parent);
