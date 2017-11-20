@@ -34,7 +34,6 @@ namespace widget {
 
 class SeamlessView : public QGraphicsView {
     Q_OBJECT
-    using QGraphicsView::scale;
 public:
     explicit SeamlessView(QWidget * parent);
 
