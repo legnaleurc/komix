@@ -25,6 +25,8 @@
 
 namespace KomiX {
 
+const QString APPLICATION_DESCRIPTION = QObject::tr("Comics Viewer");
+const QString ARGUMENT_DESCRIPTION_FILE_OR_URL = QObject::tr("Open file or URL immediately.");
 const QString FILEMODEL_ERROR = QObject::tr("can not find a model for `%1`");
 const QString MAINWINDOW_ERROR_DIALOG_TITLE = QObject::tr("Oops!");
 const QString NO_OPENABLE_FILE = QObject::tr("No openable file.");

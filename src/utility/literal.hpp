@@ -27,6 +27,8 @@
 
 namespace KomiX {
 
+extern const QString APPLICATION_DESCRIPTION;
+extern const QString ARGUMENT_DESCRIPTION_FILE_OR_URL;
 extern const QString FILEMODEL_ERROR;
 extern const QString MAINWINDOW_ERROR_DIALOG_TITLE;
 extern const QString NO_OPENABLE_FILE;

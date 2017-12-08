@@ -21,13 +21,14 @@
 #include "mainwindow.hpp"
 
 #include "global.hpp"
+#include "literal.hpp"
 #include "filecontroller.hpp"
 #include "single/singlemodel.hpp"
 #include "directory/directorymodel.hpp"
 #include "archive/archivemodel.hpp"
 
+#include <QtCore/QCommandLineParser>
 #include <QtCore/QStringList>
-
 #include <QtWidgets/QApplication>
 
 
@@ -51,7 +52,12 @@ int main(int argc, char * argv[]) {
     QApplication::setApplicationName("KomiX");
     QApplication::setApplicationVersion(X(KOMIX_VERSION));
 
-    QStringList args(QApplication::arguments());
+    QCommandLineParser parser;
+    parser.setApplicationDescription(KomiX::APPLICATION_DESCRIPTION);
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("file_or_url", KomiX::ARGUMENT_DESCRIPTION_FILE_OR_URL, "[file_or_url]");
+    parser.process(app);
 
     auto & global = KomiX::Global::instance();
     {
@@ -69,7 +75,9 @@ int main(int argc, char * argv[]) {
     mainWindow.setWindowTitle(QApplication::applicationName());
     mainWindow.resize(800, 600);
 
-    if (args.length() > 1) {
+
+    QStringList args = parser.positionalArguments();
+    if (args.size() > 1) {
         global.getFileController().open(args.at(1));
     }
 
