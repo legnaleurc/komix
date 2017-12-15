@@ -77,8 +77,8 @@ int main(int argc, char * argv[]) {
 
 
     QStringList args = parser.positionalArguments();
-    if (args.size() > 1) {
-        global.getFileController().open(args.at(1));
+    if (args.size() > 0) {
+        global.getFileController().open(args.at(0));
     }
 
     mainWindow.show();
