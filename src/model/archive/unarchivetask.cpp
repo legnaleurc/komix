@@ -242,6 +242,9 @@ void UnarchiveTask::Private::prepareArchive() {
                 return;
             }
             this->codec = QTextCodec::codecForName(name);
+            if (!this->codec) {
+                this->codec = QTextCodec::codecForLocale();
+            }
             this->fileCount = i;
             return;
         }
