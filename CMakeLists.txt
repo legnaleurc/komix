@@ -87,6 +87,13 @@ if(APPLE OR WIN32)
             list(APPEND KOMIX_QT_PLUGINS_PLATFORMS_RELEASE "${location}")
         endif()
     endforeach()
+    foreach(plugin ${Qt5Widgets_PLUGINS})
+        get_target_property(location ${plugin} LOCATION)
+        if("${location}" MATCHES ".*/styles/.*")
+            list(APPEND KOMIX_QT_PLUGINS_STYLES_DEBUG "${location}")
+            list(APPEND KOMIX_QT_PLUGINS_STYLES_RELEASE "${location}")
+        endif()
+    endforeach()
     install(
         FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_DEBUG}
         DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/imageformats"
@@ -95,6 +102,16 @@ if(APPLE OR WIN32)
     install(
         FILES ${KOMIX_QT_PLUGINS_IMAGEFORMATS_RELEASE}
         DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/imageformats"
+        CONFIGURATIONS "Release" "MinSizeRel"
+        COMPONENT "Runtime")
+    install(
+        FILES ${KOMIX_QT_PLUGINS_STYLES_DEBUG}
+        DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/styles"
+        CONFIGURATIONS "Debug" "RelWithDebInfo"
+        COMPONENT "Runtime")
+    install(
+        FILES ${KOMIX_QT_PLUGINS_STYLES_RELEASE}
+        DESTINATION "${KOMIX_PLUGINS_INSTALL_DIR}/styles"
         CONFIGURATIONS "Release" "MinSizeRel"
         COMPONENT "Runtime")
     install(
